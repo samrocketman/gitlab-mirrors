@@ -1,6 +1,6 @@
 # git-mirrors
 
-The git-mirrors project is designed to fill in a feature which is currently missing from GitLab: the ability to mirror remote repositories.  git-mirrors creates read only copies of remote repositories in gitlab.  It provides a CLI management interface for managing the mirrored repositories (e.g. add, delete, update) so that an admin may regularly update all mirrors using `crontab`.  It operates by interacting with the [GitLab API][1] using [python-gitlab][2].
+The [git-mirrors](https://github.com/sag47/git-mirrors) project is designed to fill in a feature which is currently missing from GitLab: the ability to mirror remote repositories.  git-mirrors creates read only copies of remote repositories in gitlab.  It provides a CLI management interface for managing the mirrored repositories (e.g. add, delete, update) so that an admin may regularly update all mirrors using `crontab`.  It operates by interacting with the [GitLab API][1] using [python-gitlab][2].
 
 
 ---
