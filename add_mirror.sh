@@ -3,6 +3,11 @@
 #USAGE
 #  ./add_mirror.sh project_name http://example.com/project.git
 
+if [ "${#}" -lt "2" ];then
+  echo "Not enough arguments." 1>&2
+  echo "e.g. ./add_mirror.sh project_name http://example.com/project.git" 1>&2
+  exit 1
+fi
 
 #Include all user options
 . "$(dirname $0)/config.sh"
