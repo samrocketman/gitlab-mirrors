@@ -7,7 +7,7 @@ import gitlab
 
 try:
   project_name=argv[1]
-  token_secret=os.environ['token_secret']
+  token_secret=os.environ['gitlab_user_token_secret']
   gitlab_url=os.environ['gitlab_url']
   gitlab_namespace=os.environ['gitlab_namespace']
   gitlab_user=os.environ['gitlab_user']
