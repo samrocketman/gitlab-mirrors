@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#Tue Sep 10 23:01:08 EDT 2013
 
 from sys import argv,exit,stderr
 import os
@@ -57,4 +58,4 @@ if not found_project:
     print >> stderr, "There was a problem creating {group}/{project}.  Did you give {user} user Admin rights in gitlab?".format(group=gitlab_namespace,project=project_name,user=gitlab_user)
     exit(1)
 
-print found_project['http_url_to_repo']
+print found_project['ssh_url_to_repo']
