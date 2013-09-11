@@ -11,9 +11,9 @@ This adds git mirror functionality to gitlab.  The whole purpose of this project
 ### Required software
 
 * [GitLab 6.x][3]
-* [python-gitlab @ 5da9bc][2]
+* [python-gitlab @ 5da9bc7][2]
 * [GNU coreutils][4]
-* [git][5]
+* [git 1.8.4][5]
 
 ### Required software install snippets
 python-gitlab
@@ -43,21 +43,41 @@ Your git should now be located in `/usr/local/bin/git`.  You should edit `/etc/p
 ---
 #Installation and Setup
 
-Create a system user called `gitmirror`.
+Create a system user called `gitmirror` and generate SSH keys.
 
     adduser gitmirror
     su - gitmirror
     ssh-keygen
 
-Create `~/.ssh/config` for the `gitmirror` user.
+Create `~/.ssh/config` for the `gitmirror` user.  Add your GitLab server host and the user used to talk to GitLab.
 
+    Host gitlab.example.com
+        User git
+
+Create a gitmirror user in gitlab.  Set up the SSH keys with the gitmirror user in GitLab.  Obtain the Private token from the user.
+
+Clone the git-mirrors repository and set values in config.sh.
+
+    su - gitmirrors
+    mkdir repositories
+    touch private_token
+    git clone https://comet.irt.drexel.edu/gitlab/gitlab-mirrors.git
+    cd gitlab-mirrors
+    chmod 755 *.sh
+    cp config.sh.SAMPLE config.sh
+
+Modify the values in `config.sh` for your setup.  Be sure to add your private token for the gitmirror user in gitlab to `~/private_token` of your `gitmirror` system user.
+
+Once you have set up your `config.sh` let's add the `git-mirrors.sh` script to `crontab`.  Just execute `crontab -e` and add the following value to it.
+
+    @hourly /home/gitmirror/gitlab-mirrors/git-mirrors.sh
 
 ---
 ## References
 
-* [Git Mirror](http://stackoverflow.com/questions/2756747/mirror-a-git-repository-by-pulling)
-* [Git Push all Branches](http://stackoverflow.com/questions/1914579/set-up-git-to-pull-and-push-all-branches)
-* [Git update Mirror](https://github.com/ndechesne/git-mirror/blob/master/git-mirror)
+* [Git mirror](http://stackoverflow.com/questions/2756747/mirror-a-git-repository-by-pulling)
+* [Git push all branches](http://stackoverflow.com/questions/1914579/set-up-git-to-pull-and-push-all-branches)
+* [Git update mirror](https://github.com/ndechesne/git-mirror/blob/master/git-mirror)
 
 [1]: https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/README.md
 [2]: https://github.com/Itxaka/python-gitlab
