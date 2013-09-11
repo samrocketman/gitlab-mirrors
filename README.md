@@ -41,7 +41,7 @@ Your git should now be located in `/usr/local/bin/git`.  You should edit `/etc/p
 
 
 ---
-#Installation and Setup
+# Installation and Setup
 
 Create a system user called `gitmirror` and generate SSH keys.
 
