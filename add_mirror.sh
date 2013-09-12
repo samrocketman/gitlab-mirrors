@@ -8,10 +8,9 @@ set -e
 
 #Include all user options and dependencies
 git_mirrors_dir="$(dirname "${0}")"
-cd "${git_mirrors_dir}"
-. "config.sh"
-. "lib/VERSION"
-. "lib/functions.sh"
+. "${git_mirrors_dir}/config.sh"
+. "${git_mirrors_dir}/lib/VERSION"
+. "${git_mirrors_dir}/lib/functions.sh"
 
 PROGNAME="${0##*/}"
 PROGVERSION="${VERSION}"
@@ -63,7 +62,7 @@ EOF
 }
 #Short options are one letter.  If an argument follows a short opt then put a colon (:) after it
 SHORTOPTS="hvm:p:"
-LONGOPTS="help,version,git,svn,mirror:,project-name:"
+LONGOPTS="help,version,git,svn,mirror:,project-name:,authors-file:"
 ARGS=$(getopt -s bash --options "${SHORTOPTS}" --longoptions "${LONGOPTS}" --name "${PROGNAME}" -- "$@")
 eval set -- "$ARGS"
 while true; do
@@ -90,6 +89,10 @@ while true; do
       ;;
     -m|--mirror)
         mirror="${2}"
+        shift 2
+      ;;
+    --authors-file)
+        authors_file="${2}"
         shift 2
       ;;
     --)
@@ -136,6 +139,12 @@ function preflight() {
     red_echo " option." 1>&2
     STATUS=1
   fi
+  if [ ! -z "${authors_file}" -a ! -f "${authors_file}" ];then
+    red_echo -n "Specified "
+    yellow_echo -n "--authors-file"
+    red_echo " does not exist!"
+    STATUS=1
+  fi
   return ${STATUS}
 }
 
@@ -158,6 +167,15 @@ elif [ -d "${repo_dir}/${gitlab_namespace}/${project_name}" ];then
   red_echo "Error: \"${repo_dir}/${gitlab_namespace}\" exists already.  Aborting command." 1>&2
   exit 1
 fi
+#Resolve the $authors_file path because of changing working directories
+#/home/gitmirror/mirror-management/Mirrors/gitlab-mirrors/gitlab-mirrors/../authors_files/systems_authors_maps.txt
+if [ ! -z "${authors_file}" ];then
+  if ! echo "${authors_file}" | grep '^/' &> /dev/null;then
+    authors_file="${PWD}/${authors_file}"
+    authors_file="$(echo ${authors_file} | sed 's#/./#/#g')"
+  fi
+fi
+cd "${git_mirrors_dir}"
 
 #Set up project creation options based on config.sh to be passed to create manage_gitlab_project.py
 CREATE_OPTS=""
@@ -201,11 +219,11 @@ if ${git};then
   #create a mirror
   echo "Creating mirror from ${mirror}"
   cd "${repo_dir}/${gitlab_namespace}"
-  git clone --mirror ${mirror} "${project_name}"
+  git clone --mirror "${mirror}" "${project_name}"
   cd "${project_name}"
   #add the gitlab remote
   echo "Adding gitlab remote to project."
-  git remote add gitlab ${gitlab_remote}
+  git remote add gitlab "${gitlab_remote}"
   git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
   git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
   #Check the initial repository into gitlab
@@ -218,4 +236,10 @@ elif ${svn};then
   #create a mirror
   echo "Creating mirror from ${mirror}"
   cd "${repo_dir}/${gitlab_namespace}"
+  if [ ! -z "${authors_file}" ];then
+    echo "${authors_file}"
+    
+    #git svn clone ${git_svn_additional_options} --authors-file="${authors_file}" "${mirror}" "${project_name}"
+
+  fi
 fi
