@@ -86,6 +86,10 @@ function preflight() {
     yellow_echo -n "--delete" 1>&2
     red_echo " option." 1>&2
     STATUS=1
+  elif [ ! -e "${repo_dir}/${gitlab_namespace}/${project_name}" ];then
+    yellow_echo -n "${repo_dir}/${gitlab_namespace}/${project_name}"
+    echo " does not exist."
+    exit
   fi
   return ${STATUS}
 }
