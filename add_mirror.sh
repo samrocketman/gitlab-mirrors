@@ -1,16 +1,17 @@
 #!/bin/bash
 #Tue Sep 10 23:01:08 EDT 2013
 #USAGE
-#  ./add_mirror.sh project_name http://example.com/project.git
+#  ./add_mirror.sh --git --project-name
 
-#Include all user options
-. "$(dirname $0)/config.sh"
-. "$(dirname $0)/lib/VERSION"
-cd "$(dirname $0)"
+#Include all user options and dependencies
+git_mirrors_dir="$(dirname "${0}")"
+cd "${git_mirrors_dir}"
+. "config.sh"
+. "lib/VERSION"
+. "lib/functions.sh"
 
 PROGNAME="${0##*/}"
 PROGVERSION="${VERSION}"
-
 
 #Default script options
 svn=false
@@ -18,10 +19,9 @@ git=false
 project_name=""
 mirror=""
 
-#Short options are one letter.  If an argument follows a short opt then put a colon (:) after it
-SHORTOPTS="hvm:p:"
-LONGOPTS="help,version,git,svn,mirror:,project:"
-
+#
+# ARGUMENT HANDLING
+#
 usage()
 {
   cat <<EOF
@@ -44,10 +44,11 @@ DESCRIPTION:
 
 EOF
 }
-
+#Short options are one letter.  If an argument follows a short opt then put a colon (:) after it
+SHORTOPTS="hvm:p:"
+LONGOPTS="help,version,git,svn,mirror:,project:"
 ARGS=$(getopt -s bash --options "${SHORTOPTS}" --longoptions "${LONGOPTS}" --name "${PROGNAME}" -- "$@")
 eval set -- "$ARGS"
-echo "$ARGS"
 while true; do
   case $1 in
     -h|--help)
@@ -85,6 +86,11 @@ while true; do
     esac
 done
 
+function preflight() {
+  if ${git} && ${svn};then
+    
+  fi
+}
 
 echo "svn=${svn}"
 echo "git=${git}"
