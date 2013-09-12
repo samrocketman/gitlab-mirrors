@@ -193,7 +193,7 @@ if ${git};then
   echo "Creating mirror from ${mirror}"
   cd "${repo_dir}/${gitlab_namespace}"
   git clone --mirror ${mirror} "${project_name}"
-  cd "$1"
+  cd "${project_name}"
   #add the gitlab remote
   echo "Adding gitlab remote to project."
   git remote add gitlab ${gitlab_remote}

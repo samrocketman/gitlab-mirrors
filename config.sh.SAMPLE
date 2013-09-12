@@ -6,8 +6,12 @@
 
 #The user git-mirrors will run as.
 system_user="gitmirror"
+#The home directory path of the $system_user
 user_home="/home/${system_user}"
+#The repository directory where gitlab-mirrors will copies of mirrored repositories before pushing them to gitlab.
 repo_dir="${user_home}/repositories"
+#colorize output of add_mirror.sh, update_mirror.sh, and git-mirrors.sh commands.
+enable_colors=true
 
 #
 # Gitlab settings
@@ -21,3 +25,14 @@ gitlab_url="https://gitlab.example.com"
 gitlab_user="gitmirror"
 #Generate a token for your $gitlab_user and set it here.
 gitlab_user_token_secret="$(head -n1 "${user_home}/private_token")"
+
+#
+# Gitlab new project default settings.  If a project needs to be created by gitlab-mirrors
+# then it will assign the following values as defaults.
+#
+
+issues_enabled=false
+wall_enabled=false
+wiki_enabled=false
+snippets_enabled=false
+public=false
