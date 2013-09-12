@@ -3,6 +3,9 @@
 #USAGE
 #  ./add_mirror.sh --git --project-name
 
+#bash option stop on first error
+set -e
+
 #Include all user options and dependencies
 git_mirrors_dir="$(dirname "${0}")"
 cd "${git_mirrors_dir}"
@@ -41,7 +44,8 @@ DESCRIPTION:
   -v,--version       Show program version
   --git              Mirror a git repository (must be explicitly set)
   --svn              Mirror a SVN repository (must be explicitly set)
-  --project NAME     Set a GitLab project name to NAME.
+  --project-name NAME
+                     Set a GitLab project name to NAME.
   --mirror URL       Repository URL to be mirrored.
 
 
@@ -49,7 +53,7 @@ EOF
 }
 #Short options are one letter.  If an argument follows a short opt then put a colon (:) after it
 SHORTOPTS="hvm:p:"
-LONGOPTS="help,version,git,svn,mirror:,project:"
+LONGOPTS="help,version,git,svn,mirror:,project-name:"
 ARGS=$(getopt -s bash --options "${SHORTOPTS}" --longoptions "${LONGOPTS}" --name "${PROGNAME}" -- "$@")
 eval set -- "$ARGS"
 while true; do
@@ -70,7 +74,7 @@ while true; do
         svn=true
         shift
       ;;
-    -p|--project)
+    -p|--project-name)
         project_name="${2}"
         shift 2
       ;;
@@ -108,12 +112,12 @@ function preflight() {
     yellow_echo -n "--git" 1>&2
     red_echo -n " or " 1>&2
     yellow_echo -n "--svn" 1>&2
-    red_echo "options" 1>&2
+    red_echo " options." 1>&2
     STATUS=1
   fi
   if [ -z "${project_name}" ];then
     red_echo -n "Missing " 1>&2
-    yellow_echo -n "--project" 1>&2
+    yellow_echo -n "--project-name" 1>&2
     red_echo " option." 1>&2
     STATUS=1
   fi
@@ -170,6 +174,37 @@ export gitlab_user_token_secret gitlab_url gitlab_namespace gitlab_user
  
 
 if ${git};then
+  #Get the remote gitlab url for the specified project.
+  #If the project doesn't already exist in gitlab then create it.
+  echo "Resolving gitlab remote."
+  if python lib/manage_gitlab_project.py --create ${CREATE_OPTS} "${project_name}" 1> /dev/null;then
+    gitlab_remote=$(python lib/manage_gitlab_project.py --create ${CREATE_OPTS} "${project_name}")
+    echo "gitlab remote ${gitlab_remote}"
+  else
+    echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
+    exit 1
+  fi
+  if [ -z "${gitlab_remote}" ];then
+    echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
+    exit 1
+  fi
+
+  #create a mirror
+  echo "Creating mirror from ${mirror}"
+  cd "${repo_dir}/${gitlab_namespace}"
+  git clone --mirror ${mirror} "${project_name}"
+  cd "$1"
+  #add the gitlab remote
+  echo "Adding gitlab remote to project."
+  git remote add gitlab ${gitlab_remote}
+  git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
+  git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
+  #Check the initial repository into gitlab
+  echo "Checking the mirror into gitlab."
+  git fetch
+  git remote prune origin
+  git push gitlab
+  echo "All done!"
 fi
 
 
@@ -186,19 +221,6 @@ fi
 
 
 exit
-
-#Get the remote gitlab url for the specified project.
-#If the project doesn't already exist in gitlab then create it.
-echo "Resolving gitlab remote."
-if python lib/manage_gitlab_project.py $1 1> /dev/null;then
-  gitlab_remote=$(python lib/manage_gitlab_project.py $1)
-  echo "gitlab remote ${gitlab_remote}"
-else
-  echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
-  exit 1
-fi
-
-mkdir -p "${repo_dir}/${gitlab_namespace}"
 
 #create a mirror
 echo "Creating mirror from $2"

@@ -79,3 +79,6 @@ if options.create:
       exit(1)
 
   print found_project['ssh_url_to_repo']
+else:
+  print >> stderr, "No --create or --delete option added."
+  exit(1)
