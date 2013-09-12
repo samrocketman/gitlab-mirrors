@@ -206,35 +206,3 @@ if ${git};then
   git push gitlab
   echo "All done!"
 fi
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-exit
-
-#create a mirror
-echo "Creating mirror from $2"
-cd "${repo_dir}/${gitlab_namespace}"
-git clone --mirror $2 "$1"
-cd "$1"
-#add the gitlab remote
-echo "Adding gitlab remote to project."
-git remote add gitlab ${gitlab_remote}
-git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
-git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
-#Check the initial repository into gitlab
-echo "Checking the mirror into gitlab."
-git fetch
-git remote prune origin
-git push gitlab
-echo "All done!"
