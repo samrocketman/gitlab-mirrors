@@ -5,10 +5,11 @@
 
 #Include all user options
 . "$(dirname $0)/config.sh"
-cd $(dirname $0)
+. "$(dirname $0)/lib/VERSION"
+cd "$(dirname $0)"
 
 PROGNAME="${0##*/}"
-PROGVERSION="v0.2"
+PROGVERSION="${VERSION}"
 
 
 #Default script options
