@@ -1,7 +1,7 @@
 #!/bin/bash
 #Tue Sep 10 23:01:08 EDT 2013
 #USAGE
-#  ./add_mirror.sh --git --project-name
+#  ./add_mirror.sh --git --project-name someproject --mirror http://example.com/project.git
 
 #bash option stop on first error
 set -e
@@ -25,6 +25,7 @@ mirror=""
 #
 # ARGUMENT HANDLING
 #
+
 usage()
 {
   cat <<EOF
@@ -44,9 +45,9 @@ DESCRIPTION:
   -v,--version       Show program version
   --git              Mirror a git repository (must be explicitly set)
   --svn              Mirror a SVN repository (must be explicitly set)
-  --project-name NAME
+  -p,--project-name NAME
                      Set a GitLab project name to NAME.
-  --mirror URL       Repository URL to be mirrored.
+  -m,--mirror URL    Repository URL to be mirrored.
 
 
 EOF
@@ -88,7 +89,6 @@ while true; do
       ;;
     *)
         shift
-        break
       ;;
     esac
 done
