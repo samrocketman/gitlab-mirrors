@@ -156,6 +156,7 @@ elif [ ! -d "${repo_dir}/${gitlab_namespace}" ];then
   exit 1
 elif [ -d "${repo_dir}/${gitlab_namespace}/${project_name}" ];then
   red_echo "Error: \"${repo_dir}/${gitlab_namespace}\" exists already.  Aborting command." 1>&2
+  exit 1
 fi
 
 #Set up project creation options based on config.sh to be passed to create manage_gitlab_project.py
