@@ -12,6 +12,8 @@ user_home="/home/${system_user}"
 repo_dir="${user_home}/repositories"
 #colorize output of add_mirror.sh, update_mirror.sh, and git-mirrors.sh commands.
 enable_colors=true
+#These are additional options which should be passed to git-svn.  See git help svn
+git_svn_additional_options="-s"
 
 #
 # Gitlab settings
