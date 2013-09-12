@@ -87,8 +87,8 @@ function preflight() {
     red_echo " option." 1>&2
     STATUS=1
   elif [ ! -e "${repo_dir}/${gitlab_namespace}/${project_name}" ];then
-    yellow_echo -n "${repo_dir}/${gitlab_namespace}/${project_name}"
-    echo " does not exist."
+    yellow_echo -n "${repo_dir}/${gitlab_namespace}/${project_name}" 1>&2
+    echo " does not exist." 1>&2
     exit
   fi
   return ${STATUS}
@@ -122,8 +122,8 @@ if ! ${quiet};then
 fi
 
 rm -rf "${repo_dir}/${gitlab_namespace}/${project_name}"
-green_echo -n "DELETED"
-echo " ${repo_dir}/${gitlab_namespace}/${project_name}"
-echo
-yellow_echo -n "**NOTE**:"
-echo " You must log into the GitLab web interface in order to delete the project from GitLab!"
+green_echo -n "DELETED" 1>&2
+echo " ${repo_dir}/${gitlab_namespace}/${project_name}" 1>&2
+echo 1>&2
+yellow_echo -n "**NOTE**:" 1>&2
+echo " You must log into the GitLab web interface in order to delete the project from GitLab!" 1>&2
