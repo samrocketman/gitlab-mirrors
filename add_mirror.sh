@@ -154,6 +154,8 @@ if [ ! -e "${repo_dir}/${gitlab_namespace}" ];then
 elif [ ! -d "${repo_dir}/${gitlab_namespace}" ];then
   red_echo "Error: \"${repo_dir}/${gitlab_namespace}\" exists but is not a directory." 1>&2
   exit 1
+elif [ -d "${repo_dir}/${gitlab_namespace}/${project_name}" ];then
+  red_echo "Error: \"${repo_dir}/${gitlab_namespace}\" exists already.  Aborting command." 1>&2
 fi
 
 #Set up project creation options based on config.sh to be passed to create manage_gitlab_project.py
@@ -212,5 +214,7 @@ if ${git};then
   git push gitlab
   echo "All done!"
 elif ${svn};then
-  echo ""
+  #create a mirror
+  echo "Creating mirror from ${mirror}"
+  cd "${repo_dir}/${gitlab_namespace}"
 fi
