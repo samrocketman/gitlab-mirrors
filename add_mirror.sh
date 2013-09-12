@@ -20,6 +20,7 @@ svn=false
 git=false
 project_name=""
 mirror=""
+force=false
 
 #
 # ARGUMENT HANDLING
@@ -48,6 +49,8 @@ DESCRIPTION:
                      An authors file to pass to git-svn for mapping
                      SVN users to git users.
 
+  -f,--force         Force add project even if it already exists.
+
   --git              Mirror a git repository (must be explicitly set)
 
   -m,--mirror URL    Repository URL to be mirrored.
@@ -61,8 +64,8 @@ DESCRIPTION:
 EOF
 }
 #Short options are one letter.  If an argument follows a short opt then put a colon (:) after it
-SHORTOPTS="hvm:p:"
-LONGOPTS="help,version,git,svn,mirror:,project-name:,authors-file:"
+SHORTOPTS="hvfm:p:"
+LONGOPTS="help,version,force,git,svn,mirror:,project-name:,authors-file:"
 ARGS=$(getopt -s bash --options "${SHORTOPTS}" --longoptions "${LONGOPTS}" --name "${PROGNAME}" -- "$@")
 eval set -- "$ARGS"
 while true; do
@@ -81,6 +84,10 @@ while true; do
       ;;
     --svn)
         svn=true
+        shift
+      ;;
+    -f|--force)
+        force=true
         shift
       ;;
     -p|--project-name)
@@ -163,8 +170,8 @@ if [ ! -e "${repo_dir}/${gitlab_namespace}" ];then
 elif [ ! -d "${repo_dir}/${gitlab_namespace}" ];then
   red_echo "Error: \"${repo_dir}/${gitlab_namespace}\" exists but is not a directory." 1>&2
   exit 1
-elif [ -d "${repo_dir}/${gitlab_namespace}/${project_name}" ];then
-  red_echo "Error: \"${repo_dir}/${gitlab_namespace}\" exists already.  Aborting command." 1>&2
+elif [ -d "${repo_dir}/${gitlab_namespace}/${project_name}" ] && ! ${force};then
+  red_echo "Error: \"${repo_dir}/${gitlab_namespace}/${project_name}\" exists already.  Aborting command." 1>&2
   exit 1
 fi
 #Resolve the $authors_file path because of changing working directories
@@ -237,9 +244,6 @@ elif ${svn};then
   echo "Creating mirror from ${mirror}"
   cd "${repo_dir}/${gitlab_namespace}"
   if [ ! -z "${authors_file}" ];then
-    echo "${authors_file}"
-    
-    #git svn clone ${git_svn_additional_options} --authors-file="${authors_file}" "${mirror}" "${project_name}"
-
+    git svn clone "${mirror}" "${project_name}" ${git_svn_additional_options} --authors-file="${authors_file}"
   fi
 fi

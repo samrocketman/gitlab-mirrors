@@ -3,6 +3,7 @@ gitlab-mirrors v0.2
 * Colorized output enabled for all commands!
 * Better argument handling on all commands!
 * Project creation defaults can now be set in config.sh!
+* New options for add_mirror.sh, see ./add_mirror.sh -h
 * New delete_mirror.sh command!
 * Knit and grit changes
   * add_mirror.sh has more robust error checking.
