@@ -27,6 +27,9 @@ usage()
   cat <<EOF
 ${PROGNAME} ${PROGVERSION} - MIT License by Sam Gleske
 
+USAGE:
+  ${PROGNAME} --git|--svn --project NAME --mirror URL
+
 DESCRIPTION:
   This will add a git or SVN repository to be mirrored by GitLab.  It 
   first checks to see if the project exists in gitlab.  If it does
@@ -86,16 +89,88 @@ while true; do
     esac
 done
 
+#
+# Program functions
+#
+
 function preflight() {
+  STATUS=0
   if ${git} && ${svn};then
-    
+    red_echo -n "Must not set " 1>&2
+    yellow_echo -n "--svn" 1>&2
+    red_echo -n " and " 1>&2
+    yellow_echo -n "--git" 1>&2
+    red_echo " options.  Choose one or other." 1>&2
+    STATUS=1
   fi
+  if ! ${git} && ! ${svn};then
+    red_echo -n "Must specify the " 1>&2
+    yellow_echo -n "--git" 1>&2
+    red_echo -n " or " 1>&2
+    yellow_echo -n "--svn" 1>&2
+    red_echo "options" 1>&2
+    STATUS=1
+  fi
+  if [ -z "${project_name}" ];then
+    red_echo -n "Missing " 1>&2
+    yellow_echo -n "--project" 1>&2
+    red_echo " option." 1>&2
+    STATUS=1
+  fi
+  if [ -z "${mirror}" ];then
+    red_echo -n "Missing " 1>&2
+    yellow_echo -n "--mirror" 1>&2
+    red_echo " option." 1>&2
+    STATUS=1
+  fi
+  return ${STATUS}
 }
 
-echo "svn=${svn}"
-echo "git=${git}"
-echo "project_name=${project_name}"
-echo "mirror=${mirror}"
+#
+# Main execution
+#
+
+#Run a preflight check on options for compatibility.
+if ! preflight;then
+  echo "Command aborted due to previous errors." 1>&2
+  exit 1
+fi
+#Check for namespace directory existence
+if [ ! -e "${repo_dir}/${gitlab_namespace}" ];then
+  mkdir -p "${repo_dir}/${gitlab_namespace}"
+elif [ ! -d "${repo_dir}/${gitlab_namespace}" ];then
+  red_echo "Error: \"${repo_dir}/${gitlab_namespace}\" exists but is not a directory." 1>&2
+  exit 1
+fi
+
+#Set up project creation options based on config.sh to be passed to create manage_gitlab_project.py
+CREATE_OPTS=""
+if ${issues_enabled};then
+  CREATE_OPTS="--issues ${CREATE_OPTS}"
+fi
+if ${wall_enabled};then
+  CREATE_OPTS="--wall ${CREATE_OPTS}"
+fi
+if ${merge_requests_enabled};then
+  CREATE_OPTS="--merge ${CREATE_OPTS}"
+fi
+if ${wiki_enabled};then
+  CREATE_OPTS="--wiki ${CREATE_OPTS}"
+fi
+if ${snippets_enabled};then
+  CREATE_OPTS="--snippets ${CREATE_OPTS}"
+fi
+if ${public};then
+  CREATE_OPTS="--public ${CREATE_OPTS}"
+fi
+
+#export env vars for python script
+export gitlab_user_token_secret gitlab_url gitlab_namespace gitlab_user
+
+ 
+
+if ${git};then
+fi
 
 
 
@@ -112,24 +187,14 @@ echo "mirror=${mirror}"
 
 exit
 
-if [ "${#}" -lt "2" ];then
-  echo "Not enough arguments." 1>&2
-  echo "e.g. ./add_mirror.sh project_name http://example.com/project.git" 1>&2
-  exit 1
-fi
-
-
-#export env vars for python script
-export gitlab_user_token_secret gitlab_url gitlab_namespace gitlab_user
-
 #Get the remote gitlab url for the specified project.
 #If the project doesn't already exist in gitlab then create it.
 echo "Resolving gitlab remote."
-if python lib/create_gitlab_project.py $1 1> /dev/null;then
-  gitlab_remote=$(python lib/create_gitlab_project.py $1)
+if python lib/manage_gitlab_project.py $1 1> /dev/null;then
+  gitlab_remote=$(python lib/manage_gitlab_project.py $1)
   echo "gitlab remote ${gitlab_remote}"
 else
-  echo "There was an unknown issue with create_gitlab_project.py" 1>&2
+  echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
   exit 1
 fi
 
@@ -144,7 +209,7 @@ cd "$1"
 echo "Adding gitlab remote to project."
 git remote add gitlab ${gitlab_remote}
 git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
-git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
+git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
 #Check the initial repository into gitlab
 echo "Checking the mirror into gitlab."
 git fetch
