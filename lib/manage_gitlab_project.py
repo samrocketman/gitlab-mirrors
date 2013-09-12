@@ -25,6 +25,7 @@ parser.add_option("--snippets",dest="snippets",action="store_true",default=False
 parser.add_option("--public",dest="public",action="store_true",default=False)
 parser.add_option("--create",dest="create",action="store_true",default=False)
 parser.add_option("--delete",dest="delete",action="store_true",default=False)
+parser.add_option("--desc",dest="desc",metavar="DESC",default=False)
 (options,args) = parser.parse_args()
 if len(args) == 0:
   print >> stderr, "No project name specified.  Do not run this script standalone."
@@ -56,10 +57,13 @@ def findproject(gname,pname):
     return False
 
 def createproject(pname):
-  if options.public:
-    description="Public mirror of %s." % project_name
+  if len(options.desc) == 0:
+    if options.public:
+      description="Public mirror of %s." % project_name
+    else:
+      description="Git mirror of %s." % project_name
   else:
-    description="Git mirror of %s." % project_name
+    description=options.desc
   new_project=git.createProject(pname,description=description,issues_enabled=str(int(options.issues)),wall_enabled=str(int(options.wall)),merge_requests_enabled=str(int(options.merge)),wiki_enabled=str(int(options.wiki)),snippets_enabled=str(int(options.snippets)),public=str(int(options.public)))
   new_project=findproject(gitlab_user,pname)
   new_project=git.moveProject(found_group['id'],new_project['id'])

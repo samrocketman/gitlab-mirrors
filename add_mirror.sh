@@ -32,7 +32,7 @@ usage()
 ${PROGNAME} ${PROGVERSION} - MIT License by Sam Gleske
 
 USAGE:
-  ${PROGNAME} --git|--svn --project NAME --mirror URL
+  ${PROGNAME} --git|--svn --project NAME --mirror URL [--authors-file FILE]
 
 DESCRIPTION:
   This will add a git or SVN repository to be mirrored by GitLab.  It 
@@ -42,12 +42,21 @@ DESCRIPTION:
   script or git git-mirrors.sh script.
 
   -h,--help          Show help
+
   -v,--version       Show program version
+
+  --authors-file FILE
+                     An authors file to pass to git-svn for mapping
+                     SVN users to git users.
+
   --git              Mirror a git repository (must be explicitly set)
-  --svn              Mirror a SVN repository (must be explicitly set)
+
+  -m,--mirror URL    Repository URL to be mirrored.
+
   -p,--project-name NAME
                      Set a GitLab project name to NAME.
-  -m,--mirror URL    Repository URL to be mirrored.
+
+  --svn              Mirror a SVN repository (must be explicitly set)
 
 
 EOF
@@ -171,24 +180,21 @@ fi
 #export env vars for python script
 export gitlab_user_token_secret gitlab_url gitlab_namespace gitlab_user
 
- 
-
+#Get the remote gitlab url for the specified project.
+#If the project doesn't already exist in gitlab then create it.
+echo "Resolving gitlab remote."
+if python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}" 1> /dev/null;then
+  gitlab_remote=$(python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}")
+  echo "gitlab remote ${gitlab_remote}"
+else
+  echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
+  exit 1
+fi
+if [ -z "${gitlab_remote}" ];then
+  echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
+  exit 1
+fi
 if ${git};then
-  #Get the remote gitlab url for the specified project.
-  #If the project doesn't already exist in gitlab then create it.
-  echo "Resolving gitlab remote."
-  if python lib/manage_gitlab_project.py --create ${CREATE_OPTS} "${project_name}" 1> /dev/null;then
-    gitlab_remote=$(python lib/manage_gitlab_project.py --create ${CREATE_OPTS} "${project_name}")
-    echo "gitlab remote ${gitlab_remote}"
-  else
-    echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
-    exit 1
-  fi
-  if [ -z "${gitlab_remote}" ];then
-    echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
-    exit 1
-  fi
-
   #create a mirror
   echo "Creating mirror from ${mirror}"
   cd "${repo_dir}/${gitlab_namespace}"
@@ -205,4 +211,6 @@ if ${git};then
   git remote prune origin
   git push gitlab
   echo "All done!"
+elif ${svn};then
+  echo ""
 fi
