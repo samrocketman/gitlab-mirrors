@@ -4,9 +4,17 @@ A short overview of managing mirrored repositories.  This assumes you have alrea
 
 ### Create a mirror
 
+Create a git repository mirror
+
     su - gitmirror
     cd gitlab-mirrors
-    ./add_mirror.sh project_name http://example.com/repository.git
+    ./add_mirror.sh --git --project-name someproject --mirror http://example.com/project.git
+
+### Delete a mirror
+
+    su - gitmirror
+    cd gitlab-mirrors
+    ./delete_mirror.sh --delete someproject
 
 ### Update a mirror
 
