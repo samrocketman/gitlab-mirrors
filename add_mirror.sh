@@ -3,15 +3,114 @@
 #USAGE
 #  ./add_mirror.sh project_name http://example.com/project.git
 
+#Include all user options
+. "$(dirname $0)/config.sh"
+cd $(dirname $0)
+
+PROGNAME="${0##*/}"
+PROGVERSION="v0.2"
+
+
+#Default script options
+svn=false
+git=false
+project_name=""
+mirror=""
+
+#Short options are one letter.  If an argument follows a short opt then put a colon (:) after it
+SHORTOPTS="hvm:p:"
+LONGOPTS="help,version,git,svn,mirror:,project:"
+
+usage()
+{
+  cat <<EOF
+${PROGNAME} ${PROGVERSION} - MIT License by Sam Gleske
+
+DESCRIPTION:
+  This will add a git or SVN repository to be mirrored by GitLab.  It 
+  first checks to see if the project exists in gitlab.  If it does
+  not exist then it creates it.  It will then clone and check in the
+  first copy into GitLab.  From there you must use the update_mirror.sh
+  script or git git-mirrors.sh script.
+
+  -h,--help          Show help
+  -v,--version       Show program version
+  --git              Mirror a git repository (must be explicitly set)
+  --svn              Mirror a SVN repository (must be explicitly set)
+  --project NAME     Set a GitLab project name to NAME.
+  --mirror URL       Repository URL to be mirrored.
+
+
+EOF
+}
+
+ARGS=$(getopt -s bash --options "${SHORTOPTS}" --longoptions "${LONGOPTS}" --name "${PROGNAME}" -- "$@")
+eval set -- "$ARGS"
+echo "$ARGS"
+while true; do
+  case $1 in
+    -h|--help)
+        usage
+        exit 1
+      ;;
+    -v|--version)
+        echo "${PROGNAME} ${PROGVERSION}"
+        exit 1
+      ;;
+    --git)
+        git=true
+        shift
+      ;;
+    --svn)
+        svn=true
+        shift
+      ;;
+    -p|--project)
+        project_name="${2}"
+        shift 2
+      ;;
+    -m|--mirror)
+        mirror="${2}"
+        shift 2
+      ;;
+    --)
+        shift
+        break
+      ;;
+    *)
+        shift
+        break
+      ;;
+    esac
+done
+
+
+echo "svn=${svn}"
+echo "git=${git}"
+echo "project_name=${project_name}"
+echo "mirror=${mirror}"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exit
+
 if [ "${#}" -lt "2" ];then
   echo "Not enough arguments." 1>&2
   echo "e.g. ./add_mirror.sh project_name http://example.com/project.git" 1>&2
   exit 1
 fi
 
-#Include all user options
-. "$(dirname $0)/config.sh"
-cd $(dirname $0)
 
 #export env vars for python script
 export gitlab_user_token_secret gitlab_url gitlab_namespace gitlab_user
