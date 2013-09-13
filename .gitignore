@@ -1,2 +1,2 @@
 config.sh
-lib/*.pyc
+*.pyc
