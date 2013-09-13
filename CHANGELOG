@@ -1,0 +1,33 @@
+gitlab-mirrors v0.2
+* Renamed project from git-mirrors to gitlab-mirrors.
+* SVN repository mirroring now supported!
+* Project creation defaults can now be set in config.sh.
+* New delete_mirror.sh command.
+* Colorized output enabled for all commands.
+* Better argument handling on all commands.
+* New options for add_mirror.sh, see ./add_mirror.sh -h
+* Knit and grit changes
+  * add_mirror.sh has more robust error checking.
+  * add_mirror.sh options can be out of order.  Now using getopt for
+    better argument handling.
+  * lib/create_gitlab_project.py has been renamed to 
+    lib/manage_gitlab_project.py
+  * manage_gitlab_project.py has a little better error handling.
+    Added optparse for better argument handling.
+
+git-mirrors v0.1.1
+* Minor update to documentation adding project URL to docs.
+
+git-mirrors v0.1
+* Initial project release.  Project gives admins the ability to have
+  mirrors of remote git repositories.
+* Comes with simple add_mirror.sh, update_mirror.sh, and git-mirrors.sh
+  * Note very little error checking on all commands.
+  * add_mirror.sh arguments must be in a specific order.
+* add_mirror.sh utilizes lib/create_gitlab_project.py to check for
+  a gitlab project.  If it doesn't exist then create it.  When the
+  project exists simply return the project remote git url over
+  ssh.
+  * create_gitlab_project.py has very little error checking.  Arguments
+    must be in a specific order.
+* Project is fully documented with documentation.
