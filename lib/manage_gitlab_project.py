@@ -52,9 +52,12 @@ def findgroup(gname):
       exit(1)
 
 def findproject(gname,pname):
-  for project in git.getProjects():
-    if project['namespace']['name'] == gname and project['name'] == pname:
-      return project
+  page=1
+  while len(git.getProjects(page=page)) > 0:
+    for project in git.getProjects(page=page):
+      if project['namespace']['name'] == gname and project['name'] == pname:
+        return project
+    page += 1
   else:
     return False
 
@@ -68,6 +71,7 @@ def createproject(pname):
     description=options.desc
   new_project=git.createProject(pname,description=description,issues_enabled=str(int(options.issues)),wall_enabled=str(int(options.wall)),merge_requests_enabled=str(int(options.merge)),wiki_enabled=str(int(options.wiki)),snippets_enabled=str(int(options.snippets)),public=str(int(options.public)))
   new_project=findproject(gitlab_user,pname)
+  print new_project
   new_project=git.moveProject(found_group['id'],new_project['id'])
   if findproject(gitlab_namespace,pname):
     return findproject(gitlab_namespace,pname)
