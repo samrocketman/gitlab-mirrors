@@ -3,7 +3,7 @@
 ### Required software
 
 * [GitLab 6.x][1]
-* [python-gitlab @ 5da9bc7][2]
+* [python-gitlab @ 2ec0ba5][2]
 * [GNU coreutils][3]
 * [git 1.8.4][4]
 
@@ -17,7 +17,7 @@ python-gitlab
     yum install python-setuptools
     git clone https://github.com/Itxaka/python-gitlab.git
     cd python-gitlab
-    git checkout 5da9bc7ffcfdca34d86cc69c34caa7a84d27cfaa
+    git checkout 2ec0ba588a1cce00bb1fde74bb7403cc9ab1ff5e
     python setup.py
 
 You can find the source to git at the [git-core project][5].  For instructions on other platforms see the [Getting Started - Installing Git section of the git book][6].
