@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-#Tue Sep 10 23:01:08 EDT 2013
+#Created by Sam Gleske
+#MIT License
+#Created Tue Sep 10 23:01:08 EDT 2013
 
 from sys import argv,exit,stderr
 from optparse import OptionParser

@@ -1,5 +1,7 @@
 #!/bin/bash
-#Thu Sep 12 16:04:35 EDT 2013
+#Created by Sam Gleske
+#MIT License
+#Created Thu Sep 12 16:04:35 EDT 2013
 
 #bash option stop on first error
 set -e

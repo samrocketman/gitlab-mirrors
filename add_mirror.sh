@@ -1,5 +1,7 @@
 #!/bin/bash
-#Tue Sep 10 23:01:08 EDT 2013
+#Created by Sam Gleske
+#MIT License
+#Created Tue Sep 10 23:01:08 EDT 2013
 #USAGE
 #  ./add_mirror.sh --git --project-name someproject --mirror http://example.com/project.git
 
