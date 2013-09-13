@@ -34,6 +34,7 @@ if git config --get svn-remote.svn.url &> /dev/null;then
   #this is an SVN mirror so update it accordingly
   git reset --hard
   git svn fetch
+  git svn rebase
   cd .git
   git config --bool core.bare true
   git push gitlab

@@ -1,3 +1,6 @@
+gitlab-mirrors v0.2.4
+* Fixing critical git svn mirror bug.
+
 gitlab-mirrors v0.2.3
 * Adding a final catch error message to add_mirror.sh
 * RELEASE file for more consistent releases.
@@ -11,11 +14,12 @@ gitlab-mirrors v0.2.1
 
 gitlab-mirrors v0.2
 * Renamed project from git-mirrors to gitlab-mirrors.
-* Colorized output enabled for all commands!
-* Better argument handling on all commands!
-* Project creation defaults can now be set in config.sh!
+* SVN repository mirroring now supported!
+* Project creation defaults can now be set in config.sh.
+* New delete_mirror.sh command.
+* Colorized output enabled for all commands.
+* Better argument handling on all commands.
 * New options for add_mirror.sh, see ./add_mirror.sh -h
-* New delete_mirror.sh command!
 * Knit and grit changes
   * add_mirror.sh has more robust error checking.
   * add_mirror.sh options can be out of order.  Now using getopt for
