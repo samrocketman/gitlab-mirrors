@@ -160,6 +160,17 @@ function preflight() {
     red_echo " does not exist!"
     STATUS=1
   fi
+  #test enable_colors environment variable (must be bool)
+  if [ ! "${enable_colors}" = "true" ] && [ ! "${enable_colors}" = "false" ];then
+    red_echo -n "enable_colors="
+    yellow_echo -n "${enable_colors}"
+    red_echo -n "is not a valid option for enable_colors!  Must be "
+    yellow_echo -n "true"
+    red_echo -n "or "
+    yellow_echo -n "false"
+    red_echo "." 1>&2
+    STATUS=1
+  fi
   #test issues_enabled environment variable (must be bool)
   if [ ! "${issues_enabled}" = "true" ] && [ ! "${issues_enabled}" = "false" ];then
     red_echo -n "issues_enabled="
