@@ -1,3 +1,9 @@
+gitlab-mirrors v0.2.5
+* Fixed a critical bug with pagination when user can view more projects than 20.
+  * Had to patch upstream python-gitlab library for this functionality.
+* Updated documentation to reference my bugfix-edition of python-gitlab in the
+  prerequisites.
+
 gitlab-mirrors v0.2.4
 * Fixing critical git svn mirror bug.
 
