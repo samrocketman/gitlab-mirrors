@@ -336,4 +336,7 @@ elif ${svn};then
   git push gitlab
   git config --bool core.bare false
   green_echo "All done!" 1>&2
+else
+  red_echo "Something has gone very wrong.  You should never see this message."
+  exit 1
 fi
