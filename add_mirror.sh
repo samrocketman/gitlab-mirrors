@@ -50,6 +50,7 @@ DESCRIPTION:
                      SVN users to git users.
 
   -f,--force         Force add project even if it already exists.
+                     Any program errors will automatically continue.
 
   --git              Mirror a git repository (must be explicitly set)
 
@@ -88,6 +89,7 @@ while true; do
       ;;
     -f|--force)
         force=true
+        set +e
         shift
       ;;
     -p|--project-name)
@@ -244,20 +246,22 @@ elif ${svn};then
   cd "${repo_dir}/${gitlab_namespace}"
   if [ ! -z "${authors_file}" ];then
     git svn clone "${mirror}" "${project_name}" ${git_svn_additional_options} --authors-file="${authors_file}"
-    #add the gitlab remote
-    green_echo "Adding gitlab remote to project." 1>&2
-    cd "${project_name}"
-    git remote add gitlab "${gitlab_remote}"
-    git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
-    git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
-    #Check the initial repository into gitlab
-    green_echo "Checking the mirror into gitlab." 1>&2
-    git reset --hard
-    git svn fetch
-    cd .git
-    git config --bool core.bare true
-    git push gitlab
-    git config --bool core.bare false
-    green_echo "All done!" 1>&2
+  else
+    git svn clone "${mirror}" "${project_name}" ${git_svn_additional_options}
   fi
+  #add the gitlab remote
+  green_echo "Adding gitlab remote to project." 1>&2
+  cd "${project_name}"
+  git remote add gitlab "${gitlab_remote}"
+  git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
+  git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
+  #Check the initial repository into gitlab
+  green_echo "Checking the mirror into gitlab." 1>&2
+  git reset --hard
+  git svn fetch
+  cd .git
+  git config --bool core.bare true
+  git push gitlab
+  git config --bool core.bare false
+  green_echo "All done!" 1>&2
 fi
