@@ -41,7 +41,7 @@ Created by Sam Gleske under [MIT License](LICENSE).  This project is meant to te
 * [How to convert a git repository from normal to bare][11]
 
 [1]: https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/README.md
-[2]: https://github.com/Itxaka/python-gitlab
+[2]: https://github.com/sag47/python-gitlab
 [3]: http://feedback.gitlab.com/forums/176466-general/suggestions/4286666-mirror-git-svn-into-repo-
 [4]: http://feedback.gitlab.com/forums/176466-general/suggestions/3697598-feature-request-multi-master-mirroring
 [5]: http://stackoverflow.com/questions/2756747/mirror-a-git-repository-by-pulling
