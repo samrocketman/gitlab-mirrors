@@ -4,11 +4,19 @@ A short overview of managing mirrored repositories.  This assumes you have alrea
 
 ### Create a mirror
 
-Create a git repository mirror
+Create a git repository mirror.
 
     su - gitmirror
     cd gitlab-mirrors
     ./add_mirror.sh --git --project-name someproject --mirror http://example.com/project.git
+
+Create an SVN repository mirror.
+
+    su - gitmirror
+    cd gitlab-mirrors
+    ./add_mirror.sh --svn --project-name someproject --mirror svn+ssh://user@svn.example.com/srv/repos/someproject --authors-file ./authors.txt
+
+The `--authors-file` option is an optional argument.
 
 ### Delete a mirror
 
