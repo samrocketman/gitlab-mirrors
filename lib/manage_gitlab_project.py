@@ -38,7 +38,10 @@ elif len(args) > 1:
 
 project_name=args[0]
 
-git=gitlab.Gitlab(gitlab_url,token_secret,version=6)
+#current python-gitlab behavior
+#git=gitlab.Gitlab(gitlab_url,token_secret,version=6)
+#command for my forked version https://github.com/sag47/python-gitlab.git
+git=gitlab.Gitlab(gitlab_url,token_secret)
 
 def findgroup(gname):
   #Locate the group
