@@ -3,6 +3,15 @@
 The [gitlab-mirrors](https://github.com/sag47/gitlab-mirrors) project is designed to fill in a feature which is currently missing from GitLab: the ability to mirror remote repositories.  gitlab-mirrors creates read only copies of remote repositories in gitlab.  It provides a CLI management interface for managing the mirrored repositories (e.g. add, delete, update) so that an admin may regularly update all mirrors using `crontab`.  It operates by interacting with the [GitLab API][1] using [python-gitlab][2].
 
 
+## Features
+
+* Mirror git and SVN repositories.
+* When adding a mirror if the project doesn't exist in GitLab then `add_mirrror.sh` will automatically create it.
+  * Specify initial project defaults when a project is created (e.g. issues enabled, wiki enabled, etc.)
+* Update a single mirror with the `update_mirror.sh` command.
+* Update all known mirrors with the `git-mirrors.sh` command.  Useful for adding to a `cron` job for updating all repositories on a regular schedule.
+
+
 ---
 # Three easy steps
 

@@ -33,6 +33,7 @@ gitlab_user_token_secret="$(head -n1 "${user_home}/private_token")"
 # then it will assign the following values as defaults.
 #
 
+#values must be true or false
 issues_enabled=false
 wall_enabled=false
 wiki_enabled=false
