@@ -1,3 +1,7 @@
+gitlab-mirrors v0.2.3
+* Adding a final catch error message to add_mirror.sh
+* RELEASE file for more consistent releases.
+
 gitlab-mirrors v0.2.2
 * Safer environment variable option checking for config.sh in add_mirror.sh command.
 * Added Features do README

@@ -1,0 +1,17 @@
+Things to do before internal release.
+1. Update documentation. commit.
+2. Update CHANGELOG file. commit.
+3. Update VERSION file. commit.
+4. Check out master and merge development into master.
+5. Tag current version based on VERSION file.
+6. Push master to origin.
+7. Push tag to origin.
+
+
+Things to do before public release.
+8. Create a release branch off of public.
+9. Migrate changes from latest internal release: cp -r * ~1/;cp .gitignore ~1/
+10. Check out public and merge release into public (use --no-ff option)
+11. Tag current version based on VERSION file.
+12. Push public to origin.
+13. Push tag to origin.
