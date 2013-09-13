@@ -122,6 +122,7 @@ done
 
 function preflight() {
   STATUS=0
+  #test required git or svn option
   if ${git} && ${svn};then
     red_echo -n "Must not set " 1>&2
     yellow_echo -n "--svn" 1>&2
@@ -138,22 +139,91 @@ function preflight() {
     red_echo " options." 1>&2
     STATUS=1
   fi
+  #test required project_name option
   if [ -z "${project_name}" ];then
     red_echo -n "Missing " 1>&2
     yellow_echo -n "--project-name" 1>&2
     red_echo " option." 1>&2
     STATUS=1
   fi
+  #test required mirror option
   if [ -z "${mirror}" ];then
     red_echo -n "Missing " 1>&2
     yellow_echo -n "--mirror" 1>&2
     red_echo " option." 1>&2
     STATUS=1
   fi
+  #test authors_file path for existence
   if [ ! -z "${authors_file}" -a ! -f "${authors_file}" ];then
     red_echo -n "Specified "
     yellow_echo -n "--authors-file"
     red_echo " does not exist!"
+    STATUS=1
+  fi
+  #test enable_colors environment variable (must be bool)
+  if [ ! "${enable_colors}" = "true" ] && [ ! "${enable_colors}" = "false" ];then
+    red_echo -n "enable_colors="
+    yellow_echo -n "${enable_colors}"
+    red_echo -n "is not a valid option for enable_colors!  Must be "
+    yellow_echo -n "true"
+    red_echo -n "or "
+    yellow_echo -n "false"
+    red_echo "." 1>&2
+    STATUS=1
+  fi
+  #test issues_enabled environment variable (must be bool)
+  if [ ! "${issues_enabled}" = "true" ] && [ ! "${issues_enabled}" = "false" ];then
+    red_echo -n "issues_enabled="
+    yellow_echo -n "${issues_enabled}"
+    red_echo -n "is not a valid option for issues_enabled!  Must be "
+    yellow_echo -n "true"
+    red_echo -n "or "
+    yellow_echo -n "false"
+    red_echo "." 1>&2
+    STATUS=1
+  fi
+  #test wall_enabled environment variable (must be bool)
+  if [ ! "${wall_enabled}" = "true" ] && [ ! "${wall_enabled}" = "false" ];then
+    red_echo -n "wall_enabled="
+    yellow_echo -n "${wall_enabled}"
+    red_echo -n "is not a valid option for wall_enabled!  Must be "
+    yellow_echo -n "true"
+    red_echo -n "or "
+    yellow_echo -n "false"
+    red_echo "." 1>&2
+    STATUS=1
+  fi
+  #test wiki_enabled environment variable (must be bool)
+  if [ ! "${wiki_enabled}" = "true" ] && [ ! "${wiki_enabled}" = "false" ];then
+    red_echo -n "wiki_enabled="
+    yellow_echo -n "${wiki_enabled}"
+    red_echo -n "is not a valid option for wiki_enabled!  Must be "
+    yellow_echo -n "true"
+    red_echo -n "or "
+    yellow_echo -n "false"
+    red_echo "." 1>&2
+    STATUS=1
+  fi
+  #test snippets_enabled environment variable (must be bool)
+  if [ ! "${snippets_enabled}" = "true" ] && [ ! "${snippets_enabled}" = "false" ];then
+    red_echo -n "snippets_enabled="
+    yellow_echo -n "${snippets_enabled}"
+    red_echo -n "is not a valid option for snippets_enabled!  Must be "
+    yellow_echo -n "true"
+    red_echo -n "or "
+    yellow_echo -n "false"
+    red_echo "." 1>&2
+    STATUS=1
+  fi
+  #test public environment variable (must be bool)
+  if [ ! "${public}" = "true" ] && [ ! "${public}" = "false" ];then
+    red_echo -n "public="
+    yellow_echo -n "${public}"
+    red_echo -n "is not a valid option for public!  Must be "
+    yellow_echo -n "true"
+    red_echo -n "or "
+    yellow_echo -n "false"
+    red_echo "." 1>&2
     STATUS=1
   fi
   return ${STATUS}
