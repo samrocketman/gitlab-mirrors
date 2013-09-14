@@ -1,6 +1,9 @@
 ## gitlab-mirrors v0.2.6
 
+* New command `ls-mirrors.sh`.
 * Fixed bug in preflight check where `merge_requests_enabled` was not being checked.
+* Fixed bug with bad formatted error output for booleans in preflight check.
+* Added `merge_requests_enabled` to `config.sh.SAMPLE`.
 * Converted `CHANGELOG` to markdown.
 
 --
