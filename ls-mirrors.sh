@@ -17,7 +17,6 @@ git_mirrors_dir="$(dirname "${0}")"
 PROGNAME="${0##*/}"
 PROGVERSION="${VERSION}"
 
-STATUS=0
 pushd "${repo_dir}/${gitlab_namespace}" &> /dev/null
 echo -n "Namespace: " 1>&2
 #red and bold combined
