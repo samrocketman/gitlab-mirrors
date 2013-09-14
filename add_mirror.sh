@@ -226,6 +226,17 @@ function preflight() {
     red_echo "." 1>&2
     STATUS=1
   fi
+  #test merge_requests_enabled environment variable (must be bool)
+  if [ ! "${merge_requests_enabled}" = "true" ] && [ ! "${merge_requests_enabled}" = "false" ];then
+    red_echo -n "merge_requests_enabled="
+    yellow_echo -n "${merge_requests_enabled}"
+    red_echo -n "is not a valid option for merge_requests_enabled!  Must be "
+    yellow_echo -n "true"
+    red_echo -n "or "
+    yellow_echo -n "false"
+    red_echo "." 1>&2
+    STATUS=1
+  fi
   return ${STATUS}
 }
 
