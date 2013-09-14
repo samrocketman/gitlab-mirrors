@@ -6,10 +6,11 @@ The [gitlab-mirrors](https://github.com/sag47/gitlab-mirrors) project is designe
 ## Features
 
 * Mirror git and SVN repositories.
-* When adding a mirror if the project doesn't exist in GitLab then `add_mirrror.sh` will automatically create it.
-  * Specify initial project defaults when a project is created (e.g. issues enabled, wiki enabled, etc.)
-* Update a single mirror with the `update_mirror.sh` command.
-* Update all known mirrors with the `git-mirrors.sh` command.  Useful for adding to a `cron` job for updating all repositories on a regular schedule.
+* When adding a mirror if the project doesn't exist in GitLab it will be auto-created.
+  * Set project creation defaults (e.g. issues enabled, wiki enabled, etc.)
+* Update a single mirror.
+* Update all known mirrors.
+* List all known mirrors.
 
 
 ---
@@ -23,15 +24,16 @@ The [gitlab-mirrors](https://github.com/sag47/gitlab-mirrors) project is designe
 ---
 # License
 
-Created by Sam Gleske under [MIT License](LICENSE).  This project is meant to temporarily fill in a gap left by GitLab for managing remote git mirrors.  See the following user voice topics which made me create this project in the mean time.
-
-* [Mirror git/svn into repo.][3]
-* [Feature request -- Multi-Master mirroring][4]
+Created by Sam Gleske under [MIT License](LICENSE).  
 
 
 ---
 ## References
 
+This project is meant to temporarily fill in a gap left by GitLab for managing remote repository mirrors (namely git and svn).  See the following user voice topics which enabled me to create this project in the mean time.
+
+* [Mirror git/svn into repo.][3]
+* [Feature request -- Multi-Master mirroring][4]
 * [Git mirror][5]
 * [Git push all branches][6]
 * [Git update mirror][7]
@@ -39,6 +41,8 @@ Created by Sam Gleske under [MIT License](LICENSE).  This project is meant to te
 * [Git-svn Tutorial][9]
 * [Why git can't clone into a bare repository][10]
 * [How to convert a git repository from normal to bare][11]
+
+This project will still be useful after repository mirror support is native in GitLab because it allows admins to mirror massive amounts of repositories in an automated fashion.  When native mirror support is included this project will likely be refactored into a script to automate adding mirrors via the API.
 
 [1]: https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/README.md
 [2]: https://github.com/sag47/python-gitlab
