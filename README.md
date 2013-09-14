@@ -41,6 +41,7 @@ This project is meant to temporarily fill in a gap left by GitLab for managing r
 * [Git-svn Tutorial][9]
 * [Why git can't clone into a bare repository][10]
 * [How to convert a git repository from normal to bare][11]
+* [Converting CVS repositories to git][12]
 
 This project will still be useful after repository mirror support is native in GitLab because it allows admins to mirror massive amounts of repositories in an automated fashion.  When native mirror support is included this project will likely be refactored into a script to automate adding mirrors via the API.
 
@@ -55,3 +56,4 @@ This project will still be useful after repository mirror support is native in G
 [9]: http://trac.parrot.org/parrot/wiki/git-svn-tutorial
 [10]: http://stackoverflow.com/questions/12544318/why-git-svn-cannot-clone-a-bare-repo
 [11]: http://stackoverflow.com/questions/2199897/how-to-convert-a-git-repository-from-normal-to-bare
+[12]: http://stackoverflow.com/questions/7344941/converting-cvs-repositories-to-git
