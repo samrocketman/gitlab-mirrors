@@ -164,9 +164,9 @@ function preflight() {
   if [ ! "${enable_colors}" = "true" ] && [ ! "${enable_colors}" = "false" ];then
     red_echo -n "enable_colors="
     yellow_echo -n "${enable_colors}"
-    red_echo -n "is not a valid option for enable_colors!  Must be "
+    red_echo -n " is not a valid option for enable_colors!  Must be "
     yellow_echo -n "true"
-    red_echo -n "or "
+    red_echo -n " or "
     yellow_echo -n "false"
     red_echo "." 1>&2
     STATUS=1
@@ -175,9 +175,9 @@ function preflight() {
   if [ ! "${issues_enabled}" = "true" ] && [ ! "${issues_enabled}" = "false" ];then
     red_echo -n "issues_enabled="
     yellow_echo -n "${issues_enabled}"
-    red_echo -n "is not a valid option for issues_enabled!  Must be "
+    red_echo -n " is not a valid option for issues_enabled!  Must be "
     yellow_echo -n "true"
-    red_echo -n "or "
+    red_echo -n " or "
     yellow_echo -n "false"
     red_echo "." 1>&2
     STATUS=1
@@ -186,9 +186,9 @@ function preflight() {
   if [ ! "${wall_enabled}" = "true" ] && [ ! "${wall_enabled}" = "false" ];then
     red_echo -n "wall_enabled="
     yellow_echo -n "${wall_enabled}"
-    red_echo -n "is not a valid option for wall_enabled!  Must be "
+    red_echo -n " is not a valid option for wall_enabled!  Must be "
     yellow_echo -n "true"
-    red_echo -n "or "
+    red_echo -n " or "
     yellow_echo -n "false"
     red_echo "." 1>&2
     STATUS=1
@@ -197,9 +197,9 @@ function preflight() {
   if [ ! "${wiki_enabled}" = "true" ] && [ ! "${wiki_enabled}" = "false" ];then
     red_echo -n "wiki_enabled="
     yellow_echo -n "${wiki_enabled}"
-    red_echo -n "is not a valid option for wiki_enabled!  Must be "
+    red_echo -n " is not a valid option for wiki_enabled!  Must be "
     yellow_echo -n "true"
-    red_echo -n "or "
+    red_echo -n " or "
     yellow_echo -n "false"
     red_echo "." 1>&2
     STATUS=1
@@ -208,9 +208,9 @@ function preflight() {
   if [ ! "${snippets_enabled}" = "true" ] && [ ! "${snippets_enabled}" = "false" ];then
     red_echo -n "snippets_enabled="
     yellow_echo -n "${snippets_enabled}"
-    red_echo -n "is not a valid option for snippets_enabled!  Must be "
+    red_echo -n " is not a valid option for snippets_enabled!  Must be "
     yellow_echo -n "true"
-    red_echo -n "or "
+    red_echo -n " or "
     yellow_echo -n "false"
     red_echo "." 1>&2
     STATUS=1
@@ -219,9 +219,9 @@ function preflight() {
   if [ ! "${public}" = "true" ] && [ ! "${public}" = "false" ];then
     red_echo -n "public="
     yellow_echo -n "${public}"
-    red_echo -n "is not a valid option for public!  Must be "
+    red_echo -n " is not a valid option for public!  Must be "
     yellow_echo -n "true"
-    red_echo -n "or "
+    red_echo -n " or "
     yellow_echo -n "false"
     red_echo "." 1>&2
     STATUS=1
@@ -230,9 +230,9 @@ function preflight() {
   if [ ! "${merge_requests_enabled}" = "true" ] && [ ! "${merge_requests_enabled}" = "false" ];then
     red_echo -n "merge_requests_enabled="
     yellow_echo -n "${merge_requests_enabled}"
-    red_echo -n "is not a valid option for merge_requests_enabled!  Must be "
+    red_echo -n " is not a valid option for merge_requests_enabled!  Must be "
     yellow_echo -n "true"
-    red_echo -n "or "
+    red_echo -n " or "
     yellow_echo -n "false"
     red_echo "." 1>&2
     STATUS=1
