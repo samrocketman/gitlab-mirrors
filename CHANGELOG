@@ -1,16 +1,18 @@
 ## gitlab-mirrors v0.2.6
 
-* New command `ls-mirrors.sh`.
+* *New Feature* command `ls-mirrors.sh`!
+* Converted `CHANGELOG` to markdown.
 * Fixed bug in preflight check where `merge_requests_enabled` was not being checked.
 * Fixed bug with bad formatted error output for booleans in preflight check.
-* Added `merge_requests_enabled` to `config.sh.SAMPLE`.
-* Converted `CHANGELOG` to markdown.
+* Fixed bug with `lib/manage_gitlab_project.py` where group namespace resolution was not properly using API pagination.
+  * Required an upstream merge request to the `python-gitlab` library.
+* Fixed bug added `merge_requests_enabled` to `config.sh.SAMPLE`.
 
 --
 ## gitlab-mirrors v0.2.5
 
 * Fixed a critical bug with pagination where API user can't view more projects than `20`.
-  * Had to patch upstream `python-gitlab` library for this functionality.
+  * Had to merge request upstream `python-gitlab` library for this functionality.
 * Updated documentation to reference my `bugfix-edition` of `python-gitlab` in the
   prerequisites.
 
