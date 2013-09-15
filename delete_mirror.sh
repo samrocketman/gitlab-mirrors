@@ -110,6 +110,8 @@ if ! ${quiet};then
   echo -n "Will DELETE "
   red_echo "${repo_dir}/${gitlab_namespace}/${project_name}"
   echo
+  red_echo "This action CANNOT be undone!"
+  echo
   echo -n "Are you sure you wish to delete project "
   yellow_echo -n "${gitlab_namespace}/${project_name}"
   echo -n "? (y/N): "
