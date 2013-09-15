@@ -3,7 +3,7 @@
 ### Required software
 
 * [GitLab 6.x][1]
-* [python-gitlab][2] (note due to certain bugs you should obtain my fork [python-gitlab @ 6d6b270][8])
+* [python-gitlab @ 9c5e375][2]
 * [GNU coreutils][3]
 * [git 1.8.4][4]
 
@@ -15,9 +15,9 @@ If you plan on mirroring SVN repositories as well then you'll need the following
 python-gitlab
 
     yum install python-setuptools
-    git clone https://github.com/sag47/python-gitlab.git
+    git clone https://github.com/Itxaka/python-gitlab.git
     cd python-gitlab
-    git checkout 6d6b270e9829012b99d700eb1ca3802ef05f40b4
+    git checkout 9c5e375599a6d89ab1f4520224f47b43b40bcf9b
     python setup.py
 
 You can find the source to git at the [git-core project][5].  For instructions on other platforms see the [Getting Started - Installing Git section of the git book][6].
@@ -45,4 +45,3 @@ Next up is [Installation and Setup](installation.md).
 [5]: http://code.google.com/p/git-core/
 [6]: http://git-scm.com/book/en/Getting-Started-Installing-Git
 [7]: https://www.kernel.org/pub/software/scm/git/docs/git-svn.html
-[8]: https://github.com/sag47/python-gitlab/tree/bugfix-edition

@@ -45,14 +45,16 @@ git=gitlab.Gitlab(gitlab_url,token_secret)
 
 def findgroup(gname):
   #Locate the group
-  found_group=False
-  for group in git.getGroups():
-    if group['name'] == gname:
-      return group
+  page=1
+  while len(git.getGroups(page=page)) > 0:
+    for group in git.getGroups(page=page):
+      if group['name'] == gname:
+        return group
+    page += 1
   else:
-    if not found_group:
-      print >> stderr, "Project namespace (user or group) not found or user does not have permission of existing group."
-      exit(1)
+    print >> stderr, "Project namespace (user or group) not found or user does not have permission of existing group."
+    print >> stderr, "gitlab-mirrors will not automatically create the project namespace."
+    exit(1)
 
 def findproject(gname,pname):
   page=1
