@@ -1,3 +1,8 @@
+## gitlab-mirrors v0.2.7
+
+* Renamed CHANGELOG to CHANGELOG.md
+
+---
 ## gitlab-mirrors v0.2.6
 
 * *New Feature* command `ls-mirrors.sh`!
@@ -8,7 +13,7 @@
   * Required an upstream merge request to the `python-gitlab` library.
 * Fixed bug added `merge_requests_enabled` to `config.sh.SAMPLE`.
 
---
+---
 ## gitlab-mirrors v0.2.5
 
 * Fixed a critical bug with pagination where API user can't view more projects than `20`.
