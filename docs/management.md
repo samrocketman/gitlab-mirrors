@@ -18,6 +18,12 @@ Create an SVN repository mirror.
 
 The `--authors-file` option is an optional argument.
 
+### List all known mirrors
+
+    su - gitmirror
+    cd gitlab-mirrors
+    ./ls-mirrors.sh
+
 ### Delete a mirror
 
     su - gitmirror

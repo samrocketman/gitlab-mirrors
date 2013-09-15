@@ -8,7 +8,7 @@
 system_user="gitmirror"
 #The home directory path of the $system_user
 user_home="/home/${system_user}"
-#The repository directory where gitlab-mirrors will copies of mirrored repositories before pushing them to gitlab.
+#The repository directory where gitlab-mirrors will contain copies of mirrored repositories before pushing them to gitlab.
 repo_dir="${user_home}/repositories"
 #colorize output of add_mirror.sh, update_mirror.sh, and git-mirrors.sh commands.
 enable_colors=true
@@ -21,7 +21,7 @@ git_svn_additional_options="-s"
 
 #This is the Gitlab group where all project mirrors will be grouped.
 gitlab_namespace="Mirrors"
-#This is the web url of your Gitlab server. no trailing slash, just the protocol and server name.
+#This is the base web url of your Gitlab server.
 gitlab_url="https://gitlab.example.com"
 #Special user you created in Gitlab whose only purpose is to update mirror sites and admin the $gitlab_namespace group.
 gitlab_user="gitmirror"
@@ -38,4 +38,5 @@ issues_enabled=false
 wall_enabled=false
 wiki_enabled=false
 snippets_enabled=false
+merge_requests_enabled=false
 public=false
