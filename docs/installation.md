@@ -1,6 +1,8 @@
 # Installation and Setup
 
-This assumes you have already satisfied all [prerequisites](prerequisites.md).
+This assumes you have already satisfied all [prerequisites](prerequisites.md).  You can manage gitlab-mirrors in one of two ways.  You can use your own user using your own GitLab private token.  Or you can use a dedicated system user and gitmirror user whose only purpose is to mirror repositories.  The former can be done by any user where the latter requires administrator privileges in GitLab.
+
+## Using a dedicated GitLab user
 
 Create a system user called `gitmirror` and generate SSH keys.
 
@@ -31,5 +33,14 @@ Once you have set up your `config.sh` let's add the `git-mirrors.sh` script to `
 
     @hourly /home/gitmirror/gitlab-mirrors/git-mirrors.sh
 
+## Using your own user
+
+Your steps will be similar to using a dedicated `gitmirror` user.  Set up your SSH keys; copy `config.sh` and configure it; use your own system cron job to synchronize mirrors on a schedule.  There are a few caveats to using your own user instead of a dedicated administrator.
+
+1. Currently there is a bug in GitLab 6.0 [#5042][1] which prevents a non-Administrator GitLab user from moving a project to a group even if the group is owned by the user.  This means that if you wish to mirror projects in namespaces other than your own username then you will have to first manually create the mirror in GitLab and then run the `add_mirror.sh` command (see Managing repositories).
+2. You user will include mirror pushes in your user statistics.
+
 ---
 Next up is [Managing mirrored repositories](management.md)
+
+[1]: https://github.com/gitlabhq/gitlabhq/issues/5042
