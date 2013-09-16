@@ -9,6 +9,8 @@ git_mirrors_dir="$(dirname "${0}")"
 . "${git_mirrors_dir}/lib/VERSION"
 . "${git_mirrors_dir}/lib/functions.sh"
 
+cd "${git_mirrors_dir}"
+
 STATUS=0
 
 ls -1 "${repo_dir}/${gitlab_namespace}" | while read mirror;do
