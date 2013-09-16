@@ -1,6 +1,13 @@
+## gitlab-mirrors v0.2.8
+
+* Fixed bug where `manage_gitlab_project.py` would attempt to move a project into the user namespace if the `gitlab_namespace` is equal to `gitlab_user`.  No need to move a project from the same origin/destination group.
+* Prerequisite documentation fix for installing `python-gitlab` instructions.
+* Added support documentation for running `gitlab-mirrors` from a non-administrative user.
+
+---
 ## gitlab-mirrors v0.2.7
 
-* Renamed CHANGELOG to CHANGELOG.md
+* Renamed `CHANGELOG` to `CHANGELOG.md`
 
 ---
 ## gitlab-mirrors v0.2.6
