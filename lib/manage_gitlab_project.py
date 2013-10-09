@@ -74,7 +74,7 @@ def createproject(pname):
       description="Git mirror of %s." % project_name
   else:
     description=options.desc
-  new_project=git.createProject(pname,description=description,issues_enabled=str(int(options.issues)),wall_enabled=str(int(options.wall)),merge_requests_enabled=str(int(options.merge)),wiki_enabled=str(int(options.wiki)),snippets_enabled=str(int(options.snippets)),public=str(int(options.public)))
+  new_project=git.createProject(pname,description=description,issues_enabled=int(options.issues),wall_enabled=int(options.wall),merge_requests_enabled=int(options.merge),wiki_enabled=int(options.wiki),snippets_enabled=int(options.snippets),public=int(options.public))
   if gitlab_user != gitlab_namespace:
     new_project=findproject(gitlab_user,pname)
     new_project=git.moveProject(found_group['id'],new_project['id'])
