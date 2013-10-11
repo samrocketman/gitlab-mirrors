@@ -1,3 +1,12 @@
+## gitlab-mirrors v0.2.10
+
+* This is a bugfix release in the gitlab-6-0 branch series.  From now on all v0.2.X releases will be for the `gitlab-6-0` branch and all v0.3.X releases will be for the `gitlab-6-1` branch.
+* Fixed bug where cron job for `update-mirror.sh` would fail if GitLab was offline and leave SVN mirrors in an unusable bare state.
+* Updating installation docs adding note about `Mirrors` group creation step in gitlab, thanks @lmakarov.
+
+
+
+---
 ## gitlab-mirrors v0.2.9
 
 * `git-mirrors.sh` major bugfix where working directory was not properly set before executing mirror updates.  This caused the `cron` job to fail.
