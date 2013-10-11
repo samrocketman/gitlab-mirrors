@@ -56,11 +56,13 @@ def findgroup(gname):
     print >> stderr, "gitlab-mirrors will not automatically create the project namespace."
     exit(1)
 
-def findproject(gname,pname):
+def findproject(gname,pname,user=False):
   page=1
   while len(git.getProjects(page=page)) > 0:
     for project in git.getProjects(page=page):
-      if project['namespace']['name'] == gname and project['name'] == pname:
+      if not user and project['namespace']['name'] == gname and project['name'] == pname:
+        return project
+      elif user and project['namespace']['path'] == gname and project['name'] == pname:
         return project
     page += 1
   else:
@@ -76,7 +78,7 @@ def createproject(pname):
     description=options.desc
   new_project=git.createProject(pname,description=description,issues_enabled=str(int(options.issues)),wall_enabled=str(int(options.wall)),merge_requests_enabled=str(int(options.merge)),wiki_enabled=str(int(options.wiki)),snippets_enabled=str(int(options.snippets)),public=str(int(options.public)))
   if gitlab_user != gitlab_namespace:
-    new_project=findproject(gitlab_user,pname)
+    new_project=findproject(gitlab_user,pname,user=True)
     new_project=git.moveProject(found_group['id'],new_project['id'])
   if findproject(gitlab_namespace,pname):
     return findproject(gitlab_namespace,pname)

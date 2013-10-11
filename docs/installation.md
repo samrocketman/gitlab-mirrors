@@ -17,6 +17,8 @@ Create `~/.ssh/config` for the `gitmirror` user.  Add your GitLab server host an
 
 Create a gitmirror user in gitlab.  Set up the SSH keys with the gitmirror user in GitLab.  Obtain the Private token from the user.
 
+Create "Mirrors" group in gitlab and designate gitmirror user as the Owner of the group.
+
 Clone the gitlab-mirrors repository and set values in config.sh.
 
     su - gitmirrors

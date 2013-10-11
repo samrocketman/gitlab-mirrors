@@ -37,7 +37,13 @@ if git config --get svn-remote.svn.url &> /dev/null;then
   git svn rebase
   cd .git
   git config --bool core.bare true
-  git push gitlab
+  #bug fix for when gitlab is off-line during a cron job the bare setting gets set back to false when the git command fails
+  set +e
+  if ! git push gitlab;then
+    git config --bool core.bare false
+    exit 1
+  fi
+  set -e
   git config --bool core.bare false
 else
   #just a git mirror so mirror it accordingly
