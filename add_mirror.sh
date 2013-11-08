@@ -20,6 +20,7 @@ PROGVERSION="${VERSION}"
 #Default script options
 svn=false
 git=false
+bzr=false
 project_name=""
 mirror=""
 force=false
@@ -34,7 +35,7 @@ usage()
 ${PROGNAME} ${PROGVERSION} - MIT License by Sam Gleske
 
 USAGE:
-  ${PROGNAME} --git|--svn --project NAME --mirror URL [--authors-file FILE]
+  ${PROGNAME} --git|--svn|--bzr --project NAME --mirror URL [--authors-file FILE]
 
 DESCRIPTION:
   This will add a git or SVN repository to be mirrored by GitLab.  It 
@@ -69,7 +70,7 @@ EOF
 }
 #Short options are one letter.  If an argument follows a short opt then put a colon (:) after it
 SHORTOPTS="hvfm:p:"
-LONGOPTS="help,version,force,git,svn,mirror:,project-name:,authors-file:"
+LONGOPTS="help,version,force,git,svn,bzr,mirror:,project-name:,authors-file:"
 ARGS=$(getopt -s bash --options "${SHORTOPTS}" --longoptions "${LONGOPTS}" --name "${PROGNAME}" -- "$@")
 eval set -- "$ARGS"
 while true; do
@@ -136,11 +137,13 @@ function preflight() {
     red_echo " options.  Choose one or other." 1>&2
     STATUS=1
   fi
-  if ! ${git} && ! ${svn};then
+  if ! ${git} && ! ${svn} && ! ${bzr};then
     red_echo -n "Must specify the " 1>&2
     yellow_echo -n "--git" 1>&2
     red_echo -n " or " 1>&2
     yellow_echo -n "--svn" 1>&2
+    red_echo -n " or " 1>&2
+    yellow_echo -n "--bzr" 1>&2
     red_echo " options." 1>&2
     STATUS=1
   fi
