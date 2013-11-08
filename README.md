@@ -26,6 +26,10 @@ The [gitlab-mirrors](https://github.com/sag47/gitlab-mirrors) project is designe
 
 Created by Sam Gleske under [MIT License](LICENSE).  
 
+## Contributors
+
+Bzr support Agustín Cruz Lozano (atin81@gmail.com)
+
 
 ---
 ## References
