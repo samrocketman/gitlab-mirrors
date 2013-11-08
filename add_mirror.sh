@@ -63,6 +63,7 @@ DESCRIPTION:
 
   --svn              Mirror a SVN repository (must be explicitly set)
 
+  --bzr              Mirror a Bazar repository (must be explicitly set)
 
 EOF
 }
@@ -87,6 +88,10 @@ while true; do
       ;;
     --svn)
         svn=true
+        shift
+      ;;
+    --bzr)
+        bzr=true
         shift
       ;;
     -f|--force)
@@ -346,6 +351,22 @@ elif ${svn};then
   git config --bool core.bare true
   git push gitlab
   git config --bool core.bare false
+  green_echo "All done!" 1>&2
+elif ${bzr};then
+  #create a mirror
+  green_echo "Creating mirror from ${mirror}" 1>&2
+  cd "${repo_dir}/${gitlab_namespace}"
+  git clone bzr::"${mirror}" "${project_name}"
+  # cleaning repo
+  cd "${project_name}"
+  git gc --aggressive
+  #add the gitlab remote
+  git remote add gitlab "${gitlab_remote}"
+  git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
+  git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
+  #Check the initial repository into gitlab
+  green_echo "Checking the mirror into gitlab." 1>&2
+  git push gitlab
   green_echo "All done!" 1>&2
 else
   red_echo "Something has gone very wrong.  You should never see this message."
