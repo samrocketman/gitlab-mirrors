@@ -1,3 +1,9 @@
+gitlab-mirrors v0.3.1
+
+* Added contributing guidelines
+* Added getting help to README.
+
+---
 ## gitlab-mirrors v0.3.0
 
 * Certified compatibility with GitLab 6.2.
