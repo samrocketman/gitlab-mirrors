@@ -38,7 +38,7 @@ Your git should now be located in `/usr/local/bin/git`.  You should edit `/etc/p
 ---
 Next up is [Installation and Setup](installation.md).
 
-[1]: https://github.com/gitlabhq/gitlabhq/tree/6-0-stable
+[1]: https://github.com/gitlabhq/gitlabhq/tree/6-2-stable
 [2]: https://github.com/Itxaka/pyapi-gitlab
 [3]: http://www.gnu.org/software/coreutils/
 [4]: http://git-scm.com/
