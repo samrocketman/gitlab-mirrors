@@ -38,16 +38,13 @@ elif len(args) > 1:
 
 project_name=args[0]
 
-#current python-gitlab behavior
-#git=gitlab.Gitlab(gitlab_url,token_secret,version=6)
-#command for my forked version https://github.com/sag47/python-gitlab.git
-git=gitlab.Gitlab(gitlab_url,token_secret)
+git=gitlab.Gitlab(host=gitlab_url,user=gitlab_user,token=token_secret)
 
 def findgroup(gname):
   #Locate the group
   page=1
-  while len(git.getGroups(page=page)) > 0:
-    for group in git.getGroups(page=page):
+  while len(git.getgroups(page=page)) > 0:
+    for group in git.getgroups(page=page):
       if group['name'] == gname:
         return group
     page += 1
@@ -58,8 +55,8 @@ def findgroup(gname):
 
 def findproject(gname,pname,user=False):
   page=1
-  while len(git.getProjects(page=page)) > 0:
-    for project in git.getProjects(page=page):
+  while len(git.getprojects(page=page)) > 0:
+    for project in git.getprojects(page=page):
       if not user and project['namespace']['name'] == gname and project['name'] == pname:
         return project
       elif user and project['namespace']['path'] == gname and project['name'] == pname:
@@ -76,10 +73,10 @@ def createproject(pname):
       description="Git mirror of %s." % project_name
   else:
     description=options.desc
-  new_project=git.createProject(pname,description=description,issues_enabled=str(int(options.issues)),wall_enabled=str(int(options.wall)),merge_requests_enabled=str(int(options.merge)),wiki_enabled=str(int(options.wiki)),snippets_enabled=str(int(options.snippets)),public=str(int(options.public)))
+  new_project=git.createproject(pname,description=description,issues_enabled=int(options.issues),wall_enabled=int(options.wall),merge_requests_enabled=int(options.merge),wiki_enabled=int(options.wiki),snippets_enabled=int(options.snippets),public=int(options.public))
   if gitlab_user != gitlab_namespace:
     new_project=findproject(gitlab_user,pname,user=True)
-    new_project=git.moveProject(found_group['id'],new_project['id'])
+    new_project=git.moveproject(found_group['id'],new_project['id'])
   if findproject(gitlab_namespace,pname):
     return findproject(gitlab_namespace,pname)
   else:
