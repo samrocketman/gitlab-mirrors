@@ -1,7 +1,8 @@
 ## gitlab-mirrors v0.3.0
 
-* Certified compatibility with GitLab 6.2
+* Certified compatibility with GitLab 6.2.
 * Upgraded prerequisites to a newer version of `pyapi-gitlab` (formerly `python-gitlab`).
+* Added upgrade documentation.
 
 ---
 ## gitlab-mirrors v0.2.10
