@@ -12,6 +12,7 @@ If you plan on mirroring SVN repositories as well then you'll need the following
 * [git-svn][7]
 
 If you plan on mirroring BZR repositories then you'll need the following aditional options.
+
 * [git-bzr-helper][8]
 
 ### Required software install snippets
