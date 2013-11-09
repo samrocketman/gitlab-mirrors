@@ -64,7 +64,7 @@ DESCRIPTION:
 
   --svn              Mirror a SVN repository (must be explicitly set)
 
-  --bzr              Mirror a Bazar repository (must be explicitly set)
+  --bzr              Mirror a Bazaar repository (must be explicitly set)
 
 EOF
 }
@@ -134,7 +134,29 @@ function preflight() {
     yellow_echo -n "--svn" 1>&2
     red_echo -n " and " 1>&2
     yellow_echo -n "--git" 1>&2
-    red_echo " options.  Choose one or other." 1>&2
+    red_echo -n " options.  Choose one or other or " 1>&2
+    yellow_echo -n "--bzr" 1>&2
+    red_echo "." 1>&2
+    STATUS=1
+  fi
+  if ${git} && ${bzr};then
+    red_echo -n "Must not set " 1>&2
+    yellow_echo -n "--bzr" 1>&2
+    red_echo -n " and " 1>&2
+    yellow_echo -n "--git" 1>&2
+    red_echo -n " options.  Choose one or other or " 1>&2
+    yellow_echo -n "--svn" 1>&2
+    red_echo "." 1>&2
+    STATUS=1
+  fi
+  if ${svn} && ${bzr};then
+    red_echo -n "Must not set " 1>&2
+    yellow_echo -n "--bzr" 1>&2
+    red_echo -n " and " 1>&2
+    yellow_echo -n "--svn" 1>&2
+    red_echo -n " options.  Choose one or other or " 1>&2
+    yellow_echo -n "--git" 1>&2
+    red_echo "." 1>&2
     STATUS=1
   fi
   if ! ${git} && ! ${svn} && ! ${bzr};then
