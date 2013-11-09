@@ -51,6 +51,10 @@ Happy hacking!
 
 Created by Sam Gleske under [MIT License](LICENSE).  
 
+## Contributors
+
+Bzr support Agustín Cruz Lozano (atin81@gmail.com)
+
 
 ---
 ## References

@@ -11,6 +11,9 @@ If you plan on mirroring SVN repositories as well then you'll need the following
 
 * [git-svn][7]
 
+If you plan on mirroring BZR repositories then you'll need the following aditional options.
+* [git-bzr-helper][8]
+
 ### Required software install snippets
 python-gitlab
 
@@ -45,3 +48,4 @@ Next up is [Installation and Setup](installation.md).
 [5]: http://code.google.com/p/git-core/
 [6]: http://git-scm.com/book/en/Getting-Started-Installing-Git
 [7]: https://www.kernel.org/pub/software/scm/git/docs/git-svn.html
+[8]: https://github.com/felipec/git/wiki/git-remote-bzr

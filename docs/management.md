@@ -18,6 +18,12 @@ Create an SVN repository mirror.
 
 The `--authors-file` option is an optional argument.
 
+Create an BZR repository mirror.
+
+    su - gitmirror
+    cd gitlab-mirrors
+    ./add_mirror.sh --bzr --project-name someproject --mirror lp:ubuntu/hello
+
 ### List all known mirrors
 
     su - gitmirror
