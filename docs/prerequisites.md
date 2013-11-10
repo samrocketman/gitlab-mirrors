@@ -39,6 +39,14 @@ You can find the source to git at the [git-core project][5].  For instructions o
 
 Your git should now be located in `/usr/local/bin/git`.  You should edit `/etc/profile` and place `/usr/local/bin` at the beginning of your `$PATH`.
 
+git-bzr-helper
+
+    sudo -i -u gitmirror
+    sudo apt-get install python-rope
+    mkdir ~/bin
+    wget https://raw.github.com/felipec/git/fc/master/git-remote-hg.py -O ~/bin/git-remote-bzr
+    chmod 755 ~bin/git-remote-bzr
+
 ---
 Next up is [Installation and Setup](installation.md).
 

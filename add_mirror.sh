@@ -52,6 +52,8 @@ DESCRIPTION:
                      An authors file to pass to git-svn for mapping
                      SVN users to git users.
 
+  --bzr              Mirror a Bazaar repository (must be explicitly set)
+
   -f,--force         Force add project even if it already exists.
                      Any program errors will automatically continue.
 
@@ -63,8 +65,6 @@ DESCRIPTION:
                      Set a GitLab project name to NAME.
 
   --svn              Mirror a SVN repository (must be explicitly set)
-
-  --bzr              Mirror a Bazaar repository (must be explicitly set)
 
 EOF
 }
