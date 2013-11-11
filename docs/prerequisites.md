@@ -16,7 +16,8 @@ If you plan on mirroring BZR repositories then you'll need the following adition
 * [git-bzr-helper][8]
 
 ### Required software install snippets
-python-gitlab
+
+#### python-gitlab
 
     yum install python-setuptools
     git clone https://github.com/Itxaka/python-gitlab.git
@@ -24,7 +25,10 @@ python-gitlab
     git checkout 4d778d780161869550d8e514cdc50df2398f844e
     python setup.py install
 
-You can find the source to git at the [git-core project][5].  For instructions on other platforms see the [Getting Started - Installing Git section of the git book][6].
+
+#### Installing git
+
+If you use package management then it will likely be best for you to install git via package management for your OS.  You can find the source to git at the [git-core project][5].  For instructions on other platforms see the [Getting Started - Installing Git section of the git book][6].
 
     yum install perl-ExtUtils-MakeMaker zlib zlib-devel openssh libcurl libcurl-devel expat expat-devel gettext gettext-devel
     cd /usr/local/src/
@@ -39,13 +43,13 @@ You can find the source to git at the [git-core project][5].  For instructions o
 
 Your git should now be located in `/usr/local/bin/git`.  You should edit `/etc/profile` and place `/usr/local/bin` at the beginning of your `$PATH`.
 
-git-bzr-helper
+#### git-bzr-helper
 
     sudo -i -u gitmirror
-    sudo apt-get install python-rope
     mkdir ~/bin
-    wget https://raw.github.com/felipec/git/fc/master/git-remote-hg.py -O ~/bin/git-remote-bzr
+    wget https://raw.github.com/felipec/git/fc/master/git-remote-bzr.py -O ~/bin/git-remote-bzr
     chmod 755 ~bin/git-remote-bzr
+
 
 ---
 Next up is [Installation and Setup](installation.md).
