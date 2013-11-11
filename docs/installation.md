@@ -2,6 +2,11 @@
 
 This assumes you have already satisfied all [prerequisites](prerequisites.md).  You can manage gitlab-mirrors in one of two ways.  You can use your own user using your own GitLab private token.  Or you can use a dedicated system user and gitmirror user whose only purpose is to mirror repositories.  The former can be done by any user where the latter requires administrator privileges in GitLab.
 
+Things to note before beginning:
+
+* GitLab will not allow users (even admins) to add a project to a group unless that user is designated an `owner` of the group.  This is by design in GitLab.
+* `gitlab-mirrors` will not auto-create a group (though it will auto-create projects within a group).  This is by design in `gitlab-mirrors`.  One should create the group manually and assign the `gitmirror` user as an owner of the group.  This is to ensure mirroring a repository for a particular group is a purposeful action.
+
 ## Using a dedicated GitLab user
 
 Create a system user called `gitmirror` and generate SSH keys.
