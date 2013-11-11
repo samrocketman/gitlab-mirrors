@@ -5,7 +5,7 @@ The [gitlab-mirrors](https://github.com/sag47/gitlab-mirrors) project is designe
 
 ## Features
 
-* Mirror git and SVN repositories.
+* Mirror different types of repositories:  Bazaar, git, subversion.
 * When adding a mirror if the project doesn't exist in GitLab it will be auto-created.
   * Set project creation defaults (e.g. issues enabled, wiki enabled, etc.)
 * Update a single mirror.
