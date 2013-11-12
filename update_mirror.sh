@@ -35,6 +35,12 @@ if git config --get svn-remote.svn.url &> /dev/null;then
   git reset --hard
   git svn fetch
   git svn rebase
+  git for-each-ref --format="%(objectname:short) %(refname)" refs/remotes/tags |  while read ref; do
+    objectname=$(echo $ref | cut -d " " -f 1)
+    tagname=$(echo $ref | cut -d " " -f 2 | cut -d / -f 4)
+    GIT_COMMITTER_DATE="$(git show --format=%aD  | head -1)" git tag -a $tagname -m "import '$tagname' tag from svn" $objectname
+  done
+
   cd .git
   git config --bool core.bare true
   #bug fix for when gitlab is off-line during a cron job the bare setting gets set back to false when the git command fails
