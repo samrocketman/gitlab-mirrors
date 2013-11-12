@@ -1,8 +1,9 @@
-gitlab-mirrors v0.3.1
+## gitlab-mirrors v0.4.0
 
 * Added contributing guidelines
 * Added getting help to README.
 * Bazaar repository mirroring supported, thanks @agb80.
+* Sync tags from remote svn repository, thanks @nikolauskrismer.
 
 ---
 ## gitlab-mirrors v0.3.0
