@@ -35,7 +35,7 @@ usage()
 ${PROGNAME} ${PROGVERSION} - MIT License by Sam Gleske
 
 USAGE:
-  ${PROGNAME} --git|--svn|--bzr --project NAME --mirror URL [--authors-file FILE]
+  ${PROGNAME} TYPE --project NAME --mirror URL [--authors-file FILE]
 
 DESCRIPTION:
   This will add a git or SVN repository to be mirrored by GitLab.  It 
@@ -52,17 +52,20 @@ DESCRIPTION:
                      An authors file to pass to git-svn for mapping
                      SVN users to git users.
 
-  --bzr              Mirror a Bazaar repository (must be explicitly set)
-
   -f,--force         Force add project even if it already exists.
                      Any program errors will automatically continue.
-
-  --git              Mirror a git repository (must be explicitly set)
 
   -m,--mirror URL    Repository URL to be mirrored.
 
   -p,--project-name NAME
                      Set a GitLab project name to NAME.
+
+REPOSITORY TYPES:
+  At least one repository TYPE is required.
+
+  --bzr              Mirror a Bazaar repository (must be explicitly set)
+
+  --git              Mirror a git repository (must be explicitly set)
 
   --svn              Mirror a SVN repository (must be explicitly set)
 
@@ -128,45 +131,31 @@ done
 
 function preflight() {
   STATUS=0
-  #test required git or svn option
-  if ${git} && ${svn};then
-    red_echo -n "Must not set " 1>&2
-    yellow_echo -n "--svn" 1>&2
-    red_echo -n " and " 1>&2
-    yellow_echo -n "--git" 1>&2
-    red_echo -n " options.  Choose one or other or " 1>&2
-    yellow_echo -n "--bzr" 1>&2
-    red_echo "." 1>&2
-    STATUS=1
+  #test for multiple repository types
+  types=0
+  selected_types=()
+  if ${git};then
+    ((types += 1))
+    selected_types+=('--git')
   fi
-  if ${git} && ${bzr};then
-    red_echo -n "Must not set " 1>&2
-    yellow_echo -n "--bzr" 1>&2
-    red_echo -n " and " 1>&2
-    yellow_echo -n "--git" 1>&2
-    red_echo -n " options.  Choose one or other or " 1>&2
-    yellow_echo -n "--svn" 1>&2
-    red_echo "." 1>&2
-    STATUS=1
+  if ${svn};then
+    ((types += 1))
+    selected_types+=('--svn')
   fi
-  if ${svn} && ${bzr};then
-    red_echo -n "Must not set " 1>&2
-    yellow_echo -n "--bzr" 1>&2
-    red_echo -n " and " 1>&2
-    yellow_echo -n "--svn" 1>&2
-    red_echo -n " options.  Choose one or other or " 1>&2
-    yellow_echo -n "--git" 1>&2
-    red_echo "." 1>&2
-    STATUS=1
+  if ${bzr};then
+    ((types += 1))
+    selected_types+=('--bzr')
   fi
-  if ! ${git} && ! ${svn} && ! ${bzr};then
-    red_echo -n "Must specify the " 1>&2
-    yellow_echo -n "--git" 1>&2
-    red_echo -n " or " 1>&2
-    yellow_echo -n "--svn" 1>&2
-    red_echo -n " or " 1>&2
-    yellow_echo -n "--bzr" 1>&2
-    red_echo " options." 1>&2
+  if [ "${types}" -eq "0" ];then
+    red_echo -n "Must select at least one repository type.  e.g. "
+    yellow_echo "--git"
+    STATUS=1
+  elif [ "${types}" -gt "1" ];then
+    red_echo -n "Multiple repository types not allowed.  Found:"
+    for x in ${selected_types[@]};do
+      yellow_echo -n " $x"
+    done
+    echo ""
     STATUS=1
   fi
   #test required project_name option
