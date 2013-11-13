@@ -14,6 +14,8 @@ Currently gitlab-mirrors supports the following repository types.
 
 ### Bazaar
 
+The Bazaar support comes from [`git-remote-bzr`](https://github.com/felipec/git/wiki/git-remote-bzr).
+
 Create a BZR repository mirror.
 
     su - gitmirror
