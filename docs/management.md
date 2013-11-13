@@ -6,6 +6,20 @@ A short overview of managing mirrored repositories.  This assumes you have alrea
 
 ## Create a mirror
 
+Currently `gitlab-mirrors` supports the following repository types.
+
+* Bazaar
+* git
+* svn
+
+### Bazaar
+
+Create a BZR repository mirror.
+
+    su - gitmirror
+    cd gitlab-mirrors
+    ./add_mirror.sh --bzr --project-name bzr-ubuntu-hello --mirror lp:ubuntu/hello
+
 ### git
 
 Create a git repository mirror.
@@ -27,14 +41,6 @@ Create an SVN repository mirror.
 The `--authors-file` option is an optional argument.  It serves the same purpose as the `git-svn --authors-file` option.  It is an authors file for mapping SVN users to git users.  See the [`git-svn(1)`][git-svn-man] man page for more details.
 
 Notice in [`config.sh`](../config.sh.SAMPLE) there's an option `git_svn_additional_options`.  This option affects `add_mirror.sh` and the creation of a mirror only.  It doesn't affect the synchronization of the svn repository.  See the [`git-svn(1)`][git-svn-man] man page under `init` COMMAND options for available values which can be set.
-
-### Bazaar
-
-Create a BZR repository mirror.
-
-    su - gitmirror
-    cd gitlab-mirrors
-    ./add_mirror.sh --bzr --project-name bzr-ubuntu-hello --mirror lp:ubuntu/hello
 
 ## List all known mirrors
 
