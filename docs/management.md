@@ -2,15 +2,15 @@
 
 A short overview of managing mirrored repositories.  This assumes you have already [installed gitlab-mirrors](installation.md).
 
-*Note: any repository type other than git may or may not update the CLI with status text.  For extremely large alternate repository types (e.g. Bazaar) it can take a long time to clone with little or no output to the CLI until the initial BZR clone has finished.*
-
-## Create a mirror
-
-Currently `gitlab-mirrors` supports the following repository types.
+Currently gitlab-mirrors supports the following repository types.
 
 * Bazaar
 * git
 * svn
+
+*Note: any repository type other than git may or may not update the CLI with status text.  For extremely large alternate repository types (e.g. Bazaar) it can take a long time to clone with little or no output to the CLI until the initial BZR clone has finished.*
+
+## Create a mirror
 
 ### Bazaar
 
