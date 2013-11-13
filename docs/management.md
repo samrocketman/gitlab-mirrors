@@ -16,7 +16,7 @@ Create a git repository mirror.
 
 ### svn
 
-The subversion support comes from [`git-svn(1)`](https://www.kernel.org/pub/software/scm/git/docs/git-svn.html).
+The subversion support comes from [`git-svn(1)`][git-svn-man].
 
 Create an SVN repository mirror.
 
@@ -24,7 +24,7 @@ Create an SVN repository mirror.
     cd gitlab-mirrors
     ./add_mirror.sh --svn --project-name someproject --mirror svn+ssh://user@svn.example.com/srv/repos/someproject --authors-file ./authors.txt
 
-The `--authors-file` option is an optional argument.  It serves the same purpose as the `git-svn --authors-file` option.  It is an authors file for mapping SVN users to git users.  See the `git-svn(1)` man page for more details.  Notice in [`config.sh`](../config.sh.SAMPLE) there's an option `git_svn_additional_options`.  This option affects `add_mirror.sh` and the creation of a mirror only.  It doesn't affect the synchronization of the svn repository.  See the `git-svn(1)` man page under `init` COMMAND options.
+The `--authors-file` option is an optional argument.  It serves the same purpose as the `git-svn --authors-file` option.  It is an authors file for mapping SVN users to git users.  See the [`git-svn(1)`][git-svn-man] man page for more details.  Notice in [`config.sh`](../config.sh.SAMPLE) there's an option `git_svn_additional_options`.  This option affects `add_mirror.sh` and the creation of a mirror only.  It doesn't affect the synchronization of the svn repository.  See the [`git-svn(1)`][git-svn-man] man page under `init` COMMAND options.
 
 ### Bazaar
 
@@ -61,3 +61,5 @@ Create a BZR repository mirror.
 Updating all known mirrors is also meant to be used with a cron job via `crontab`.  See `man 5 crontab`.
 
     @hourly /home/gitmirror/gitlab-mirrors/git-mirrors.sh
+
+[git-svn-man]: https://www.kernel.org/pub/software/scm/git/docs/git-svn.html
