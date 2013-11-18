@@ -32,7 +32,7 @@ There are a couple ways you can try to get help.  You can [file an issue](https:
 
 * I generally stay logged in to freenode so be sure to mention my handle when you're asking questions so that I see it in the `#gitlab` channel.
 * If I don't answer right away then just hang out in the channel or do other stuff with your life.  I will eventually write back to you as it just means I'm away from my keyboard, working on something else, or in a different timezone than you.
-* You should treat IRC as what it is: asynchronous chat.  Sure the messages can be instant but in most channels people are in different time zones so coming in and demanding help and then leaving immediately will not get your problem solved.
+* You should treat IRC as what it is: asynchronous chat.  Sure the messages can be instant but in most channels people are in different time zones.  At times chat replies can be in excess of 24hrs.
 
 
 ---
