@@ -5,7 +5,7 @@
 * [GitLab 6.x][1]
 * [pyapi-gitlab @ 4d778d7][2]
 * [GNU coreutils][3]
-* [git 1.8.4][4]
+* [git 1.5.4][4] or later (git-svn uses fast-export which was introduced in git 1.5.4)
 
 If you plan on mirroring SVN repositories as well then you'll need the following additional options.
 

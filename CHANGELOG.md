@@ -1,3 +1,8 @@
+## gitlab-mirrors v0.3.1
+
+* Updating prerequisite noting minimum git version 1.5.4.  Thanks user grawity@freenode from `#git`.  grawity also mentioned git 1.6.5 for gitlab-mirrors 0.4.x because that's when transport helpers were introduced.
+
+---
 ## gitlab-mirrors v0.3.0
 
 * Certified compatibility with GitLab 6.2.
