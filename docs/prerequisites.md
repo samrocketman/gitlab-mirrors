@@ -28,9 +28,7 @@ If you plan on mirroring BZR repositories then you'll need the following adition
 
 #### Installing git
 
-As an exampl
-
-If you use package management then it will likely be best for you to install git via package management for your OS.  You can find the source to git at the [git-core project][5].  For instructions on other platforms see the [Getting Started - Installing Git section of the git book][6].
+If you use package management then it will likely be best for you to install git via package management for your OS.  You can find the source to git at the [git-core project][5].  For instructions on other platforms see the [Getting Started - Installing Git section of the git book][6].  The following is for compiling git 1.8.4 on RHEL 6.4.
 
     yum install perl-ExtUtils-MakeMaker zlib zlib-devel openssh libcurl libcurl-devel expat expat-devel gettext gettext-devel
     cd /usr/local/src/
