@@ -39,7 +39,8 @@ if git config --get svn-remote.svn.url &> /dev/null;then
   git for-each-ref --format="%(objectname:short) %(refname)" refs/remotes/tags |  while read ref; do
     objectname=$(echo $ref | cut -d " " -f 1)
     tagname=$(echo $ref | cut -d " " -f 2 | cut -d / -f 4)
-    if [ ! git show-ref --tags | egrep -q "refs/tags/$tagname$"]; then
+    tag_already_exists=$(git show-ref --tags | egrep -q refs/tags/$tagname$)
+    if [ ! tag_already_exists ]; then
       GIT_COMMITTER_DATE="$(git show --format=%aD  | head -1)" git tag -a $tagname -m "import '$tagname' tag from svn" $objectname
     fi
   done
