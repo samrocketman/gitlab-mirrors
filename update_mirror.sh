@@ -37,9 +37,12 @@ if git config --get svn-remote.svn.url &> /dev/null;then
   git svn fetch
   git svn rebase
   git for-each-ref --format="%(objectname:short) %(refname)" refs/remotes/tags |  while read ref; do
-    objectname=$(echo $ref | cut -d " " -f 1)
-    tagname=$(echo $ref | cut -d " " -f 2 | cut -d / -f 4)
-    GIT_COMMITTER_DATE="$(git show --format=%aD  | head -1)" git tag -a $tagname -m "import '$tagname' tag from svn" $objectname
+    objectname=$(echo ${ref} | cut -d " " -f 1)
+    tagname=$(echo ${ref} | cut -d " " -f 2 | cut -d / -f 4)
+    if ! git show-ref --tags | grep -E -q "refs/tags/${tagname}$"; then
+      echo "Tag does not exist... creating it"
+      GIT_COMMITTER_DATE="$(git show --format=%aD  | head -1)" git tag -a ${tagname} -m "import '${tagname}' tag from svn" ${objectname}
+    fi
   done
 
   cd .git
