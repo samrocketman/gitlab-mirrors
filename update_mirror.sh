@@ -55,6 +55,10 @@ if git config --get svn-remote.svn.url &> /dev/null;then
   fi
   set -e
   git config --bool core.bare false
+elseif -d ".git/bzr"
+  #this is an BZR mirror so update it accordingly
+  git pull --ff-only
+  git push gitlab
 else
   #just a git mirror so mirror it accordingly
   git fetch
