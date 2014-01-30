@@ -370,7 +370,7 @@ elif ${bzr};then
   #create a mirror
   green_echo "Creating mirror from ${mirror}" 1>&2
   cd "${repo_dir}/${gitlab_namespace}"
-  git clone bzr::"${mirror}" "${project_name}"
+  git clone --mirror bzr::"${mirror}" "${project_name}"
   # cleaning repo
   cd "${project_name}"
   git gc --aggressive
