@@ -179,6 +179,17 @@ function preflight() {
     red_echo " does not exist!"
     STATUS=1
   fi
+  #test ssl_verify environment variable (must be bool)
+  if [ ! "${ssl_verify}" = "true" ] && [ ! "${ssl_verify}" = "false" ];then
+    red_echo -n "ssl_verify="
+    yellow_echo -n "${ssl_verify}"
+    red_echo -n " is not a valid option for ssl_verify!  Must be "
+    yellow_echo -n "true"
+    red_echo -n " or "
+    yellow_echo -n "false"
+    red_echo "." 1>&2
+    STATUS=1
+  fi
   #test enable_colors environment variable (must be bool)
   if [ ! "${enable_colors}" = "true" ] && [ ! "${enable_colors}" = "false" ];then
     red_echo -n "enable_colors="
@@ -310,7 +321,7 @@ if ${public};then
 fi
 
 #export env vars for python script
-export gitlab_user_token_secret gitlab_url gitlab_namespace gitlab_user
+export gitlab_user_token_secret gitlab_url gitlab_namespace gitlab_user ssl_verify
 
 #Get the remote gitlab url for the specified project.
 #If the project doesn't already exist in gitlab then create it.
