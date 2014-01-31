@@ -4,6 +4,8 @@
 * Added getting help to README.
 * Bazaar repository mirroring supported, thanks @agb80.
 * Sync tags from remote svn repository, thanks @nikolauskrismer.
+* New backend library [python-gitlab3](https://github.com/alexvh/python-gitlab3) instead of pyapi-gitlab (formerly python-gitlab).
+* Added `ssl_verify` option to [`config.sh`](config.sh.SAMPLE)
 
 ---
 ## gitlab-mirrors v0.3.1
