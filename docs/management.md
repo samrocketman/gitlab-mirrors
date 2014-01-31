@@ -12,6 +12,8 @@ Currently gitlab-mirrors supports the following repository types.
 
 ## Create a mirror
 
+See also `./add_mirror.sh --help`.
+
 ### Bazaar
 
 The Bazaar support comes from [`git-remote-bzr`](https://github.com/felipec/git/wiki/git-remote-bzr).
@@ -46,11 +48,15 @@ Notice in [`config.sh`](../config.sh.SAMPLE) there's an option `git_svn_addition
 
 ## List all known mirrors
 
+See also `./ls-mirrors.sh --help`.
+
     su - gitmirror
     cd gitlab-mirrors
     ./ls-mirrors.sh
 
 ## Delete a mirror
+
+See also `./delete_mirror.sh --help`.
 
     su - gitmirror
     cd gitlab-mirrors

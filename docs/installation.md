@@ -22,7 +22,7 @@ Create `~/.ssh/config` for the `gitmirror` user.  Add your GitLab server host an
 
 Create a gitmirror user in gitlab.  Set up the SSH keys with the gitmirror user in GitLab.  Obtain the Private token from the user.
 
-Create "Mirrors" group in gitlab and designate gitmirror user as the Owner of the group.
+Create "Mirrors" group in gitlab and designate gitmirror user as the Owner of the group.  Realistically the group does not have to be called `Mirrors`.  It could be anything and in fact multiple mirror groups can be mirrored within the same repository folder.
 
 Clone the gitlab-mirrors repository and set values in config.sh.
 
@@ -39,6 +39,35 @@ Modify the values in `config.sh` for your setup.  Be sure to add your private to
 Once you have set up your `config.sh` let's add the `git-mirrors.sh` script to `crontab`.  Just execute `crontab -e` and add the following value to it.
 
     @hourly /home/gitmirror/gitlab-mirrors/git-mirrors.sh
+
+Here's an example of a file tree where I have multiple groups specified with a different gitlab-mirrors project governing each.
+
+```
+/home/gitmirror/
+├── ellucian
+├── mirror-management
+│   ├── GitLab
+│   │   └── gitlab-mirrors
+│   ├── Mirrors
+│   │   ├── authors_files
+│   │   ├── gitlab-mirrors
+│   └── Subscribers
+│       └── gitlab-mirrors
+└── repositories
+    ├── GitLab
+    │   └── gitlab-mirrors
+    ├── Mirrors
+    │   ├── git
+    │   ├── gitlabhq
+    │   ├── gitlab-shell
+    │   ├── nsca-ng
+    │   ├── python-gitlab
+    │   ├── ruby
+    │   └── systems-svn
+    └── Subscribers
+        └── GitLab Enterprise Edition
+```
+Where I have all of my gitlab-mirrors installation located in `/home/gitmirror/mirror-management` and the config.sh for each is similar except for the `gitlab_namespace` option for each [`config.sh`](../config.sh.SAMPLE).
 
 ## Using your own user
 

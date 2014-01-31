@@ -1,13 +1,15 @@
 # gitlab-mirrors
 
-The [gitlab-mirrors](https://github.com/sag47/gitlab-mirrors) project is designed to fill in a feature which is currently [missing from GitLab](http://feedback.gitlab.com/forums/176466-general/suggestions/4286666-mirror-git-svn-into-repo-): the ability to mirror remote repositories.  gitlab-mirrors creates read only copies of remote repositories in gitlab.  It provides a CLI management interface for managing the mirrored repositories (e.g. add, delete, update) so that an admin may regularly update all mirrors using `crontab`.  It operates by interacting with the [GitLab API][1] using [python-gitlab][2].
+The [gitlab-mirrors](https://github.com/sag47/gitlab-mirrors) project is designed to fill in a feature which is currently [missing from GitLab](http://feedback.gitlab.com/forums/176466-general/suggestions/4286666-mirror-git-svn-into-repo-): the ability to mirror remote repositories.  gitlab-mirrors creates read only copies of remote repositories in gitlab.  It provides a CLI management interface for managing the mirrored repositories (e.g. add, delete, update) so that an admin may regularly update all mirrors using `crontab`.  It operates by interacting with the [GitLab API](http://api.gitlab.org/) using [python-gitlab3](https://github.com/alexvh/python-gitlab3).
 
 
 ## Features
 
 * Mirror different types of repositories:  Bazaar, git, subversion.
-* When adding a mirror if the project doesn't exist in GitLab it will be auto-created.
+* GitLab mirror adding.
+  * When adding a mirror if the project doesn't exist in GitLab it will be auto-created.
   * Set project creation defaults (e.g. issues enabled, wiki enabled, etc.)
+  * Delete mirrors both local and remote.
 * Update a single mirror.
 * Update all known mirrors.
 * List all known mirrors.
