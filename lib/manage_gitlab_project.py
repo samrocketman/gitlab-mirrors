@@ -99,8 +99,8 @@ if options.create:
   print found_project.ssh_url_to_repo
 elif options.delete:
   try:
-    deleted_project=git.project(findproject(gitlab_user,project_name).id).delete()
-  except Exception e:
+    deleted_project=git.project(findproject(gitlab_namespace,project_name).id).delete()
+  except Exception as e:
     print >> stderr, e
     exit(1)
 else:
