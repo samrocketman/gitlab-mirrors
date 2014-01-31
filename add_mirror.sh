@@ -9,10 +9,13 @@
 set -e
 
 #Include all user options and dependencies
-git_mirrors_dir="$(dirname "${0}")"
+git_mirrors_dir="${0%/*}"
 . "${git_mirrors_dir}/config.sh"
 . "${git_mirrors_dir}/lib/VERSION"
 . "${git_mirrors_dir}/lib/functions.sh"
+
+#export env vars for python script
+export gitlab_user_token_secret gitlab_url gitlab_namespace gitlab_user ssl_verify
 
 PROGNAME="${0##*/}"
 PROGVERSION="${VERSION}"
@@ -20,6 +23,7 @@ PROGVERSION="${VERSION}"
 #Default script options
 svn=false
 git=false
+bzr=false
 project_name=""
 mirror=""
 force=false
@@ -34,7 +38,7 @@ usage()
 ${PROGNAME} ${PROGVERSION} - MIT License by Sam Gleske
 
 USAGE:
-  ${PROGNAME} --git|--svn --project NAME --mirror URL [--authors-file FILE]
+  ${PROGNAME} TYPE --project NAME --mirror URL [--authors-file FILE]
 
 DESCRIPTION:
   This will add a git or SVN repository to be mirrored by GitLab.  It 
@@ -54,21 +58,25 @@ DESCRIPTION:
   -f,--force         Force add project even if it already exists.
                      Any program errors will automatically continue.
 
-  --git              Mirror a git repository (must be explicitly set)
-
   -m,--mirror URL    Repository URL to be mirrored.
 
   -p,--project-name NAME
                      Set a GitLab project name to NAME.
 
-  --svn              Mirror a SVN repository (must be explicitly set)
+REPOSITORY TYPES:
+  At least one repository TYPE is required.
 
+  --bzr              Mirror a Bazaar repository (must be explicitly set)
+
+  --git              Mirror a git repository (must be explicitly set)
+
+  --svn              Mirror a SVN repository (must be explicitly set)
 
 EOF
 }
 #Short options are one letter.  If an argument follows a short opt then put a colon (:) after it
 SHORTOPTS="hvfm:p:"
-LONGOPTS="help,version,force,git,svn,mirror:,project-name:,authors-file:"
+LONGOPTS="help,version,force,git,svn,bzr,mirror:,project-name:,authors-file:"
 ARGS=$(getopt -s bash --options "${SHORTOPTS}" --longoptions "${LONGOPTS}" --name "${PROGNAME}" -- "$@")
 eval set -- "$ARGS"
 while true; do
@@ -87,6 +95,10 @@ while true; do
       ;;
     --svn)
         svn=true
+        shift
+      ;;
+    --bzr)
+        bzr=true
         shift
       ;;
     -f|--force)
@@ -122,21 +134,31 @@ done
 
 function preflight() {
   STATUS=0
-  #test required git or svn option
-  if ${git} && ${svn};then
-    red_echo -n "Must not set " 1>&2
-    yellow_echo -n "--svn" 1>&2
-    red_echo -n " and " 1>&2
-    yellow_echo -n "--git" 1>&2
-    red_echo " options.  Choose one or other." 1>&2
-    STATUS=1
+  #test for multiple repository types
+  types=0
+  selected_types=()
+  if ${git};then
+    ((types += 1))
+    selected_types+=('--git')
   fi
-  if ! ${git} && ! ${svn};then
-    red_echo -n "Must specify the " 1>&2
-    yellow_echo -n "--git" 1>&2
-    red_echo -n " or " 1>&2
-    yellow_echo -n "--svn" 1>&2
-    red_echo " options." 1>&2
+  if ${svn};then
+    ((types += 1))
+    selected_types+=('--svn')
+  fi
+  if ${bzr};then
+    ((types += 1))
+    selected_types+=('--bzr')
+  fi
+  if [ "${types}" -eq "0" ];then
+    red_echo -n "Must select at least one repository type.  e.g. "
+    yellow_echo "--git"
+    STATUS=1
+  elif [ "${types}" -gt "1" ];then
+    red_echo -n "Multiple repository types not allowed.  Found:"
+    for x in ${selected_types[@]};do
+      yellow_echo -n " $x"
+    done
+    echo ""
     STATUS=1
   fi
   #test required project_name option
@@ -158,6 +180,17 @@ function preflight() {
     red_echo -n "Specified "
     yellow_echo -n "--authors-file"
     red_echo " does not exist!"
+    STATUS=1
+  fi
+  #test ssl_verify environment variable (must be bool)
+  if [ ! "${ssl_verify}" = "true" ] && [ ! "${ssl_verify}" = "false" ];then
+    red_echo -n "ssl_verify="
+    yellow_echo -n "${ssl_verify}"
+    red_echo -n " is not a valid option for ssl_verify!  Must be "
+    yellow_echo -n "true"
+    red_echo -n " or "
+    yellow_echo -n "false"
+    red_echo "." 1>&2
     STATUS=1
   fi
   #test enable_colors environment variable (must be bool)
@@ -290,9 +323,6 @@ if ${public};then
   CREATE_OPTS="--public ${CREATE_OPTS}"
 fi
 
-#export env vars for python script
-export gitlab_user_token_secret gitlab_url gitlab_namespace gitlab_user
-
 #Get the remote gitlab url for the specified project.
 #If the project doesn't already exist in gitlab then create it.
 green_echo "Resolving gitlab remote." 1>&2
@@ -346,6 +376,22 @@ elif ${svn};then
   git config --bool core.bare true
   git push gitlab
   git config --bool core.bare false
+  green_echo "All done!" 1>&2
+elif ${bzr};then
+  #create a mirror
+  green_echo "Creating mirror from ${mirror}" 1>&2
+  cd "${repo_dir}/${gitlab_namespace}"
+  git clone --mirror bzr::"${mirror}" "${project_name}"
+  # cleaning repo
+  cd "${project_name}"
+  git gc --aggressive
+  #add the gitlab remote
+  git remote add gitlab "${gitlab_remote}"
+  git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
+  git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
+  #Check the initial repository into gitlab
+  green_echo "Checking the mirror into gitlab." 1>&2
+  git push gitlab
   green_echo "All done!" 1>&2
 else
   red_echo "Something has gone very wrong.  You should never see this message."

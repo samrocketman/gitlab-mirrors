@@ -9,7 +9,7 @@
 set -e
 
 #Include all user options and dependencies
-git_mirrors_dir="$(dirname "${0}")"
+git_mirrors_dir="${0%/*}"
 . "${git_mirrors_dir}/config.sh"
 . "${git_mirrors_dir}/lib/VERSION"
 . "${git_mirrors_dir}/lib/functions.sh"

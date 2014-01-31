@@ -9,11 +9,12 @@
 set -e
 
 #Include all user options and dependencies
-git_mirrors_dir="$(dirname "${0}")"
+git_mirrors_dir="${0%/*}"
+. "${git_mirrors_dir}/config.sh"
+. "${git_mirrors_dir}/lib/VERSION"
+. "${git_mirrors_dir}/lib/functions.sh"
+
 cd "${git_mirrors_dir}"
-. "config.sh"
-. "lib/VERSION"
-. "lib/functions.sh"
 
 PROGNAME="${0##*/}"
 PROGVERSION="${VERSION}"
@@ -35,6 +36,15 @@ if git config --get svn-remote.svn.url &> /dev/null;then
   git reset --hard
   git svn fetch
   git svn rebase
+  git for-each-ref --format="%(objectname:short) %(refname)" refs/remotes/tags |  while read ref; do
+    tagname="${ref##*/}"
+    if ! git show-ref --tags | grep -q "refs/tags/${tagname}$"; then
+      echo "Tag does not exist... creating it"
+      objectname="${ref%% *}"
+      GIT_COMMITTER_DATE="$(git show --format=%aD  | head -1)" git tag -a "${tagname}" -m "import '${tagname}' tag from svn" "${objectname}"
+    fi
+  done
+
   cd .git
   git config --bool core.bare true
   #bug fix for when gitlab is off-line during a cron job the bare setting gets set back to false when the git command fails

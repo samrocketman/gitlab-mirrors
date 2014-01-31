@@ -7,11 +7,15 @@
 set -e
 
 #Include all user options and dependencies
-git_mirrors_dir="$(dirname "${0}")"
+git_mirrors_dir="${0%/*}"
+. "${git_mirrors_dir}/config.sh"
+. "${git_mirrors_dir}/lib/VERSION"
+. "${git_mirrors_dir}/lib/functions.sh"
+
+#export env vars for python script
+export gitlab_user_token_secret gitlab_url gitlab_namespace gitlab_user ssl_verify
+
 cd "${git_mirrors_dir}"
-. "config.sh"
-. "lib/VERSION"
-. "lib/functions.sh"
 
 PROGNAME="${0##*/}"
 PROGVERSION="${VERSION}"
@@ -128,6 +132,15 @@ fi
 rm -rf "${repo_dir}/${gitlab_namespace}/${project_name}"
 green_echo -n "DELETED" 1>&2
 echo " ${repo_dir}/${gitlab_namespace}/${project_name}" 1>&2
-echo 1>&2
-yellow_echo -n "**NOTE**:" 1>&2
-echo " You must log into the GitLab web interface in order to delete the project from GitLab!" 1>&2
+if ! python lib/manage_gitlab_project.py --delete "${project_name}";then
+  red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
+  exit 1
+fi
+green_echo -n "DELETED" 1>&2
+echo " ${gitlab_namespace}/${project_name} from GitLab" 1>&2
+
+if false;then
+  echo 1>&2
+  yellow_echo -n "**NOTE**:" 1>&2
+  echo " You must log into the GitLab web interface in order to delete the project from GitLab!" 1>&2
+fi

@@ -1,3 +1,13 @@
+## gitlab-mirrors v0.4.0
+
+* Added contributing guidelines
+* Added getting help to README.
+* Bazaar repository mirroring supported, thanks @agb80.
+* Sync tags from remote svn repository, thanks @nikolauskrismer.
+* New backend library [python-gitlab3](https://github.com/alexvh/python-gitlab3) instead of pyapi-gitlab (formerly python-gitlab).
+* Added `ssl_verify` option to [`config.sh`](config.sh.SAMPLE)
+
+---
 ## gitlab-mirrors v0.3.1
 
 * Updating prerequisite noting minimum git version 1.5.4.  Thanks user grawity@freenode from `#git`.  grawity also mentioned git 1.6.5 for gitlab-mirrors 0.4.x because that's when transport helpers were introduced.
@@ -15,8 +25,6 @@
 * This is a bugfix release in the gitlab-6-0 branch series.  From now on all v0.2.X releases will be for the `gitlab-6-0` branch and all v0.3.X releases will be for the `gitlab-6-1` branch.
 * Fixed bug where cron job for `update-mirror.sh` would fail if GitLab was offline and leave SVN mirrors in an unusable bare state.
 * Updating installation docs adding note about `Mirrors` group creation step in gitlab, thanks @lmakarov.
-
-
 
 ---
 ## gitlab-mirrors v0.2.9

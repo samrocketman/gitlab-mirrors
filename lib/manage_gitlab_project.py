@@ -6,7 +6,7 @@
 from sys import argv,exit,stderr
 from optparse import OptionParser
 import os
-import gitlab
+import gitlab3 as gitlab
 
 
 
@@ -15,6 +15,7 @@ try:
   gitlab_url=os.environ['gitlab_url']
   gitlab_namespace=os.environ['gitlab_namespace']
   gitlab_user=os.environ['gitlab_user']
+  ssl_verify=os.environ['ssl_verify']
 except KeyError:
   print >> stderr, "Environment config missing.  Do not run this script standalone."
   exit(1)
@@ -38,14 +39,17 @@ elif len(args) > 1:
 
 project_name=args[0]
 
-git=gitlab.Gitlab(host=gitlab_url,user=gitlab_user,token=token_secret)
+if not eval(ssl_verify.capitalize()):
+  git=gitlab.GitLab(gitlab_url=gitlab_url,token=token_secret,ssl_verify=False)
+else:
+  git=gitlab.GitLab(gitlab_url=gitlab_url,token=token_secret,ssl_verify=True)
 
 def findgroup(gname):
   #Locate the group
   page=1
-  while len(git.getgroups(page=page)) > 0:
-    for group in git.getgroups(page=page):
-      if group['name'] == gname:
+  while len(git.groups(page=page)) > 0:
+    for group in git.groups(page=page):
+      if group.name == gname:
         return group
     page += 1
   else:
@@ -55,11 +59,11 @@ def findgroup(gname):
 
 def findproject(gname,pname,user=False):
   page=1
-  while len(git.getprojects(page=page)) > 0:
-    for project in git.getprojects(page=page):
-      if not user and project['namespace']['name'] == gname and project['name'] == pname:
+  while len(git.projects(page=page,per_page=20)) > 0:
+    for project in git.projects(page=page,per_page=20):
+      if not user and project.namespace['name'] == gname and project.name == pname:
         return project
-      elif user and project['namespace']['path'] == gname and project['name'] == pname:
+      elif user and project.namespace['path'] == gname and project.name == pname:
         return project
     page += 1
   else:
@@ -73,10 +77,10 @@ def createproject(pname):
       description="Git mirror of %s." % project_name
   else:
     description=options.desc
-  new_project=git.createproject(pname,description=description,issues_enabled=int(options.issues),wall_enabled=int(options.wall),merge_requests_enabled=int(options.merge),wiki_enabled=int(options.wiki),snippets_enabled=int(options.snippets),public=int(options.public))
+  new_project=git.add_project(pname,description=description,issues_enabled=options.issues,wall_enabled=options.wall,merge_requests_enabled=options.merge,wiki_enabled=options.wiki,snippets_enabled=options.snippets,public=options.public)
   if gitlab_user != gitlab_namespace:
     new_project=findproject(gitlab_user,pname,user=True)
-    new_project=git.moveproject(found_group['id'],new_project['id'])
+    new_project=git.group(found_group.id).transfer_project(new_project.id)
   if findproject(gitlab_namespace,pname):
     return findproject(gitlab_namespace,pname)
   else:
@@ -92,7 +96,13 @@ if options.create:
       print >> stderr, "There was a problem creating {group}/{project}.  Did you give {user} user Admin rights in gitlab?".format(group=gitlab_namespace,project=project_name,user=gitlab_user)
       exit(1)
 
-  print found_project['ssh_url_to_repo']
+  print found_project.ssh_url_to_repo
+elif options.delete:
+  try:
+    deleted_project=git.project(findproject(gitlab_namespace,project_name).id).delete()
+  except Exception as e:
+    print >> stderr, e
+    exit(1)
 else:
   print >> stderr, "No --create or --delete option added."
   exit(1)

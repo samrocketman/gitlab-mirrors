@@ -2,13 +2,39 @@
 
 A short overview of managing mirrored repositories.  This assumes you have already [installed gitlab-mirrors](installation.md).
 
-### Create a mirror
+Currently gitlab-mirrors supports the following repository types.
+
+* Bazaar
+* git
+* svn
+
+*Note: any repository type other than git may or may not update the CLI with status text.  For extremely large alternate repository types (e.g. Bazaar) it can take a long time to clone with little or no output to the CLI until the initial BZR clone has finished.*
+
+## Create a mirror
+
+See also `./add_mirror.sh --help`.
+
+### Bazaar
+
+The Bazaar support comes from [`git-remote-bzr`](https://github.com/felipec/git/wiki/git-remote-bzr).
+
+Create a BZR repository mirror.
+
+    su - gitmirror
+    cd gitlab-mirrors
+    ./add_mirror.sh --bzr --project-name bzr-ubuntu-hello --mirror lp:ubuntu/hello
+
+### git
 
 Create a git repository mirror.
 
     su - gitmirror
     cd gitlab-mirrors
-    ./add_mirror.sh --git --project-name someproject --mirror http://example.com/project.git
+    ./add_mirror.sh --git --project-name github-gitlab-mirrors --mirror https://github.com/sag47/gitlab-mirrors.git
+
+### svn
+
+The subversion support comes from [`git-svn(1)`][git-svn-man].
 
 Create an SVN repository mirror.
 
@@ -16,32 +42,40 @@ Create an SVN repository mirror.
     cd gitlab-mirrors
     ./add_mirror.sh --svn --project-name someproject --mirror svn+ssh://user@svn.example.com/srv/repos/someproject --authors-file ./authors.txt
 
-The `--authors-file` option is an optional argument.
+The `--authors-file` option is an optional argument.  It serves the same purpose as the `git-svn --authors-file` option.  It is an authors file for mapping SVN users to git users.  See the [`git-svn(1)`][git-svn-man] man page for more details.
 
-### List all known mirrors
+Notice in [`config.sh`](../config.sh.SAMPLE) there's an option `git_svn_additional_options`.  This option affects `add_mirror.sh` and the creation of a mirror only.  It doesn't affect the synchronization of the svn repository.  See the [`git-svn(1)`][git-svn-man] man page under `init` COMMAND options for available values which can be set.
+
+## List all known mirrors
+
+See also `./ls-mirrors.sh --help`.
 
     su - gitmirror
     cd gitlab-mirrors
     ./ls-mirrors.sh
 
-### Delete a mirror
+## Delete a mirror
+
+See also `./delete_mirror.sh --help`.
 
     su - gitmirror
     cd gitlab-mirrors
     ./delete_mirror.sh --delete someproject
 
-### Update a mirror
+## Update a mirror
 
     su - gitmirror
     cd gitlab-mirrors
     ./update_mirror.sh project_name
 
-### Update all known mirrors
+## Update all known mirrors
 
     su - gitmirror
     cd gitlab-mirrors
     ./git-mirrors.sh
 
-Updating all known mirrors is also meant to be used with `crontab`.
+Updating all known mirrors is also meant to be used with a cron job via `crontab`.  See `man 5 crontab`.
 
     @hourly /home/gitmirror/gitlab-mirrors/git-mirrors.sh
+
+[git-svn-man]: https://www.kernel.org/pub/software/scm/git/docs/git-svn.html
