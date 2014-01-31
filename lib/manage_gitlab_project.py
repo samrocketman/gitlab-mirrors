@@ -6,7 +6,7 @@
 from sys import argv,exit,stderr
 from optparse import OptionParser
 import os
-import gitlab
+import gitlab3 as gitlab
 
 
 
@@ -38,14 +38,14 @@ elif len(args) > 1:
 
 project_name=args[0]
 
-git=gitlab.Gitlab(host=gitlab_url,user=gitlab_user,token=token_secret)
+git=gitlab.Gitlab(gitlab_url,token_secret)
 
 def findgroup(gname):
   #Locate the group
   page=1
-  while len(git.getgroups(page=page)) > 0:
-    for group in git.getgroups(page=page):
-      if group['name'] == gname:
+  while len(git.groups(page=page)) > 0:
+    for group in git.groups(page=page):
+      if group.name == gname:
         return group
     page += 1
   else:
@@ -55,11 +55,11 @@ def findgroup(gname):
 
 def findproject(gname,pname,user=False):
   page=1
-  while len(git.getprojects(page=page)) > 0:
-    for project in git.getprojects(page=page):
-      if not user and project['namespace']['name'] == gname and project['name'] == pname:
+  while len(git.projects(page=page,per_page=20)) > 0:
+    for project in git.projects(page=page,per_page=20):
+      if not user and project.namespace['name'] == gname and project.name == pname:
         return project
-      elif user and project['namespace']['path'] == gname and project['name'] == pname:
+      elif user and project.namespace['path'] == gname and project.name == pname:
         return project
     page += 1
   else:
