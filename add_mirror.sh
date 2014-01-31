@@ -14,6 +14,9 @@ git_mirrors_dir="${0%/*}"
 . "${git_mirrors_dir}/lib/VERSION"
 . "${git_mirrors_dir}/lib/functions.sh"
 
+#export env vars for python script
+export gitlab_user_token_secret gitlab_url gitlab_namespace gitlab_user ssl_verify
+
 PROGNAME="${0##*/}"
 PROGVERSION="${VERSION}"
 
@@ -319,9 +322,6 @@ fi
 if ${public};then
   CREATE_OPTS="--public ${CREATE_OPTS}"
 fi
-
-#export env vars for python script
-export gitlab_user_token_secret gitlab_url gitlab_namespace gitlab_user ssl_verify
 
 #Get the remote gitlab url for the specified project.
 #If the project doesn't already exist in gitlab then create it.
