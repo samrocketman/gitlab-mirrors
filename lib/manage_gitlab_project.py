@@ -38,7 +38,7 @@ elif len(args) > 1:
 
 project_name=args[0]
 
-git=gitlab.Gitlab(gitlab_url,token_secret)
+git=gitlab.GitLab(gitlab_url,token_secret)
 
 def findgroup(gname):
   #Locate the group
