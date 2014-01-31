@@ -73,10 +73,10 @@ def createproject(pname):
       description="Git mirror of %s." % project_name
   else:
     description=options.desc
-  new_project=git.createproject(pname,description=description,issues_enabled=int(options.issues),wall_enabled=int(options.wall),merge_requests_enabled=int(options.merge),wiki_enabled=int(options.wiki),snippets_enabled=int(options.snippets),public=int(options.public))
+  new_project=git.add_project(pname,description=description,issues_enabled=options.issues,wall_enabled=options.wall,merge_requests_enabled=options.merge,wiki_enabled=options.wiki,snippets_enabled=options.snippets,public=options.public)
   if gitlab_user != gitlab_namespace:
     new_project=findproject(gitlab_user,pname,user=True)
-    new_project=git.moveproject(found_group['id'],new_project['id'])
+    new_project=git.group(found_group.id).transfer_project(new_project.id)
   if findproject(gitlab_namespace,pname):
     return findproject(gitlab_namespace,pname)
   else:
@@ -92,7 +92,7 @@ if options.create:
       print >> stderr, "There was a problem creating {group}/{project}.  Did you give {user} user Admin rights in gitlab?".format(group=gitlab_namespace,project=project_name,user=gitlab_user)
       exit(1)
 
-  print found_project['ssh_url_to_repo']
+  print found_project.ssh_url_to_repo
 else:
   print >> stderr, "No --create or --delete option added."
   exit(1)
