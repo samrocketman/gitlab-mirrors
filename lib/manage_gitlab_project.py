@@ -40,12 +40,8 @@ elif len(args) > 1:
 project_name=args[0]
 
 if not eval(ssl_verify.capitalize()):
-  print >> stderr, "No verify"
-  print >> stderr, ssl_verify
   git=gitlab.GitLab(gitlab_url=gitlab_url,token=token_secret,ssl_verify=False)
 else:
-  print >> stderr, "Verify"
-  print >> stderr, ssl_verify
   git=gitlab.GitLab(gitlab_url=gitlab_url,token=token_secret,ssl_verify=True)
 
 def findgroup(gname):
