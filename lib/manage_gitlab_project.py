@@ -15,6 +15,7 @@ try:
   gitlab_url=os.environ['gitlab_url']
   gitlab_namespace=os.environ['gitlab_namespace']
   gitlab_user=os.environ['gitlab_user']
+  ssl_verify=os.environ['ssl_verify']
 except KeyError:
   print >> stderr, "Environment config missing.  Do not run this script standalone."
   exit(1)
@@ -38,7 +39,14 @@ elif len(args) > 1:
 
 project_name=args[0]
 
-git=gitlab.GitLab(gitlab_url,token_secret)
+if not eval(ssl_verify.capitalize()):
+  print >> stderr, "No verify"
+  print >> stderr, ssl_verify
+  git=gitlab.GitLab(gitlab_url=gitlab_url,token=token_secret,ssl_verify=False)
+else:
+  print >> stderr, "Verify"
+  print >> stderr, ssl_verify
+  git=gitlab.GitLab(gitlab_url=gitlab_url,token=token_secret,ssl_verify=True)
 
 def findgroup(gname):
   #Locate the group

@@ -27,6 +27,8 @@ gitlab_url="https://gitlab.example.com"
 gitlab_user="gitmirror"
 #Generate a token for your $gitlab_user and set it here.
 gitlab_user_token_secret="$(head -n1 "${user_home}/private_token")"
+#Verify signed SSL certificates?
+ssl_verify=true
 
 #
 # Gitlab new project default settings.  If a project needs to be created by gitlab-mirrors
