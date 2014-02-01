@@ -23,6 +23,7 @@ PROGVERSION="${VERSION}"
 #Default script options
 project_name=""
 quiet=false
+no_delete=false
 
 #
 # ARGUMENT HANDLING
@@ -72,7 +73,8 @@ while true; do
         shift 2
       ;;
     -n|--no-delete)
-        no_delete="${2}"
+        project_name="${2}"
+        no_delete=true
         shift 2
       ;;
     -q|--quiet)
@@ -98,6 +100,8 @@ function preflight() {
   if [ -z "${project_name}" ];then
     red_echo -n "Must specify " 1>&2
     yellow_echo -n "--delete" 1>&2
+    red_echo -n " or " 1>&2
+    yellow_echo -n "--no-delete" 1>&2
     red_echo " option." 1>&2
     STATUS=1
   elif [ ! -e "${repo_dir}/${gitlab_namespace}/${project_name}" ];then
@@ -140,7 +144,7 @@ fi
 rm -rf "${repo_dir}/${gitlab_namespace}/${project_name}"
 green_echo -n "DELETED" 1>&2
 echo " ${repo_dir}/${gitlab_namespace}/${project_name}" 1>&2
-if [ -z "${no_delete}" ];then
+if ! ${no_delete};then
   if ! python lib/manage_gitlab_project.py --delete "${project_name}";then
     red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
     exit 1
