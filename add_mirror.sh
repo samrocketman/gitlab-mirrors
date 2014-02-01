@@ -334,16 +334,22 @@ fi
 
 #Get the remote gitlab url for the specified project.
 #If the project doesn't already exist in gitlab then create it.
-green_echo "Resolving gitlab remote." 1>&2
-if python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}" 1> /dev/null;then
-  gitlab_remote=$(python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}")
+if [ -z "${no_create}" ];then
+  green_echo "Resolving gitlab remote." 1>&2
+  if python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}" 1> /dev/null;then
+    gitlab_remote=$(python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}")
+  else
+    red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
+    exit 1
+  fi
+  if [ -z "${gitlab_remote}" ];then
+    red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
+    exit 1
+  fi
 else
-  red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
-  exit 1
-fi
-if [ -z "${gitlab_remote}" ];then
-  red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
-  exit 1
+  green_echo -n "Using remote: "
+  echo "${no_create}"
+  gitlab_remote="${no_create}"
 fi
 if ${git};then
   #create a mirror
