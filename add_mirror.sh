@@ -60,6 +60,11 @@ DESCRIPTION:
 
   -m,--mirror URL    Repository URL to be mirrored.
 
+  -n,--no-create URL Set a static remote without attempting to resolve
+                     the remote in GitLab.  This allows more generic
+                     mirroring without needing to be specifically for
+                     GitLab.
+
   -p,--project-name NAME
                      Set a GitLab project name to NAME.
 
@@ -75,8 +80,8 @@ REPOSITORY TYPES:
 EOF
 }
 #Short options are one letter.  If an argument follows a short opt then put a colon (:) after it
-SHORTOPTS="hvfm:p:"
-LONGOPTS="help,version,force,git,svn,bzr,mirror:,project-name:,authors-file:"
+SHORTOPTS="hvfm:n:p:"
+LONGOPTS="help,version,force,git,svn,bzr,mirror:,no-create:,project-name:,authors-file:"
 ARGS=$(getopt -s bash --options "${SHORTOPTS}" --longoptions "${LONGOPTS}" --name "${PROGNAME}" -- "$@")
 eval set -- "$ARGS"
 while true; do
@@ -112,6 +117,10 @@ while true; do
       ;;
     -m|--mirror)
         mirror="${2}"
+        shift 2
+      ;;
+    -n|--no-create)
+        no_create="${2}"
         shift 2
       ;;
     --authors-file)
