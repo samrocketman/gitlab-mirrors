@@ -27,6 +27,7 @@ bzr=false
 project_name=""
 mirror=""
 force=false
+no_create_set=false
 
 #
 # ARGUMENT HANDLING
@@ -120,6 +121,7 @@ while true; do
         shift 2
       ;;
     -n|--no-create)
+        no_create_set=true
         no_create="${2}"
         shift 2
       ;;
@@ -182,6 +184,12 @@ function preflight() {
     red_echo -n "Missing " 1>&2
     yellow_echo -n "--mirror" 1>&2
     red_echo " option." 1>&2
+    STATUS=1
+  fi
+  #test no_create option
+  if ${no_create_set} && [ -z "${no_create}" ];then
+    yellow_echo -n "--no-create" 1>&2
+    red_echo " option must have a git remote to push." 1>&2
     STATUS=1
   fi
   #test authors_file path for existence
