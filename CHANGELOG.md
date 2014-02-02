@@ -1,3 +1,14 @@
+## v0.4.2
+
+* Added `--no-create` option to `add_mirror.sh` which gives the script the remote to push manually rather than attempting any communication with GitLab.  This enables gitlab-mirrors to be used with non-gitlab git remotes.  It was specifically integrated for the purpose of mirroring gitlab wikis.
+* Added `--no-delete` option to `delete_mirror.sh` which only deletes the local copy of the mirror and does not attempt communication with GitLab.  This is the delete equivalent of `--no-create`.
+
+---
+## v0.4.1
+
+* Added upgrade docs for upgrading v0.3 to v0.4
+
+---
 ## gitlab-mirrors v0.4.0
 
 * Added contributing guidelines
