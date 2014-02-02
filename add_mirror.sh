@@ -27,6 +27,7 @@ bzr=false
 project_name=""
 mirror=""
 force=false
+no_create_set=false
 
 #
 # ARGUMENT HANDLING
@@ -60,6 +61,11 @@ DESCRIPTION:
 
   -m,--mirror URL    Repository URL to be mirrored.
 
+  -n,--no-create URL Set a static remote without attempting to resolve
+                     the remote in GitLab.  This allows more generic
+                     mirroring without needing to be specifically for
+                     GitLab.
+
   -p,--project-name NAME
                      Set a GitLab project name to NAME.
 
@@ -75,8 +81,8 @@ REPOSITORY TYPES:
 EOF
 }
 #Short options are one letter.  If an argument follows a short opt then put a colon (:) after it
-SHORTOPTS="hvfm:p:"
-LONGOPTS="help,version,force,git,svn,bzr,mirror:,project-name:,authors-file:"
+SHORTOPTS="hvfm:n:p:"
+LONGOPTS="help,version,force,git,svn,bzr,mirror:,no-create:,project-name:,authors-file:"
 ARGS=$(getopt -s bash --options "${SHORTOPTS}" --longoptions "${LONGOPTS}" --name "${PROGNAME}" -- "$@")
 eval set -- "$ARGS"
 while true; do
@@ -112,6 +118,11 @@ while true; do
       ;;
     -m|--mirror)
         mirror="${2}"
+        shift 2
+      ;;
+    -n|--no-create)
+        no_create_set=true
+        no_create="${2}"
         shift 2
       ;;
     --authors-file)
@@ -173,6 +184,12 @@ function preflight() {
     red_echo -n "Missing " 1>&2
     yellow_echo -n "--mirror" 1>&2
     red_echo " option." 1>&2
+    STATUS=1
+  fi
+  #test no_create option
+  if ${no_create_set} && [ -z "${no_create}" ];then
+    yellow_echo -n "--no-create" 1>&2
+    red_echo " option must have a git remote to push." 1>&2
     STATUS=1
   fi
   #test authors_file path for existence
@@ -325,16 +342,22 @@ fi
 
 #Get the remote gitlab url for the specified project.
 #If the project doesn't already exist in gitlab then create it.
-green_echo "Resolving gitlab remote." 1>&2
-if python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}" 1> /dev/null;then
-  gitlab_remote=$(python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}")
+if [ -z "${no_create}" ];then
+  green_echo "Resolving gitlab remote." 1>&2
+  if python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}" 1> /dev/null;then
+    gitlab_remote=$(python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}")
+  else
+    red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
+    exit 1
+  fi
+  if [ -z "${gitlab_remote}" ];then
+    red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
+    exit 1
+  fi
 else
-  red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
-  exit 1
-fi
-if [ -z "${gitlab_remote}" ];then
-  red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
-  exit 1
+  green_echo -n "Using remote: "
+  echo "${no_create}"
+  gitlab_remote="${no_create}"
 fi
 if ${git};then
   #create a mirror
@@ -352,6 +375,9 @@ if ${git};then
   git fetch
   git remote prune origin
   git push gitlab
+  if [ ! -z "${no_create}" ];then
+    git config gitlabmirrors.nocreate true
+  fi
   green_echo "All done!" 1>&2
 elif ${svn};then
   #create a mirror

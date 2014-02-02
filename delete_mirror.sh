@@ -23,6 +23,7 @@ PROGVERSION="${VERSION}"
 #Default script options
 project_name=""
 quiet=false
+no_delete=false
 
 #
 # ARGUMENT HANDLING
@@ -43,14 +44,18 @@ DESCRIPTION:
   -v,--version       Show program version
   -d,--delete PROJECT
                      Deletes a project so it is no longer mirrored.
+  -n,--no-delete PROJECT
+                     Only deletes the local project but not the remote.
+                     This option is forced for projects with
+                     --no-create set when the mirror was added.
   -q,--quiet         Suppress user confirmation messages.
 
 
 EOF
 }
 #Short options are one letter.  If an argument follows a short opt then put a colon (:) after it
-SHORTOPTS="hvd:q"
-LONGOPTS="help,version,delete:,quiet"
+SHORTOPTS="hvd:n:q"
+LONGOPTS="help,version,delete:,no-delete:,quiet"
 ARGS=$(getopt -s bash --options "${SHORTOPTS}" --longoptions "${LONGOPTS}" --name "${PROGNAME}" -- "$@")
 eval set -- "$ARGS"
 while true; do
@@ -65,6 +70,11 @@ while true; do
       ;;
     -d|--delete)
         project_name="${2}"
+        shift 2
+      ;;
+    -n|--no-delete)
+        project_name="${2}"
+        no_delete=true
         shift 2
       ;;
     -q|--quiet)
@@ -90,6 +100,8 @@ function preflight() {
   if [ -z "${project_name}" ];then
     red_echo -n "Must specify " 1>&2
     yellow_echo -n "--delete" 1>&2
+    red_echo -n " or " 1>&2
+    yellow_echo -n "--no-delete" 1>&2
     red_echo " option." 1>&2
     STATUS=1
   elif [ ! -e "${repo_dir}/${gitlab_namespace}/${project_name}" ];then
@@ -129,17 +141,23 @@ if ! ${quiet};then
   fi
 fi
 
+pushd "${repo_dir}/${gitlab_namespace}/${project_name}" &> /dev/null
+if git config --get gitlabmirrors.nocreate &> /dev/null && [ "$(git config --get gitlabmirrors.nocreate)" = "true" ];then
+  no_delete=true
+fi
+popd &> /dev/null
+
 rm -rf "${repo_dir}/${gitlab_namespace}/${project_name}"
 green_echo -n "DELETED" 1>&2
 echo " ${repo_dir}/${gitlab_namespace}/${project_name}" 1>&2
-if ! python lib/manage_gitlab_project.py --delete "${project_name}";then
-  red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
-  exit 1
-fi
-green_echo -n "DELETED" 1>&2
-echo " ${gitlab_namespace}/${project_name} from GitLab" 1>&2
-
-if false;then
+if ! ${no_delete};then
+  if ! python lib/manage_gitlab_project.py --delete "${project_name}";then
+    red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
+    exit 1
+  fi
+  green_echo -n "DELETED" 1>&2
+  echo " ${gitlab_namespace}/${project_name} from GitLab" 1>&2
+else
   echo 1>&2
   yellow_echo -n "**NOTE**:" 1>&2
   echo " You must log into the GitLab web interface in order to delete the project from GitLab!" 1>&2

@@ -32,6 +32,10 @@ Create a git repository mirror.
     cd gitlab-mirrors
     ./add_mirror.sh --git --project-name github-gitlab-mirrors --mirror https://github.com/sag47/gitlab-mirrors.git
 
+Create a git repository mirror without attempting to auto-create the project and just take a remote.
+
+    ./add_mirror.sh --git --project-name github-gitlab-mirrors --mirror https://github.com/sag47/gitlab-mirrors.git --no-create user@yourserver.com:projects/gitlab-mirrors.git
+
 ### svn
 
 The subversion support comes from [`git-svn(1)`][git-svn-man].

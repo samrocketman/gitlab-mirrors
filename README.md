@@ -10,6 +10,10 @@ The [gitlab-mirrors](https://github.com/sag47/gitlab-mirrors) project is designe
   * When adding a mirror if the project doesn't exist in GitLab it will be auto-created.
   * Set project creation defaults (e.g. issues enabled, wiki enabled, etc.)
   * Delete mirrors both local and remote.
+* non-GitLab mirror adding.
+  * Manually specify the remote and don't attempt API communication to GitLab nor attempt to create the remote project.
+  * Delete mirrors locally only without communicating to GitLab to delete the remote project.
+  * This feature is for mirroring git repositories generically which can be used by any git hosting server or service.  This feature was originally added with mirroring GitLab wikis in mind but allows gitlab-mirrors to be more versatile.
 * Update a single mirror.
 * Update all known mirrors.
 * List all known mirrors.
