@@ -375,6 +375,9 @@ if ${git};then
   git fetch
   git remote prune origin
   git push gitlab
+  if [ ! -z "${no_create}" ];then
+    git config gitlabmirrors.nocreate true
+  fi
   green_echo "All done!" 1>&2
 elif ${svn};then
   #create a mirror

@@ -141,6 +141,12 @@ if ! ${quiet};then
   fi
 fi
 
+pushd "${repo_dir}/${gitlab_namespace}/${project_name}" &> /dev/null
+if git config --get gitlabmirrors.nocreate &> /dev/null && [ "$(git config --get gitlabmirrors.nocreate)" = "true" ];then
+  no_delete=true
+fi
+popd &> /dev/null
+
 rm -rf "${repo_dir}/${gitlab_namespace}/${project_name}"
 green_echo -n "DELETED" 1>&2
 echo " ${repo_dir}/${gitlab_namespace}/${project_name}" 1>&2
