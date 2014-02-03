@@ -14,6 +14,8 @@ repo_dir="${user_home}/repositories"
 enable_colors=true
 #These are additional options which should be passed to git-svn.  See git help svn
 git_svn_additional_options="-s"
+#Force gitlab-mirrors to not create the gitlab remote
+no_create_set=false
 
 #
 # Gitlab settings
