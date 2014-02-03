@@ -1,3 +1,8 @@
+## v0.4.3
+
+* Added `no_create_set` option to `config.sh`.  This option forces the user to always provide a remote for pushing repositories via the `--no-create` option in `add_mirror.sh`.
+
+---
 ## v0.4.2
 
 * Added `--no-create` option to `add_mirror.sh` which gives the script the remote to push manually rather than attempting any communication with GitLab.  This enables gitlab-mirrors to be used with non-gitlab git remotes.  It was specifically integrated for the purpose of mirroring gitlab wikis.
