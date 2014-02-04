@@ -24,6 +24,7 @@ PROGVERSION="${VERSION}"
 svn=false
 git=false
 bzr=false
+hg=false
 project_name=""
 mirror=""
 force=false
@@ -76,13 +77,15 @@ REPOSITORY TYPES:
 
   --git              Mirror a git repository (must be explicitly set)
 
+  --hg               Mirror a Mercurial repository (must be explicitly set)
+
   --svn              Mirror a SVN repository (must be explicitly set)
 
 EOF
 }
 #Short options are one letter.  If an argument follows a short opt then put a colon (:) after it
 SHORTOPTS="hvfm:n:p:"
-LONGOPTS="help,version,force,git,svn,bzr,mirror:,no-create:,project-name:,authors-file:"
+LONGOPTS="help,version,force,git,svn,bzr,hg,mirror:,no-create:,project-name:,authors-file:"
 ARGS=$(getopt -s bash --options "${SHORTOPTS}" --longoptions "${LONGOPTS}" --name "${PROGNAME}" -- "$@")
 eval set -- "$ARGS"
 while true; do
@@ -105,6 +108,10 @@ while true; do
       ;;
     --bzr)
         bzr=true
+        shift
+      ;;
+    --hg)
+        hg=true
         shift
       ;;
     -f|--force)
@@ -159,6 +166,10 @@ function preflight() {
   if ${bzr};then
     ((types += 1))
     selected_types+=('--bzr')
+  fi
+  if ${hg};then
+    ((types += 1))
+    selected_types+=('--hg')
   fi
   if [ "${types}" -eq "0" ];then
     red_echo -n "Must select at least one repository type.  e.g. "
@@ -417,6 +428,22 @@ elif ${bzr};then
   green_echo "Creating mirror from ${mirror}" 1>&2
   cd "${repo_dir}/${gitlab_namespace}"
   git clone --mirror bzr::"${mirror}" "${project_name}"
+  # cleaning repo
+  cd "${project_name}"
+  git gc --aggressive
+  #add the gitlab remote
+  git remote add gitlab "${gitlab_remote}"
+  git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
+  git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
+  #Check the initial repository into gitlab
+  green_echo "Checking the mirror into gitlab." 1>&2
+  git push gitlab
+  green_echo "All done!" 1>&2
+elif ${hg};then
+  #create a mirror
+  green_echo "Creating mirror from ${mirror}" 1>&2
+  cd "${repo_dir}/${gitlab_namespace}"
+  git clone --mirror hg::"${mirror}" "${project_name}"
   # cleaning repo
   cd "${project_name}"
   git gc --aggressive

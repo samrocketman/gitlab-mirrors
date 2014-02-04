@@ -1,3 +1,8 @@
+## v0.4.4
+
+* Added Mercurial mirroring support.  `add_mirror.sh` now has the `--hg` option when adding a repository.
+
+---
 ## v0.4.3
 
 * Added `no_create_set` option to `config.sh`.  This option forces the user to always provide a remote for pushing repositories via the `--no-create` option in `add_mirror.sh`.
