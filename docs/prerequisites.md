@@ -15,6 +15,10 @@ If you plan on mirroring BZR repositories then you'll need the following adition
 
 * [git-bzr-helper][8]
 
+If you plan on mirroring Mercurial repositories then you'll need the following aditional options.
+
+* [git-hg-helper][9]
+
 ### Required software install snippets
 
 #### python-gitlab
@@ -48,8 +52,15 @@ Your git should now be located in `/usr/local/bin/git`.  You should edit `/etc/p
     sudo -i -u gitmirror
     mkdir ~/bin
     wget https://raw.github.com/felipec/git/fc/master/git-remote-bzr.py -O ~/bin/git-remote-bzr
-    chmod 755 ~bin/git-remote-bzr
+    chmod 755 ~/bin/git-remote-bzr
 
+#### git-hg-helper
+
+    sudo -i -u gitmirror
+    sudo apt-get install python-rope
+    mkdir ~/bin
+    wget https://raw.github.com/felipec/git/fc/master/git-remote-hg.py -O ~/bin/git-remote-hg
+    chmod 755 ~/bin/git-remote-hg
 
 ---
 Next up is [Installation and Setup](installation.md).
@@ -62,3 +73,4 @@ Next up is [Installation and Setup](installation.md).
 [6]: http://git-scm.com/book/en/Getting-Started-Installing-Git
 [7]: https://www.kernel.org/pub/software/scm/git/docs/git-svn.html
 [8]: https://github.com/felipec/git/wiki/git-remote-bzr
+[9]: https://github.com/felipec/git/wiki/git-remote-hg
