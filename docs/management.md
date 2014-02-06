@@ -24,7 +24,7 @@ Create a BZR repository mirror.
     cd gitlab-mirrors
     ./add_mirror.sh --bzr --project-name bzr-ubuntu-hello --mirror lp:ubuntu/hello
 
-### git
+### Git
 
 Create a git repository mirror.
 
@@ -36,7 +36,17 @@ Create a git repository mirror without attempting to auto-create the project and
 
     ./add_mirror.sh --git --project-name github-gitlab-mirrors --mirror https://github.com/sag47/gitlab-mirrors.git --no-create user@yourserver.com:projects/gitlab-mirrors.git
 
-### svn
+### Mercurial
+
+The Mercurial support comes from [`git-remote-hg`](https://github.com/felipec/git/wiki/git-remote-hg).
+
+Create a hg repository mirror.
+
+    su - gitmirror
+    cd gitlab-mirrors
+    ./add_mirror.sh --hg --project-name lodgeit-main --mirror https://bitbucket.org/EnTeQuAk/lodgeit-main
+
+### Subversion
 
 The subversion support comes from [`git-svn(1)`][git-svn-man].
 

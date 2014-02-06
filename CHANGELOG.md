@@ -1,3 +1,8 @@
+## v0.4.5
+
+* Updated docs for Mercurial mirror management.
+
+---
 ## v0.4.4
 
 * Added Mercurial mirroring support.  `add_mirror.sh` now has the `--hg` option when adding a repository.
