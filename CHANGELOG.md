@@ -1,3 +1,8 @@
+## v0.4.6
+
+* Fix bug where all scripts break without a meaningful message if config.sh is not present.
+
+--
 ## v0.4.5
 
 * Updated docs for Mercurial mirror management.
