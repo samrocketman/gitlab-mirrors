@@ -44,7 +44,6 @@ Here's an example of a file tree where I have multiple groups specified with a d
 
 ```
 /home/gitmirror/
-├── ellucian
 ├── mirror-management
 │   ├── GitLab
 │   │   └── gitlab-mirrors
