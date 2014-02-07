@@ -36,6 +36,8 @@ SETSTYLE_BOLD="echo -en \\033[1m"
 SETSTYLE_UNDERLINE="echo -en \\033[4m"
 SETSTYLE_NORMAL="echo -en \\033[0m"
 
+enable_colors="${enable_colors:-true}"
+
 #same as echo function except the whole text line is red
 function red_echo() {
   #in order for the -n functionality to work properly $2 must be quoted when called in case of spaces

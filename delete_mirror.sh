@@ -8,9 +8,13 @@ set -e
 
 #Include all user options and dependencies
 git_mirrors_dir="${0%/*}"
-. "${git_mirrors_dir}/config.sh"
+[ -f "${git_mirrors_dir}/config.sh" ] && . "${git_mirrors_dir}/config.sh"
 . "${git_mirrors_dir}/lib/VERSION"
 . "${git_mirrors_dir}/lib/functions.sh"
+if [ ! -f "${git_mirrors_dir}/config.sh" ];then
+  red_echo "config.sh missing!  Copy and customize from config.sh.SAMPLE.  Aborting." 1>&2
+  exit 1
+fi
 
 #export env vars for python script
 export gitlab_user_token_secret gitlab_url gitlab_namespace gitlab_user ssl_verify
@@ -98,16 +102,16 @@ done
 function preflight() {
   STATUS=0
   if [ -z "${project_name}" ];then
-    red_echo -n "Must specify " 1>&2
-    yellow_echo -n "--delete" 1>&2
-    red_echo -n " or " 1>&2
-    yellow_echo -n "--no-delete" 1>&2
-    red_echo " option." 1>&2
+    red_echo -n "Must specify "
+    yellow_echo -n "--delete"
+    red_echo -n " or "
+    yellow_echo -n "--no-delete"
+    red_echo " option."
     STATUS=1
   elif [ ! -e "${repo_dir}/${gitlab_namespace}/${project_name}" ];then
     yellow_echo -n "${repo_dir}/${gitlab_namespace}/${project_name}" 1>&2
-    echo " does not exist." 1>&2
-    exit
+    echo " does not exist."
+    STATUS=1
   fi
   return ${STATUS}
 }
@@ -117,7 +121,7 @@ function preflight() {
 #
 
 #Run a preflight check on options for compatibility.
-if ! preflight;then
+if ! preflight 1>&2;then
   echo "Command aborted due to previous errors." 1>&2
   exit 1
 fi
