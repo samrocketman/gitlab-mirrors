@@ -13,8 +13,8 @@ Things to note before beginning:
 ### Overview
 
 * Create `gitmirror` system user.
-* Create `gitmirror` GitLab user.
-* Create a `Mirrors` group in GitLab (or name it whatever you want).
+* Create `gitmirror` GitLab Administrator user.
+* Create a `Mirrors` group in GitLab owned by `gitmirror` (or name it whatever you want).
 * Clone gitlab-mirrors repository in `gitmirror` system user.
 * Modify `config.sh` using the user token from `gitmirror` GitLab user.
 * Create a cron job to update mirrors regularly.
@@ -34,7 +34,9 @@ Create `~/.ssh/config` for the `gitmirror` user.  Add your GitLab server host an
 
 ### Create gitmirror GitLab user
 
-Create a `gitmirror` user in GitLab and set the user to be a GitLab administrator.  Set up the SSH keys with the gitmirror user in GitLab.  Obtain the Private token from the user.
+Create a `gitmirror` user in GitLab and set the user to be a GitLab administrator.  
+Set up the SSH keys with the gitmirror user in GitLab.  
+Obtain the Private token from the user.
 
 ### Create Mirrors group in GitLab
 
@@ -52,7 +54,8 @@ Clone the gitlab-mirrors repository and set values in config.sh.
 
 ### Modify config.sh
 
-Modify the values in `config.sh` for your setup.  Be sure to add your private token for the `gitmirror` user in GitLab to `~/private_token` of your `gitmirror` system user.
+Modify the values in `config.sh` for your setup.  
+Write the private token of the gitmirror GitLab user into `~/private_token` of your `gitmirror` system user.
 
 ### Schedule cron job
 
