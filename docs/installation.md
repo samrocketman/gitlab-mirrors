@@ -9,6 +9,17 @@ Things to note before beginning:
 
 ## Using a dedicated GitLab user
 
+### Overview
+
+* Create `gitmirror` system user.
+* Create `gitmirror` GitLab user.
+* Create a `Mirrors` group in GitLab (or name it whatever you want).
+* Clone gitlab-mirrors repository in `gitmirror` system user.
+* Modify `config.sh` using the user token from `gitmirror` GitLab user.
+* Create a cron job to update mirrors regularly.
+
+### Create gitmirror system user
+
 Create a system user called `gitmirror` and generate SSH keys.
 
     adduser gitmirror
@@ -20,9 +31,13 @@ Create `~/.ssh/config` for the `gitmirror` user.  Add your GitLab server host an
     Host gitlab.example.com
         User git
 
+### Create gitmirror GitLab user
+
 Create a `gitmirror` user in GitLab and set the user to be a GitLab administrator.  Set up the SSH keys with the gitmirror user in GitLab.  Obtain the Private token from the user.
 
-Create "Mirrors" group in GitLab and designate `gitmirror` user as the Owner of the group.  Realistically the group does not have to be called `Mirrors`.  It could be anything and in fact multiple mirror groups can be mirrored within the same repository folder.
+### Create Mirrors group in GitLab
+
+Create "Mirrors" group in GitLab and designate `gitmirror` GitLab user as the Owner of the group.  Realistically the group does not have to be called `Mirrors`.  It could be anything and in fact multiple mirror groups can be mirrored within the same repository folder.
 
 Clone the gitlab-mirrors repository and set values in config.sh.
 
@@ -34,11 +49,17 @@ Clone the gitlab-mirrors repository and set values in config.sh.
     chmod 755 *.sh
     cp config.sh.SAMPLE config.sh
 
+### Modify config.sh
+
 Modify the values in `config.sh` for your setup.  Be sure to add your private token for the `gitmirror` user in GitLab to `~/private_token` of your `gitmirror` system user.
+
+### Schedule cron job
 
 Once you have set up your `config.sh` let's add the `git-mirrors.sh` script to `crontab`.  Just execute `crontab -e` and add the following value to it.
 
     @hourly /home/gitmirror/gitlab-mirrors/git-mirrors.sh
+
+### Mirror to multiple GitLab groups
 
 Here's an example of a file tree where I have multiple groups specified with a different gitlab-mirrors project governing each.
 
