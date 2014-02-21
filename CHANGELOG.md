@@ -1,30 +1,35 @@
-## v0.4.6
+## gitlab-mirrors v0.4.7
+
+* Update installation docs to clarify GitLab user must be admin.
+
+---
+## gitlab-mirrors v0.4.6
 
 * Fix bug where all scripts break without a meaningful message if config.sh is not present.
 
---
-## v0.4.5
+---
+## gitlab-mirrors v0.4.5
 
 * Updated docs for Mercurial mirror management.
 
 ---
-## v0.4.4
+## gitlab-mirrors v0.4.4
 
 * Added Mercurial mirroring support.  `add_mirror.sh` now has the `--hg` option when adding a repository.
 
 ---
-## v0.4.3
+## gitlab-mirrors v0.4.3
 
 * Added `no_create_set` option to `config.sh`.  This option forces the user to always provide a remote for pushing repositories via the `--no-create` option in `add_mirror.sh`.
 
 ---
-## v0.4.2
+## gitlab-mirrors v0.4.2
 
 * Added `--no-create` option to `add_mirror.sh` which gives the script the remote to push manually rather than attempting any communication with GitLab.  This enables gitlab-mirrors to be used with non-gitlab git remotes.  It was specifically integrated for the purpose of mirroring gitlab wikis.
 * Added `--no-delete` option to `delete_mirror.sh` which only deletes the local copy of the mirror and does not attempt communication with GitLab.  This is the delete equivalent of `--no-create`.
 
 ---
-## v0.4.1
+## gitlab-mirrors v0.4.1
 
 * Added upgrade docs for upgrading v0.3 to v0.4
 
