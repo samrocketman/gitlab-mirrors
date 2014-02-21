@@ -6,6 +6,7 @@ Things to note before beginning:
 
 * GitLab will not allow users (even admins) to add a project to a group unless that user is designated an `owner` of the group.  This is by design in GitLab.
 * `gitlab-mirrors` will not auto-create a group (though it will auto-create projects within a group).  This is by design in `gitlab-mirrors`.  One should create the group manually and assign the `gitmirror` user as an owner of the group.  This is to ensure mirroring a repository for a particular group is a purposeful action.
+* `gitlab-mirrors` **must not** be shared by the same user as GitLab which is typically the `git` user.  It will not work and you'll run into a lot of configuration trouble.
 
 ## Using a dedicated GitLab user
 
