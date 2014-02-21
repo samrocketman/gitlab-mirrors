@@ -20,9 +20,9 @@ Create `~/.ssh/config` for the `gitmirror` user.  Add your GitLab server host an
     Host gitlab.example.com
         User git
 
-Create a gitmirror user in gitlab.  Set up the SSH keys with the gitmirror user in GitLab.  Obtain the Private token from the user.
+Create a `gitmirror` user in GitLab and set the user to be a GitLab administrator.  Set up the SSH keys with the gitmirror user in GitLab.  Obtain the Private token from the user.
 
-Create "Mirrors" group in gitlab and designate gitmirror user as the Owner of the group.  Realistically the group does not have to be called `Mirrors`.  It could be anything and in fact multiple mirror groups can be mirrored within the same repository folder.
+Create "Mirrors" group in GitLab and designate `gitmirror` user as the Owner of the group.  Realistically the group does not have to be called `Mirrors`.  It could be anything and in fact multiple mirror groups can be mirrored within the same repository folder.
 
 Clone the gitlab-mirrors repository and set values in config.sh.
 
@@ -34,7 +34,7 @@ Clone the gitlab-mirrors repository and set values in config.sh.
     chmod 755 *.sh
     cp config.sh.SAMPLE config.sh
 
-Modify the values in `config.sh` for your setup.  Be sure to add your private token for the gitmirror user in gitlab to `~/private_token` of your `gitmirror` system user.
+Modify the values in `config.sh` for your setup.  Be sure to add your private token for the `gitmirror` user in GitLab to `~/private_token` of your `gitmirror` system user.
 
 Once you have set up your `config.sh` let's add the `git-mirrors.sh` script to `crontab`.  Just execute `crontab -e` and add the following value to it.
 
@@ -45,16 +45,12 @@ Here's an example of a file tree where I have multiple groups specified with a d
 ```
 /home/gitmirror/
 ├── mirror-management
-│   ├── GitLab
-│   │   └── gitlab-mirrors
 │   ├── Mirrors
 │   │   ├── authors_files
 │   │   ├── gitlab-mirrors
 │   └── Subscribers
 │       └── gitlab-mirrors
 └── repositories
-    ├── GitLab
-    │   └── gitlab-mirrors
     ├── Mirrors
     │   ├── git
     │   ├── gitlabhq
