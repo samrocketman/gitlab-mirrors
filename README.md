@@ -62,4 +62,4 @@ Created by Sam Gleske under [MIT License](LICENSE).
 * Docs #1 [lmakarov](https://github.com/lmakarov)
 * Bzr support #6 [Agustín Cruz Lozano](https://github.com/agb80) (atin81@gmail.com)
 * SVN update tags #13 [Nikolaus Krismer](https://github.com/nikolauskrismer)
-
+* Docs #26 [Glen Mailer](https://github.com/glenjamin)

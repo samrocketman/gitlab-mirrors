@@ -6,8 +6,20 @@ Things to note before beginning:
 
 * GitLab will not allow users (even admins) to add a project to a group unless that user is designated an `owner` of the group.  This is by design in GitLab.
 * `gitlab-mirrors` will not auto-create a group (though it will auto-create projects within a group).  This is by design in `gitlab-mirrors`.  One should create the group manually and assign the `gitmirror` user as an owner of the group.  This is to ensure mirroring a repository for a particular group is a purposeful action.
+* `gitlab-mirrors` **must not** be shared by the same user as GitLab which is typically the `git` user.  It will not work and you'll run into a lot of configuration trouble.
 
 ## Using a dedicated GitLab user
+
+### Overview
+
+* Create `gitmirror` system user.
+* Create `gitmirror` GitLab Administrator user.
+* Create a `Mirrors` group in GitLab owned by `gitmirror` (or name it whatever you want).
+* Clone gitlab-mirrors repository in `gitmirror` system user.
+* Modify `config.sh` using the user token from `gitmirror` GitLab user.
+* Create a cron job to update mirrors regularly.
+
+### Create gitmirror system user
 
 Create a system user called `gitmirror` and generate SSH keys.
 
@@ -20,9 +32,15 @@ Create `~/.ssh/config` for the `gitmirror` user.  Add your GitLab server host an
     Host gitlab.example.com
         User git
 
-Create a gitmirror user in gitlab.  Set up the SSH keys with the gitmirror user in GitLab.  Obtain the Private token from the user.
+### Create gitmirror GitLab user
 
-Create "Mirrors" group in gitlab and designate gitmirror user as the Owner of the group.  Realistically the group does not have to be called `Mirrors`.  It could be anything and in fact multiple mirror groups can be mirrored within the same repository folder.
+Create a `gitmirror` user in GitLab and set the user to be a GitLab administrator.  
+Set up the SSH keys with the gitmirror user in GitLab.  
+Obtain the Private token from the user.
+
+### Create Mirrors group in GitLab
+
+Create "Mirrors" group in GitLab and designate `gitmirror` GitLab user as the Owner of the group.  Realistically the group does not have to be called `Mirrors`.  It could be anything and in fact multiple mirror groups can be mirrored within the same repository folder.
 
 Clone the gitlab-mirrors repository and set values in config.sh.
 
@@ -34,27 +52,30 @@ Clone the gitlab-mirrors repository and set values in config.sh.
     chmod 755 *.sh
     cp config.sh.SAMPLE config.sh
 
-Modify the values in `config.sh` for your setup.  Be sure to add your private token for the gitmirror user in gitlab to `~/private_token` of your `gitmirror` system user.
+### Modify config.sh
+
+Modify the values in `config.sh` for your setup.  
+Write the private token of the gitmirror GitLab user into `~/private_token` of your `gitmirror` system user.
+
+### Schedule cron job
 
 Once you have set up your `config.sh` let's add the `git-mirrors.sh` script to `crontab`.  Just execute `crontab -e` and add the following value to it.
 
     @hourly /home/gitmirror/gitlab-mirrors/git-mirrors.sh
+
+### Mirror to multiple GitLab groups
 
 Here's an example of a file tree where I have multiple groups specified with a different gitlab-mirrors project governing each.
 
 ```
 /home/gitmirror/
 ├── mirror-management
-│   ├── GitLab
-│   │   └── gitlab-mirrors
 │   ├── Mirrors
 │   │   ├── authors_files
 │   │   ├── gitlab-mirrors
 │   └── Subscribers
 │       └── gitlab-mirrors
 └── repositories
-    ├── GitLab
-    │   └── gitlab-mirrors
     ├── Mirrors
     │   ├── git
     │   ├── gitlabhq
