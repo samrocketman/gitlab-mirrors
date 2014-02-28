@@ -1,3 +1,8 @@
+## gitlab-mirrors v0.4.8
+
+* Fix bad prerequisite installation docs.
+
+---
 ## gitlab-mirrors v0.4.7
 
 * Update installation docs to clarify gitlab-mirrors installation process.
