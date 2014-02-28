@@ -3,7 +3,7 @@
 ### Required software
 
 * [GitLab 6.x][1]
-* [pyapi-gitlab3 @ v0.5.2][2]
+* [pyapi-gitlab3 @ v0.5.4][2]
 * [GNU coreutils][3]
 * [git 1.6.5][4] or later (git 1.6.5 introduced transport helpers)
 
@@ -26,7 +26,7 @@ If you plan on mirroring Mercurial repositories then you'll need the following a
     yum install python-setuptools
     git clone https://github.com/alexvh/python-gitlab3.git
     cd python-gitlab3
-    git checkout v0.5.2
+    git checkout v0.5.4
     python setup.py install
 
 
