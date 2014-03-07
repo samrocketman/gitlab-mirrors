@@ -72,7 +72,7 @@ Here's an example of a file tree where I have multiple groups specified with a d
 ├── mirror-management
 │   ├── Mirrors
 │   │   ├── authors_files
-│   │   ├── gitlab-mirrors
+│   │   └── gitlab-mirrors
 │   └── Subscribers
 │       └── gitlab-mirrors
 └── repositories
