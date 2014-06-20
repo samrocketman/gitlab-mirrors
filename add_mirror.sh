@@ -225,6 +225,17 @@ function preflight() {
     red_echo " option must have a git remote to push." 1>&2
     STATUS=1
   fi
+  #test no_remote_set environment variable (must be bool)
+  if [ ! "${no_remote_set}" = "true" ] && [ ! "${no_remote_set}" = "false" ];then
+    red_echo -n "no_remote_set="
+    yellow_echo -n "${no_remote_set}"
+    red_echo -n " is not a valid option for no_remote_set!  Must be "
+    yellow_echo -n "true"
+    red_echo -n " or "
+    yellow_echo -n "false"
+    red_echo "." 1>&2
+    STATUS=1
+  fi
   #test authors_file path for existence
   if [ ! -z "${authors_file}" -a ! -f "${authors_file}" ];then
     red_echo -n "Specified "
