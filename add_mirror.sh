@@ -33,6 +33,7 @@ project_name=""
 mirror=""
 force=false
 no_create_set="${no_create_set:-false}"
+no_remote_set="${no_remote_set:-false}"
 
 #
 # ARGUMENT HANDLING
@@ -92,8 +93,8 @@ REPOSITORY TYPES:
 EOF
 }
 #Short options are one letter.  If an argument follows a short opt then put a colon (:) after it
-SHORTOPTS="hvfm:n:p:"
-LONGOPTS="help,version,force,git,svn,bzr,hg,mirror:,no-create:,project-name:,authors-file:"
+SHORTOPTS="hvflm:n:p:"
+LONGOPTS="help,version,force,git,svn,bzr,hg,mirror:,no-create:,no-remote,project-name:,authors-file:"
 ARGS=$(getopt -s bash --options "${SHORTOPTS}" --longoptions "${LONGOPTS}" --name "${PROGNAME}" -- "$@")
 eval set -- "$ARGS"
 while true; do
@@ -139,6 +140,10 @@ while true; do
         no_create_set=true
         no_create="${2}"
         shift 2
+      ;;
+    -l|--no-remote)
+        no_remote_set=true
+        shift 1
       ;;
     --authors-file)
         authors_file="${2}"
