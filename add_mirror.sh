@@ -71,6 +71,10 @@ DESCRIPTION:
                      mirroring without needing to be specifically for
                      GitLab.
 
+  -l,--no-remote     This is a local only mirror.  There is no remote
+                     to push to.  This is meant for mirroring remote
+                     projects on a developer machine.
+
   -p,--project-name NAME
                      Set a GitLab project name to NAME.
 
