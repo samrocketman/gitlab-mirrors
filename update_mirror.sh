@@ -37,6 +37,9 @@ fi
 cd "${repo_dir}/${gitlab_namespace}/${project_name}"
 if git config --get svn-remote.svn.url &> /dev/null;then
   #this is an SVN mirror so update it accordingly
+  if [ "$(git config --get core.bare)" = "true" ];then
+    git config --bool core.bare false
+  fi
   git reset --hard
   git svn fetch
   git svn rebase
@@ -52,12 +55,7 @@ if git config --get svn-remote.svn.url &> /dev/null;then
   cd .git
   git config --bool core.bare true
   #bug fix for when gitlab is off-line during a cron job the bare setting gets set back to false when the git command fails
-  set +e
-  if ! git push gitlab;then
-    git config --bool core.bare false
-    exit 1
-  fi
-  set -e
+  git push gitlab
   git config --bool core.bare false
 else
   #just a git mirror so mirror it accordingly
