@@ -198,16 +198,16 @@ function preflight() {
   fi
   #test required project_name option
   if [ -z "${project_name}" ];then
-    red_echo -n "Missing " 1>&2
-    yellow_echo -n "--project-name" 1>&2
-    red_echo " option." 1>&2
+    red_echo -n "Missing "
+    yellow_echo -n "--project-name"
+    red_echo " option."
     STATUS=1
   fi
   #test required mirror option
   if [ -z "${mirror}" ];then
-    red_echo -n "Missing " 1>&2
-    yellow_echo -n "--mirror" 1>&2
-    red_echo " option." 1>&2
+    red_echo -n "Missing "
+    yellow_echo -n "--mirror"
+    red_echo " option."
     STATUS=1
   fi
   #test no_create_set environment variable (must be bool)
@@ -218,11 +218,11 @@ function preflight() {
     yellow_echo -n "true"
     red_echo -n " or "
     yellow_echo -n "false"
-    red_echo "." 1>&2
+    red_echo "."
     STATUS=1
   elif ${no_create_set} && [ -z "${no_create}" ];then
-    yellow_echo -n "--no-create" 1>&2
-    red_echo " option must have a git remote to push." 1>&2
+    yellow_echo -n "--no-create"
+    red_echo " option must have a git remote to push."
     STATUS=1
   fi
   #test no_remote_set environment variable (must be bool)
@@ -233,7 +233,7 @@ function preflight() {
     yellow_echo -n "true"
     red_echo -n " or "
     yellow_echo -n "false"
-    red_echo "." 1>&2
+    red_echo "."
     STATUS=1
   fi
   #test authors_file path for existence
@@ -251,7 +251,7 @@ function preflight() {
     yellow_echo -n "true"
     red_echo -n " or "
     yellow_echo -n "false"
-    red_echo "." 1>&2
+    red_echo "."
     STATUS=1
   fi
   #test enable_colors environment variable (must be bool)
@@ -262,7 +262,7 @@ function preflight() {
     yellow_echo -n "true"
     red_echo -n " or "
     yellow_echo -n "false"
-    red_echo "." 1>&2
+    red_echo "."
     STATUS=1
   fi
   #test issues_enabled environment variable (must be bool)
@@ -273,7 +273,7 @@ function preflight() {
     yellow_echo -n "true"
     red_echo -n " or "
     yellow_echo -n "false"
-    red_echo "." 1>&2
+    red_echo "."
     STATUS=1
   fi
   #test wall_enabled environment variable (must be bool)
@@ -284,7 +284,7 @@ function preflight() {
     yellow_echo -n "true"
     red_echo -n " or "
     yellow_echo -n "false"
-    red_echo "." 1>&2
+    red_echo "."
     STATUS=1
   fi
   #test wiki_enabled environment variable (must be bool)
@@ -295,7 +295,7 @@ function preflight() {
     yellow_echo -n "true"
     red_echo -n " or "
     yellow_echo -n "false"
-    red_echo "." 1>&2
+    red_echo "."
     STATUS=1
   fi
   #test snippets_enabled environment variable (must be bool)
@@ -306,7 +306,7 @@ function preflight() {
     yellow_echo -n "true"
     red_echo -n " or "
     yellow_echo -n "false"
-    red_echo "." 1>&2
+    red_echo "."
     STATUS=1
   fi
   #test public environment variable (must be bool)
@@ -317,7 +317,7 @@ function preflight() {
     yellow_echo -n "true"
     red_echo -n " or "
     yellow_echo -n "false"
-    red_echo "." 1>&2
+    red_echo "."
     STATUS=1
   fi
   #test merge_requests_enabled environment variable (must be bool)
@@ -328,7 +328,7 @@ function preflight() {
     yellow_echo -n "true"
     red_echo -n " or "
     yellow_echo -n "false"
-    red_echo "." 1>&2
+    red_echo "."
     STATUS=1
   fi
   return ${STATUS}
@@ -354,7 +354,6 @@ elif [ -d "${repo_dir}/${gitlab_namespace}/${project_name}" ] && ! ${force};then
   exit 1
 fi
 #Resolve the $authors_file path because of changing working directories
-#/home/gitmirror/mirror-management/Mirrors/gitlab-mirrors/gitlab-mirrors/../authors_files/systems_authors_maps.txt
 if [ ! -z "${authors_file}" ];then
   if ! echo "${authors_file}" | grep '^/' &> /dev/null;then
     authors_file="${PWD}/${authors_file}"
@@ -386,7 +385,7 @@ fi
 
 #Get the remote gitlab url for the specified project.
 #If the project doesn't already exist in gitlab then create it.
-if [ -z "${no_create}" ];then
+if ! ${no_remote_set} && [ -z "${no_create}" ];then
   green_echo "Resolving gitlab remote." 1>&2
   if python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}" 1> /dev/null;then
     gitlab_remote=$(python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}")
@@ -399,9 +398,13 @@ if [ -z "${no_create}" ];then
     exit 1
   fi
 else
-  green_echo -n "Using remote: "
-  echo "${no_create}"
-  gitlab_remote="${no_create}"
+  if ! ${no_remote_set};then
+    green_echo -n "Using remote: " 1>&2
+    echo "${no_create}" 1>&2
+    gitlab_remote="${no_create}"
+  else
+    echo "Local only mirror." 1>&2
+  fi
 fi
 if ${git};then
   #create a mirror
@@ -410,17 +413,21 @@ if ${git};then
   git clone --mirror "${mirror}" "${project_name}"
   cd "${project_name}"
   #add the gitlab remote
-  green_echo "Adding gitlab remote to project." 1>&2
-  git remote add gitlab "${gitlab_remote}"
-  git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
-  git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
-  #Check the initial repository into gitlab
-  green_echo "Checking the mirror into gitlab." 1>&2
-  git fetch
-  git remote prune origin
-  git push gitlab
-  if [ ! -z "${no_create}" ];then
-    git config gitlabmirrors.nocreate true
+  if ! ${no_remote_set};then
+    green_echo "Adding gitlab remote to project." 1>&2
+    git remote add gitlab "${gitlab_remote}"
+    git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
+    git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
+    #Check the initial repository into gitlab
+    green_echo "Checking the mirror into gitlab." 1>&2
+    git fetch
+    git remote prune origin
+    git push gitlab
+    if [ ! -z "${no_create}" ];then
+      git config gitlabmirrors.nocreate true
+    fi
+  else
+      git config gitlabmirrors.noremote true
   fi
   green_echo "All done!" 1>&2
 elif ${svn};then
@@ -433,19 +440,23 @@ elif ${svn};then
     git svn clone "${mirror}" "${project_name}" ${git_svn_additional_options}
   fi
   #add the gitlab remote
-  green_echo "Adding gitlab remote to project." 1>&2
-  cd "${project_name}"
-  git remote add gitlab "${gitlab_remote}"
-  git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
-  git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
-  #Check the initial repository into gitlab
-  green_echo "Checking the mirror into gitlab." 1>&2
-  git reset --hard
-  git svn fetch
-  cd .git
-  git config --bool core.bare true
-  git push gitlab
-  git config --bool core.bare false
+  if ! ${no_remote_set};then
+    green_echo "Adding gitlab remote to project." 1>&2
+    cd "${project_name}"
+    git remote add gitlab "${gitlab_remote}"
+    git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
+    git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
+    #Check the initial repository into gitlab
+    green_echo "Checking the mirror into gitlab." 1>&2
+    git reset --hard
+    git svn fetch
+    cd .git
+    git config --bool core.bare true
+    git push gitlab
+    git config --bool core.bare false
+  else
+    git config gitlabmirrors.noremote true
+  fi
   green_echo "All done!" 1>&2
 elif ${bzr};then
   #create a mirror
@@ -456,13 +467,17 @@ elif ${bzr};then
   cd "${project_name}"
   git gc --aggressive
   #add the gitlab remote
-  git remote add gitlab "${gitlab_remote}"
-  git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
-  git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
-  #Check the initial repository into gitlab
-  green_echo "Checking the mirror into gitlab." 1>&2
-  git push gitlab
-  green_echo "All done!" 1>&2
+  if ! ${no_remote_set};then
+    git remote add gitlab "${gitlab_remote}"
+    git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
+    git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
+    #Check the initial repository into gitlab
+    green_echo "Checking the mirror into gitlab." 1>&2
+    git push gitlab
+    green_echo "All done!" 1>&2
+  else
+    git config gitlabmirrors.noremote true
+  fi
 elif ${hg};then
   #create a mirror
   green_echo "Creating mirror from ${mirror}" 1>&2
@@ -472,14 +487,18 @@ elif ${hg};then
   cd "${project_name}"
   git gc --aggressive
   #add the gitlab remote
-  git remote add gitlab "${gitlab_remote}"
-  git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
-  git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
-  #Check the initial repository into gitlab
-  green_echo "Checking the mirror into gitlab." 1>&2
-  git push gitlab
-  green_echo "All done!" 1>&2
+  if ! ${no_remote_set};then
+    git remote add gitlab "${gitlab_remote}"
+    git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
+    git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
+    #Check the initial repository into gitlab
+    green_echo "Checking the mirror into gitlab." 1>&2
+    git push gitlab
+    green_echo "All done!" 1>&2
+  else
+    git config gitlabmirrors.noremote true
+  fi
 else
-  red_echo "Something has gone very wrong.  You should never see this message."
+  red_echo "Something has gone very wrong.  You should never see this message." 1>&2
   exit 1
 fi
