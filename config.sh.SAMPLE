@@ -14,8 +14,10 @@ repo_dir="${user_home}/repositories"
 enable_colors=true
 #These are additional options which should be passed to git-svn.  See git help svn
 git_svn_additional_options="-s"
-#Force gitlab-mirrors to not create the gitlab remote
+#Force gitlab-mirrors to not create the gitlab remote so a remote URL must be provided. (superceded by no_remote_set)
 no_create_set=false
+#Force gitlab-mirrors to only allow local remotes only.
+no_remote_set=false
 
 #
 # Gitlab settings
@@ -28,7 +30,7 @@ gitlab_url="https://gitlab.example.com"
 #Special user you created in Gitlab whose only purpose is to update mirror sites and admin the $gitlab_namespace group.
 gitlab_user="gitmirror"
 #Generate a token for your $gitlab_user and set it here.
-gitlab_user_token_secret="$(head -n1 "${user_home}/private_token" || echo "")"
+gitlab_user_token_secret="$(head -n1 "${user_home}/private_token" 2> /dev/null || echo "")"
 #Verify signed SSL certificates?
 ssl_verify=true
 
