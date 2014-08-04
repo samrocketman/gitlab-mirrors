@@ -24,17 +24,21 @@ PROGNAME="${0##*/}"
 PROGVERSION="${VERSION}"
 
 #Default script options
-project_name="$1"
+project_name="${1}"
 
 if [ -z "${project_name}" ];then
   echo "Must specify a project_name!" 1>&2
   exit 1
 elif [ ! -d "${repo_dir}/${gitlab_namespace}/${project_name}" ];then
-  echo "No git repository for $1!  Perhaps run add_mirror.sh?" 1>&2
+  echo "No git repository for ${1}!  Perhaps run add_mirror.sh?" 1>&2
   exit 1
 fi
 
 cd "${repo_dir}/${gitlab_namespace}/${project_name}"
+#check for local only repository type
+if git config --get gitlabmirrors.noremote &> /dev/null && [ "$(git config --get gitlabmirrors.noremote)" = "true" ];then
+  no_remote_set=true
+fi
 if git config --get svn-remote.svn.url &> /dev/null;then
   #this is an SVN mirror so update it accordingly
   if [ "$(git config --get core.bare)" = "true" ];then
@@ -52,14 +56,20 @@ if git config --get svn-remote.svn.url &> /dev/null;then
     fi
   done
 
-  cd .git
-  git config --bool core.bare true
-  #bug fix for when gitlab is off-line during a cron job the bare setting gets set back to false when the git command fails
-  git push gitlab
-  git config --bool core.bare false
+  if ! ${no_remote_set};then
+    #push to the remote
+    cd .git
+    git config --bool core.bare true
+    #bug fix for when gitlab is off-line during a cron job the bare setting gets set back to false when the git command fails
+    git push gitlab
+    git config --bool core.bare false
+  fi
 else
   #just a git mirror so mirror it accordingly
   git fetch
-  git remote prune origin
-  git push gitlab
+  if ! ${no_remote_set};then
+    #push to the remote
+    git remote prune origin
+    git push gitlab
+  fi
 fi
