@@ -421,7 +421,6 @@ if ${git};then
     #Check the initial repository into gitlab
     green_echo "Checking the mirror into gitlab." 1>&2
     git fetch
-    git remote prune origin
     git push gitlab
     if [ ! -z "${no_create}" ];then
       git config gitlabmirrors.nocreate true
