@@ -1,6 +1,7 @@
 # Managing mirrored repositories
 
-A short overview of managing mirrored repositories.  This assumes you have already [installed gitlab-mirrors](installation.md).
+A short overview of managing mirrored repositories.  This assumes you have
+already [installed gitlab-mirrors](installation.md).
 
 Currently gitlab-mirrors supports the following repository types.
 
@@ -8,7 +9,10 @@ Currently gitlab-mirrors supports the following repository types.
 * git
 * svn
 
-*Note: any repository type other than git may or may not update the CLI with status text.  For extremely large alternate repository types (e.g. Bazaar) it can take a long time to clone with little or no output to the CLI until the initial BZR clone has finished.*
+*Note: any repository type other than git may or may not update the CLI with
+status text.  For extremely large alternate repository types (e.g. Bazaar) it
+can take a long time to clone with little or no output to the CLI until the
+initial BZR clone has finished.*
 
 ## Create a mirror
 
@@ -16,7 +20,8 @@ See also `./add_mirror.sh --help`.
 
 ### Bazaar
 
-The Bazaar support comes from [`git-remote-bzr`](https://github.com/felipec/git/wiki/git-remote-bzr).
+The Bazaar support comes from
+[`git-remote-bzr`](https://github.com/felipec/git/wiki/git-remote-bzr).
 
 Create a BZR repository mirror.
 
@@ -32,13 +37,15 @@ Create a git repository mirror.
     cd gitlab-mirrors
     ./add_mirror.sh --git --project-name github-gitlab-mirrors --mirror https://github.com/sag47/gitlab-mirrors.git
 
-Create a git repository mirror without attempting to auto-create the project and just take a remote.
+Create a git repository mirror without attempting to auto-create the project and
+just take a remote.
 
     ./add_mirror.sh --git --project-name github-gitlab-mirrors --mirror https://github.com/sag47/gitlab-mirrors.git --no-create user@yourserver.com:projects/gitlab-mirrors.git
 
 ### Mercurial
 
-The Mercurial support comes from [`git-remote-hg`](https://github.com/felipec/git/wiki/git-remote-hg).
+The Mercurial support comes from
+[`git-remote-hg`](https://github.com/felipec/git/wiki/git-remote-hg).
 
 Create a hg repository mirror.
 
@@ -56,9 +63,16 @@ Create an SVN repository mirror.
     cd gitlab-mirrors
     ./add_mirror.sh --svn --project-name someproject --mirror svn+ssh://user@svn.example.com/srv/repos/someproject --authors-file ./authors.txt
 
-The `--authors-file` option is an optional argument.  It serves the same purpose as the `git-svn --authors-file` option.  It is an authors file for mapping SVN users to git users.  See the [`git-svn(1)`][git-svn-man] man page for more details.
+The `--authors-file` option is an optional argument.  It serves the same purpose
+as the `git-svn --authors-file` option.  It is an authors file for mapping SVN
+users to git users.  See the [`git-svn(1)`][git-svn-man] man page for more
+details.
 
-Notice in [`config.sh`](../config.sh.SAMPLE) there's an option `git_svn_additional_options`.  This option affects `add_mirror.sh` and the creation of a mirror only.  It doesn't affect the synchronization of the svn repository.  See the [`git-svn(1)`][git-svn-man] man page under `init` COMMAND options for available values which can be set.
+Notice in [`config.sh`](../config.sh.SAMPLE) there's an option
+`git_svn_additional_options`.  This option affects `add_mirror.sh` and the
+creation of a mirror only.  It doesn't affect the synchronization of the svn
+repository.  See the [`git-svn(1)`][git-svn-man] man page under `init` COMMAND
+options for available values which can be set.
 
 ## List all known mirrors
 
@@ -88,7 +102,8 @@ See also `./delete_mirror.sh --help`.
     cd gitlab-mirrors
     ./git-mirrors.sh
 
-Updating all known mirrors is also meant to be used with a cron job via `crontab`.  See `man 5 crontab`.
+Updating all known mirrors is also meant to be used with a cron job via
+`crontab`.  See `man 5 crontab`.
 
     @hourly /home/gitmirror/gitlab-mirrors/git-mirrors.sh
 
