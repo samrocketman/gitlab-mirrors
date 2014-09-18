@@ -69,6 +69,7 @@ else
   git fetch
   if ! ${no_remote_set};then
     #push to the remote
+    git remote prune origin
     git push gitlab
   fi
 fi
