@@ -28,6 +28,8 @@ all mirrors using `crontab`.  It operates by interacting with the
     by any git hosting server or service.  This feature was originally added
     with mirroring GitLab wikis in mind but allows gitlab-mirrors to be more
     versatile.
+  * no-remote mirroring where you don't need a remote git repository at all.
+    Just mirror the repositories to local disk.
 * Update a single mirror.
 * Update all known mirrors.
 * List all known mirrors.
