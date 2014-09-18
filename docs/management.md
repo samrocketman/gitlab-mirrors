@@ -74,6 +74,15 @@ creation of a mirror only.  It doesn't affect the synchronization of the svn
 repository.  See the [`git-svn(1)`][git-svn-man] man page under `init` COMMAND
 options for available values which can be set.
 
+### No Remote repository mirroring
+
+    su - gitmirror
+    cd gitlab-mirrors
+    ./add_mirror --git --project-name someproject --mirror git@server:repo.git --no-remote
+
+By using the `--no-remote` option repositories on the internet can be mirrored
+locally on disk.  It does not attempt to reach out to gitlab at all.
+
 ## List all known mirrors
 
 See also `./ls-mirrors.sh --help`.
