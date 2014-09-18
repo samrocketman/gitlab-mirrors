@@ -8,13 +8,17 @@
 system_user="gitmirror"
 #The home directory path of the $system_user
 user_home="/home/${system_user}"
-#The repository directory where gitlab-mirrors will contain copies of mirrored repositories before pushing them to gitlab.
+#The repository directory where gitlab-mirrors will contain copies of mirrored
+#repositories before pushing them to gitlab.
 repo_dir="${user_home}/repositories"
-#colorize output of add_mirror.sh, update_mirror.sh, and git-mirrors.sh commands.
+#colorize output of add_mirror.sh, update_mirror.sh, and git-mirrors.sh
+#commands.
 enable_colors=true
-#These are additional options which should be passed to git-svn.  See git help svn
+#These are additional options which should be passed to git-svn.  On the command
+#line type "git help svn"
 git_svn_additional_options="-s"
-#Force gitlab-mirrors to not create the gitlab remote so a remote URL must be provided. (superceded by no_remote_set)
+#Force gitlab-mirrors to not create the gitlab remote so a remote URL must be
+#provided. (superceded by no_remote_set)
 no_create_set=false
 #Force gitlab-mirrors to only allow local remotes only.
 no_remote_set=false
@@ -27,7 +31,8 @@ no_remote_set=false
 gitlab_namespace="Mirrors"
 #This is the base web url of your Gitlab server.
 gitlab_url="https://gitlab.example.com"
-#Special user you created in Gitlab whose only purpose is to update mirror sites and admin the $gitlab_namespace group.
+#Special user you created in Gitlab whose only purpose is to update mirror sites
+#and admin the $gitlab_namespace group.
 gitlab_user="gitmirror"
 #Generate a token for your $gitlab_user and set it here.
 gitlab_user_token_secret="$(head -n1 "${user_home}/private_token" 2> /dev/null || echo "")"
@@ -35,8 +40,8 @@ gitlab_user_token_secret="$(head -n1 "${user_home}/private_token" 2> /dev/null |
 ssl_verify=true
 
 #
-# Gitlab new project default settings.  If a project needs to be created by gitlab-mirrors
-# then it will assign the following values as defaults.
+# Gitlab new project default settings.  If a project needs to be created by
+# gitlab-mirrors then it will assign the following values as defaults.
 #
 
 #values must be true or false
