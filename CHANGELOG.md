@@ -1,3 +1,17 @@
+## gitlab-mirrors v0.4.9
+
+* Better documentation when viewed from the command line.  No longer stretches
+  more than 80 characters.
+* Added `no_remote_set` option to `config.sh`.  This forces to only allow
+  mirroring to local disk rather than having an addition git remote.
+* `--no-remote` option added to `add_mirror.sh`.  This allows a local disk only
+  mirror to be added which has no git remote to push.
+* Bugfix `private_token` not always required.  In `config.sh` there were minor
+  issues with non-GitLab mirroring and no-remote mirroring when GitLab was not
+  used at all.  It would falsely fail all scripts.
+* Bugfix where svn is sometimes bare causing the update to fail at rare times.
+
+---
 ## gitlab-mirrors v0.4.8
 
 * Fix bad prerequisite installation docs.
