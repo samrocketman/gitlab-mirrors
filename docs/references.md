@@ -21,8 +21,6 @@ GitLab because it allows admins to mirror massive amounts of repositories in an
 automated fashion.  When native mirror support is included this project will
 likely be refactored into a script to automate adding mirrors via the API.
 
-[1]: https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/README.md
-[2]: https://github.com/sag47/python-gitlab
 [3]: http://feedback.gitlab.com/forums/176466-general/suggestions/4286666-mirror-git-svn-into-repo-
 [4]: http://feedback.gitlab.com/forums/176466-general/suggestions/3697598-feature-request-multi-master-mirroring
 [5]: http://stackoverflow.com/questions/2756747/mirror-a-git-repository-by-pulling

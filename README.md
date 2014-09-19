@@ -1,6 +1,6 @@
 # gitlab-mirrors
 
-The [gitlab-mirrors](https://github.com/sag47/gitlab-mirrors) project is
+The [gitlab-mirrors](https://github.com/samrocketman/gitlab-mirrors) project is
 designed to fill in a feature which is currently
 [missing from GitLab][mirror-missing]: the ability to mirror remote
 repositories.  gitlab-mirrors creates read only copies of remote repositories in

@@ -35,12 +35,12 @@ Create a git repository mirror.
 
     su - gitmirror
     cd gitlab-mirrors
-    ./add_mirror.sh --git --project-name github-gitlab-mirrors --mirror https://github.com/sag47/gitlab-mirrors.git
+    ./add_mirror.sh --git --project-name github-gitlab-mirrors --mirror https://github.com/samrocketman/gitlab-mirrors.git
 
 Create a git repository mirror without attempting to auto-create the project and
 just take a remote.
 
-    ./add_mirror.sh --git --project-name github-gitlab-mirrors --mirror https://github.com/sag47/gitlab-mirrors.git --no-create user@yourserver.com:projects/gitlab-mirrors.git
+    ./add_mirror.sh --git --project-name github-gitlab-mirrors --mirror https://github.com/samrocketman/gitlab-mirrors.git --no-create user@yourserver.com:projects/gitlab-mirrors.git
 
 ### Mercurial
 

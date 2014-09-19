@@ -63,7 +63,7 @@ Clone the gitlab-mirrors repository and set values in config.sh.
     su - gitmirrors
     mkdir repositories
     touch private_token
-    git clone https://github.com/sag47/gitlab-mirrors.git
+    git clone https://github.com/samrocketman/gitlab-mirrors.git
     cd gitlab-mirrors
     chmod 755 *.sh
     cp config.sh.SAMPLE config.sh
