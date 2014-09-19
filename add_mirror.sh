@@ -445,7 +445,7 @@ elif ${svn};then
     cd "${project_name}"
     git remote add gitlab "${gitlab_remote}"
     git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
-    git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
+    git config --add remote.gitlab.push '+refs/remotes/tags/*:refs/tags/*'
     #Check the initial repository into gitlab
     green_echo "Checking the mirror into gitlab." 1>&2
     git reset --hard

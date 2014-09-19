@@ -47,14 +47,6 @@ if git config --get svn-remote.svn.url &> /dev/null;then
   git reset --hard
   git svn fetch
   git svn rebase
-  git for-each-ref --format="%(objectname:short) %(refname)" refs/remotes/tags |  while read ref; do
-    tagname="${ref##*/}"
-    if ! git show-ref --tags | grep -q "refs/tags/${tagname}$"; then
-      echo "Tag does not exist... creating it"
-      objectname="${ref%% *}"
-      GIT_COMMITTER_DATE="$(git show --format=%aD  | head -1)" git tag -a "${tagname}" -m "import '${tagname}' tag from svn" "${objectname}"
-    fi
-  done
 
   if ! ${no_remote_set};then
     #push to the remote
