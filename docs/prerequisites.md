@@ -7,15 +7,18 @@
 * [GNU coreutils][3]
 * [git 1.6.5][4] or later (git 1.6.5 introduced transport helpers)
 
-If you plan on mirroring SVN repositories as well then you'll need the following additional options.
+If you plan on mirroring SVN repositories as well then you'll need the
+following additional options.
 
 * [git-svn][7]
 
-If you plan on mirroring BZR repositories then you'll need the following aditional options.
+If you plan on mirroring BZR repositories then you'll need the following
+aditional options.
 
 * [git-bzr-helper][8]
 
-If you plan on mirroring Mercurial repositories then you'll need the following aditional options.
+If you plan on mirroring Mercurial repositories then you'll need the following
+aditional options.
 
 * [git-hg-helper][9]
 
@@ -32,7 +35,11 @@ If you plan on mirroring Mercurial repositories then you'll need the following a
 
 #### Installing git
 
-If you use package management then it will likely be best for you to install git via package management for your OS.  You can find the source to git at the [git-core project][5].  For instructions on other platforms see the [Getting Started - Installing Git section of the git book][6].  The following is for compiling git 1.8.4 on RHEL 6.4.
+If you use package management then it will likely be best for you to install git
+via package management for your OS.  You can find the source to git at the
+[git-core project][5].  For instructions on other platforms see the
+[Getting Started - Installing Git section of the git book][6].  The following is
+for compiling git 1.8.4 on RHEL 6.4.
 
     yum install perl-ExtUtils-MakeMaker zlib zlib-devel openssh libcurl libcurl-devel expat expat-devel gettext gettext-devel
     cd /usr/local/src/
@@ -45,7 +52,8 @@ If you use package management then it will likely be best for you to install git
     make
     make install
 
-Your git should now be located in `/usr/local/bin/git`.  You should edit `/etc/profile` and place `/usr/local/bin` at the beginning of your `$PATH`.
+Your git should now be located in `/usr/local/bin/git`.  You should edit
+`/etc/profile` and place `/usr/local/bin` at the beginning of your `$PATH`.
 
 #### git-bzr-helper
 

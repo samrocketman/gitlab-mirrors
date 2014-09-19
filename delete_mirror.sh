@@ -149,20 +149,25 @@ pushd "${repo_dir}/${gitlab_namespace}/${project_name}" &> /dev/null
 if git config --get gitlabmirrors.nocreate &> /dev/null && [ "$(git config --get gitlabmirrors.nocreate)" = "true" ];then
   no_delete=true
 fi
+if git config --get gitlabmirrors.noremote &> /dev/null && [ "$(git config --get gitlabmirrors.noremote)" = "true" ];then
+  no_remote_set=true
+fi
 popd &> /dev/null
 
 rm -rf "${repo_dir}/${gitlab_namespace}/${project_name}"
 green_echo -n "DELETED" 1>&2
 echo " ${repo_dir}/${gitlab_namespace}/${project_name}" 1>&2
-if ! ${no_delete};then
-  if ! python lib/manage_gitlab_project.py --delete "${project_name}";then
-    red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
-    exit 1
+if ! ${no_remote_set};then
+  if ! ${no_delete};then
+    if ! python lib/manage_gitlab_project.py --delete "${project_name}";then
+      red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
+      exit 1
+    fi
+    green_echo -n "DELETED" 1>&2
+    echo " ${gitlab_namespace}/${project_name} from GitLab" 1>&2
+  else
+    echo 1>&2
+    yellow_echo -n "**NOTE**:" 1>&2
+    echo " You must log into the GitLab web interface in order to delete the project from GitLab!" 1>&2
   fi
-  green_echo -n "DELETED" 1>&2
-  echo " ${gitlab_namespace}/${project_name} from GitLab" 1>&2
-else
-  echo 1>&2
-  yellow_echo -n "**NOTE**:" 1>&2
-  echo " You must log into the GitLab web interface in order to delete the project from GitLab!" 1>&2
 fi
