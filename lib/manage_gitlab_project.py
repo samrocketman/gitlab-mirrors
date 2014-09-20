@@ -29,6 +29,7 @@ parser.add_option("--public",dest="public",action="store_true",default=False)
 parser.add_option("--create",dest="create",action="store_true",default=False)
 parser.add_option("--delete",dest="delete",action="store_true",default=False)
 parser.add_option("--desc",dest="desc",metavar="DESC",default=False)
+parser.add_option("--http",dest="http",action="store_true",default=False)
 (options,args) = parser.parse_args()
 if len(args) == 0:
   print >> stderr, "No project name specified.  Do not run this script standalone."
@@ -96,7 +97,10 @@ if options.create:
       print >> stderr, "There was a problem creating {group}/{project}.  Did you give {user} user Admin rights in gitlab?".format(group=gitlab_namespace,project=project_name,user=gitlab_user)
       exit(1)
 
-  print found_project.ssh_url_to_repo
+  if options.http:
+    print found_project.http_url_to_repo
+  else:
+    print found_project.ssh_url_to_repo
 elif options.delete:
   try:
     deleted_project=git.project(findproject(gitlab_namespace,project_name).id).delete()
