@@ -34,6 +34,7 @@ mirror=""
 force=false
 no_create_set="${no_create_set:-false}"
 no_remote_set="${no_remote_set:-false}"
+http_remote="${http_remote:-false}"
 
 #
 # ARGUMENT HANDLING
@@ -48,7 +49,7 @@ USAGE:
   ${PROGNAME} TYPE --project NAME --mirror URL [--authors-file FILE]
 
 DESCRIPTION:
-  This will add a git or SVN repository to be mirrored by GitLab.  It 
+  This will add a git or SVN repository to be mirrored by GitLab.  It
   first checks to see if the project exists in gitlab.  If it does
   not exist then it creates it.  It will then clone and check in the
   first copy into GitLab.  From there you must use the update_mirror.sh
@@ -254,6 +255,17 @@ function preflight() {
     red_echo "."
     STATUS=1
   fi
+  #test http_remote environment variable (must be bool)
+  if [ ! "${http_remote}" = "true" ] && [ ! "${http_remote}" = "false" ];then
+    red_echo -n "http_remote="
+    yellow_echo -n "${http_remote}"
+    red_echo -n " is not a valid option for http_remote!  Must be "
+    yellow_echo -n "true"
+    red_echo -n " or "
+    yellow_echo -n "false"
+    red_echo "."
+    STATUS=1
+  fi
   #test enable_colors environment variable (must be bool)
   if [ ! "${enable_colors}" = "true" ] && [ ! "${enable_colors}" = "false" ];then
     red_echo -n "enable_colors="
@@ -381,6 +393,9 @@ if ${snippets_enabled};then
 fi
 if ${public};then
   CREATE_OPTS="--public ${CREATE_OPTS}"
+fi
+if ${http_remote};then
+  CREATE_OPTS="--http ${CREATE_OPTS}"
 fi
 
 #Get the remote gitlab url for the specified project.
