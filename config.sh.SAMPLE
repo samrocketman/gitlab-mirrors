@@ -38,6 +38,8 @@ gitlab_user="gitmirror"
 gitlab_user_token_secret="$(head -n1 "${user_home}/private_token" 2> /dev/null || echo "")"
 #Verify signed SSL certificates?
 ssl_verify=true
+#Push to GitLab over http?  Otherwise will push projects via SSH.
+http_remote=false
 
 #
 # Gitlab new project default settings.  If a project needs to be created by
