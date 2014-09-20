@@ -22,6 +22,9 @@ git_svn_additional_options="-s"
 no_create_set=false
 #Force gitlab-mirrors to only allow local remotes only.
 no_remote_set=false
+#Enable force fetching and pushing.  Will overwrite references if upstream
+#forced pushed.  Applies to git projects only.
+force_update=false
 
 #
 # Gitlab settings
