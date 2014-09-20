@@ -437,6 +437,9 @@ if ${git};then
     green_echo "Checking the mirror into gitlab." 1>&2
     git fetch
     git remote prune origin
+    if ${http_remote};then
+      git config credential.helper store
+    fi
     git push gitlab
     if [ ! -z "${no_create}" ];then
       git config gitlabmirrors.nocreate true
@@ -467,6 +470,9 @@ elif ${svn};then
     git svn fetch
     cd .git
     git config --bool core.bare true
+    if ${http_remote};then
+      git config credential.helper store
+    fi
     git push gitlab
     git config --bool core.bare false
   else
@@ -488,6 +494,9 @@ elif ${bzr};then
     git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
     #Check the initial repository into gitlab
     green_echo "Checking the mirror into gitlab." 1>&2
+    if ${http_remote};then
+      git config credential.helper store
+    fi
     git push gitlab
     green_echo "All done!" 1>&2
   else
@@ -508,6 +517,9 @@ elif ${hg};then
     git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
     #Check the initial repository into gitlab
     green_echo "Checking the mirror into gitlab." 1>&2
+    if ${http_remote};then
+      git config credential.helper store
+    fi
     git push gitlab
     green_echo "All done!" 1>&2
   else
