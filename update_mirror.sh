@@ -18,12 +18,26 @@ if [ ! -f "${git_mirrors_dir}/config.sh" ];then
   exit 1
 fi
 
+#sane update defaults that are backwards compatible
 force_update="${force_update:-false}"
+prune_mirrors="${prune_mirrors:-false}"
+
 #test force_update environment variable (must be bool)
 if [ ! "${force_update}" = "true" ] && [ ! "${force_update}" = "false" ];then
   red_echo -n "force_update="
   yellow_echo -n "${force_update}"
   red_echo -n " is not a valid option for force_update!  Must be "
+  yellow_echo -n "true"
+  red_echo -n " or "
+  yellow_echo -n "false"
+  red_echo "."
+  exit 1
+fi
+#test prune_mirrors environment variable (must be bool)
+if [ ! "${prune_mirrors}" = "true" ] && [ ! "${prune_mirrors}" = "false" ];then
+  red_echo -n "prune_mirrors="
+  yellow_echo -n "${prune_mirrors}"
+  red_echo -n " is not a valid option for prune_mirrors!  Must be "
   yellow_echo -n "true"
   red_echo -n " or "
   yellow_echo -n "false"
@@ -75,10 +89,13 @@ else
   if ${force_update};then
     force_opt="--force"
   fi
-  git fetch ${force_opt}
+  if ${prune_mirrors};then
+    prune_opt="--prune"
+  fi
+  git fetch ${force_opt} ${prune_opt}
+
   if ! ${no_remote_set};then
     #push to the remote
-    git remote prune origin
-    git push ${force_opt} gitlab
+    git push ${force_opt} ${prune_opt} gitlab
   fi
 fi

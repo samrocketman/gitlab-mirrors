@@ -436,7 +436,6 @@ if ${git};then
     #Check the initial repository into gitlab
     green_echo "Checking the mirror into gitlab." 1>&2
     git fetch
-    git remote prune origin
     if ${http_remote};then
       git config credential.helper store
     fi

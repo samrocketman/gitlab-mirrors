@@ -25,6 +25,9 @@ no_remote_set=false
 #Enable force fetching and pushing.  Will overwrite references if upstream
 #forced pushed.  Applies to git projects only.
 force_update=false
+#This option is for pruning mirrors.  If a branch is deleted upstream then that
+#change will propagate into your GitLab mirror.  Aplies to git projects only.
+prune_mirrors=false
 
 #
 # Gitlab settings
