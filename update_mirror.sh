@@ -92,7 +92,7 @@ else
   if ${prune_mirrors};then
     prune_opt="--prune"
   fi
-  git fetch ${force_opt} ${prune_opt}
+  git fetch ${force_opt} ${prune_opt} origin
 
   if ! ${no_remote_set};then
     #push to the remote
