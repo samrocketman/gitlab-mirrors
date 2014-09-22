@@ -6,7 +6,10 @@
 from sys import argv,exit,stderr
 from optparse import OptionParser
 import os
-import gitlab3 as gitlab
+try:
+  import gitlab3 as gitlab
+except ImportError:
+  raise ImportError("python-gitlab3 module is not installed.  You probably didn't read the install instructions closely enough.  See docs/prerequisites.md.")
 
 
 
