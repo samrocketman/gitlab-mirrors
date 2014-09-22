@@ -78,7 +78,18 @@ def createproject(pname):
       description="Git mirror of %s." % project_name
   else:
     description=options.desc
-  new_project=git.add_project(pname,description=description,issues_enabled=options.issues,wall_enabled=options.wall,merge_requests_enabled=options.merge,wiki_enabled=options.wiki,snippets_enabled=options.snippets,public=options.public)
+  project_options={
+    'issues_enabled': options.issues,
+    'wall_enabled': options.wall,
+    'merge_requests_enabled': options.merge,
+    'wiki_enabled': options.wiki,
+    'snippets_enabled': options.snippets,
+    'public': options.public
+  }
+  #make all project options lowercase boolean strings i.e. true instead of True
+  for x in project_options.keys():
+    project_options[x] = str(project_options[x]).lower()
+  new_project=git.add_project(pname,description=description,**project_options)
   if gitlab_user != gitlab_namespace:
     new_project=findproject(gitlab_user,pname,user=True)
     new_project=git.group(found_group.id).transfer_project(new_project.id)
