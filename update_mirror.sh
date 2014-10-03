@@ -18,6 +18,33 @@ if [ ! -f "${git_mirrors_dir}/config.sh" ];then
   exit 1
 fi
 
+#sane update defaults that are backwards compatible
+force_update="${force_update:-false}"
+prune_mirrors="${prune_mirrors:-false}"
+
+#test force_update environment variable (must be bool)
+if [ ! "${force_update}" = "true" ] && [ ! "${force_update}" = "false" ];then
+  red_echo -n "force_update="
+  yellow_echo -n "${force_update}"
+  red_echo -n " is not a valid option for force_update!  Must be "
+  yellow_echo -n "true"
+  red_echo -n " or "
+  yellow_echo -n "false"
+  red_echo "."
+  exit 1
+fi
+#test prune_mirrors environment variable (must be bool)
+if [ ! "${prune_mirrors}" = "true" ] && [ ! "${prune_mirrors}" = "false" ];then
+  red_echo -n "prune_mirrors="
+  yellow_echo -n "${prune_mirrors}"
+  red_echo -n " is not a valid option for prune_mirrors!  Must be "
+  yellow_echo -n "true"
+  red_echo -n " or "
+  yellow_echo -n "false"
+  red_echo "."
+  exit 1
+fi
+
 cd "${git_mirrors_dir}"
 
 PROGNAME="${0##*/}"
@@ -52,16 +79,23 @@ if git config --get svn-remote.svn.url &> /dev/null;then
     #push to the remote
     cd .git
     git config --bool core.bare true
-    #bug fix for when gitlab is off-line during a cron job the bare setting gets set back to false when the git command fails
+    #bug fix for when gitlab is off-line during a cron job the bare setting gets
+    #set back to false when the git command fails
     git push gitlab
     git config --bool core.bare false
   fi
 else
   #just a git mirror so mirror it accordingly
-  git fetch
+  if ${force_update};then
+    force_opt="--force"
+  fi
+  if ${prune_mirrors};then
+    prune_opt="--prune"
+  fi
+  git fetch ${force_opt} ${prune_opt} origin
+
   if ! ${no_remote_set};then
     #push to the remote
-    git remote prune origin
-    git push gitlab
+    git push ${force_opt} ${prune_opt} gitlab
   fi
 fi

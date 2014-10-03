@@ -22,6 +22,12 @@ git_svn_additional_options="-s"
 no_create_set=false
 #Force gitlab-mirrors to only allow local remotes only.
 no_remote_set=false
+#Enable force fetching and pushing.  Will overwrite references if upstream
+#forced pushed.  Applies to git projects only.
+force_update=false
+#This option is for pruning mirrors.  If a branch is deleted upstream then that
+#change will propagate into your GitLab mirror.  Aplies to git projects only.
+prune_mirrors=false
 
 #
 # Gitlab settings
@@ -38,6 +44,8 @@ gitlab_user="gitmirror"
 gitlab_user_token_secret="$(head -n1 "${user_home}/private_token" 2> /dev/null || echo "")"
 #Verify signed SSL certificates?
 ssl_verify=true
+#Push to GitLab over http?  Otherwise will push projects via SSH.
+http_remote=false
 
 #
 # Gitlab new project default settings.  If a project needs to be created by

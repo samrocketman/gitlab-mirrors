@@ -34,6 +34,7 @@ mirror=""
 force=false
 no_create_set="${no_create_set:-false}"
 no_remote_set="${no_remote_set:-false}"
+http_remote="${http_remote:-false}"
 
 #
 # ARGUMENT HANDLING
@@ -48,7 +49,7 @@ USAGE:
   ${PROGNAME} TYPE --project NAME --mirror URL [--authors-file FILE]
 
 DESCRIPTION:
-  This will add a git or SVN repository to be mirrored by GitLab.  It 
+  This will add a git or SVN repository to be mirrored by GitLab.  It
   first checks to see if the project exists in gitlab.  If it does
   not exist then it creates it.  It will then clone and check in the
   first copy into GitLab.  From there you must use the update_mirror.sh
@@ -254,6 +255,17 @@ function preflight() {
     red_echo "."
     STATUS=1
   fi
+  #test http_remote environment variable (must be bool)
+  if [ ! "${http_remote}" = "true" ] && [ ! "${http_remote}" = "false" ];then
+    red_echo -n "http_remote="
+    yellow_echo -n "${http_remote}"
+    red_echo -n " is not a valid option for http_remote!  Must be "
+    yellow_echo -n "true"
+    red_echo -n " or "
+    yellow_echo -n "false"
+    red_echo "."
+    STATUS=1
+  fi
   #test enable_colors environment variable (must be bool)
   if [ ! "${enable_colors}" = "true" ] && [ ! "${enable_colors}" = "false" ];then
     red_echo -n "enable_colors="
@@ -382,6 +394,9 @@ fi
 if ${public};then
   CREATE_OPTS="--public ${CREATE_OPTS}"
 fi
+if ${http_remote};then
+  CREATE_OPTS="--http ${CREATE_OPTS}"
+fi
 
 #Get the remote gitlab url for the specified project.
 #If the project doesn't already exist in gitlab then create it.
@@ -418,10 +433,13 @@ if ${git};then
     git remote add gitlab "${gitlab_remote}"
     git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
     git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
+    git config remote.gitlab.mirror true
     #Check the initial repository into gitlab
     green_echo "Checking the mirror into gitlab." 1>&2
     git fetch
-    git remote prune origin
+    if ${http_remote};then
+      git config credential.helper store
+    fi
     git push gitlab
     if [ ! -z "${no_create}" ];then
       git config gitlabmirrors.nocreate true
@@ -446,12 +464,16 @@ elif ${svn};then
     git remote add gitlab "${gitlab_remote}"
     git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
     git config --add remote.gitlab.push '+refs/remotes/tags/*:refs/tags/*'
+    git config remote.gitlab.mirror true
     #Check the initial repository into gitlab
     green_echo "Checking the mirror into gitlab." 1>&2
     git reset --hard
     git svn fetch
     cd .git
     git config --bool core.bare true
+    if ${http_remote};then
+      git config credential.helper store
+    fi
     git push gitlab
     git config --bool core.bare false
   else
@@ -471,8 +493,12 @@ elif ${bzr};then
     git remote add gitlab "${gitlab_remote}"
     git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
     git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
+    git config remote.gitlab.mirror true
     #Check the initial repository into gitlab
     green_echo "Checking the mirror into gitlab." 1>&2
+    if ${http_remote};then
+      git config credential.helper store
+    fi
     git push gitlab
     green_echo "All done!" 1>&2
   else
@@ -491,8 +517,12 @@ elif ${hg};then
     git remote add gitlab "${gitlab_remote}"
     git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
     git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
+    git config remote.gitlab.mirror true
     #Check the initial repository into gitlab
     green_echo "Checking the mirror into gitlab." 1>&2
+    if ${http_remote};then
+      git config credential.helper store
+    fi
     git push gitlab
     green_echo "All done!" 1>&2
   else

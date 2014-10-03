@@ -6,7 +6,10 @@
 from sys import argv,exit,stderr
 from optparse import OptionParser
 import os
-import gitlab3 as gitlab
+try:
+  import gitlab3 as gitlab
+except ImportError:
+  raise ImportError("python-gitlab3 module is not installed.  You probably didn't read the install instructions closely enough.  See docs/prerequisites.md.")
 
 
 
@@ -29,6 +32,7 @@ parser.add_option("--public",dest="public",action="store_true",default=False)
 parser.add_option("--create",dest="create",action="store_true",default=False)
 parser.add_option("--delete",dest="delete",action="store_true",default=False)
 parser.add_option("--desc",dest="desc",metavar="DESC",default=False)
+parser.add_option("--http",dest="http",action="store_true",default=False)
 (options,args) = parser.parse_args()
 if len(args) == 0:
   print >> stderr, "No project name specified.  Do not run this script standalone."
@@ -77,7 +81,18 @@ def createproject(pname):
       description="Git mirror of %s." % project_name
   else:
     description=options.desc
-  new_project=git.add_project(pname,description=description,issues_enabled=options.issues,wall_enabled=options.wall,merge_requests_enabled=options.merge,wiki_enabled=options.wiki,snippets_enabled=options.snippets,public=options.public)
+  project_options={
+    'issues_enabled': options.issues,
+    'wall_enabled': options.wall,
+    'merge_requests_enabled': options.merge,
+    'wiki_enabled': options.wiki,
+    'snippets_enabled': options.snippets,
+    'public': options.public
+  }
+  #make all project options lowercase boolean strings i.e. true instead of True
+  for x in project_options.keys():
+    project_options[x] = str(project_options[x]).lower()
+  new_project=git.add_project(pname,description=description,**project_options)
   if gitlab_user != gitlab_namespace:
     new_project=findproject(gitlab_user,pname,user=True)
     new_project=git.group(found_group.id).transfer_project(new_project.id)
@@ -96,7 +111,10 @@ if options.create:
       print >> stderr, "There was a problem creating {group}/{project}.  Did you give {user} user Admin rights in gitlab?".format(group=gitlab_namespace,project=project_name,user=gitlab_user)
       exit(1)
 
-  print found_project.ssh_url_to_repo
+  if options.http:
+    print found_project.http_url_to_repo
+  else:
+    print found_project.ssh_url_to_repo
 elif options.delete:
   try:
     deleted_project=git.project(findproject(gitlab_namespace,project_name).id).delete()

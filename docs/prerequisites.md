@@ -24,7 +24,7 @@ aditional options.
 
 ### Required software install snippets
 
-#### python-gitlab
+#### python-gitlab3
 
     yum install python-setuptools
     git clone https://github.com/alexvh/python-gitlab3.git
