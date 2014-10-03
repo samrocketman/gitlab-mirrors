@@ -1,3 +1,14 @@
+## gitlab-mirrors v0.5.0
+
+* Support pushing to GitLab via HTTP instead of SSH.
+* Force option added for force updating repositories.
+* Pruning mirrors is another new feature which will clean up remote repositories
+  as the mirror source deletes branches or tags.
+* Bugfig project creation defaults in `config.sh` not working.
+* More meaningful import error message for gitlab3 python module.
+* Minor documentation updates and grammar fixes.
+
+---
 ## gitlab-mirrors v0.4.9
 
 * Better documentation when viewed from the command line.  No longer stretches
