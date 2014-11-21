@@ -60,7 +60,7 @@ mirrored within the same repository folder.
 
 Clone the gitlab-mirrors repository and set values in config.sh.
 
-    su - gitmirrors
+    su - gitmirror
     mkdir repositories
     touch private_token
     git clone https://github.com/samrocketman/gitlab-mirrors.git
