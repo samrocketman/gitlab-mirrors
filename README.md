@@ -7,7 +7,9 @@ repositories.  gitlab-mirrors creates read only copies of remote repositories in
 gitlab.  It provides a CLI management interface for managing the mirrored
 repositories (e.g. add, delete, update) so that an admin may regularly update
 all mirrors using `crontab`.  It operates by interacting with the
-[GitLab API][gitlab-api] using [python-gitlab3][python-gitlab3].
+[GitLab API][gitlab-api] using [python-gitlab3][python-gitlab3].  Also, check
+out this cool [puppet module][puppet] for installing and configuring
+gitlab-mirrors.
 
 
 ## Features
@@ -63,30 +65,6 @@ freenode.net and direct your questions to user `sag47`.
   be instant but in most channels people are in different time zones.  At times
   chat replies can be in excess of 24hrs.
 
-
----
-# Contributing
-
-I enjoy contributions and encourage them!  You should add your code to my
-project and make your mark.  [Pick off an issue][issues] or implement a feature
-filling your need.  I only make a few simple requests in order to contribute.
-
-* Test your own work before submitting a pull request.  Most of this project is
-  bash code so we do not have the luxury of a test driven framework to assist
-  our development.  Needless to say I will be sure to test it myself before it
-  ever makes it into a production release.
-* Create a feature branch with a name that does not exist in any of my branches
-  (e.g. `feature/myfeature` or `feature-cool_feature`).  This is where you
-  should do your development.  This will allow you to integrate my development
-  with your own and ease integrating updated code if we're both concurrently
-  developing.
-* When your feature is ready make a pull request to the *development* branch.
-  Pull requests to the master branch will not be accepted.  The master branch is
-  intended to drive production systems and only stable production-ready commits
-  will be made to it.
-
-Happy hacking!
-
 ---
 # License
 
@@ -95,11 +73,14 @@ Created by Sam Gleske under [MIT License](LICENSE).
 ## Contributors
 
 * Docs #1 [lmakarov](https://github.com/lmakarov)
-* Bzr support #6 [Agustín Cruz Lozano](https://github.com/agb80) (atin81@gmail.com)
+* Bzr support #6 [Agustín Cruz Lozano](https://github.com/agb80)
 * SVN update tags #13 [Nikolaus Krismer](https://github.com/nikolauskrismer)
 * Docs #26 [Glen Mailer](https://github.com/glenjamin)
+* Docs #54  [Martijn Vermaat](https://github.com/martijnvermaat)
+* Better logging #57 [Loic Dachary](https://github.com/dachary)
 
-[mirror-missing]: http://feedback.gitlab.com/forums/176466-general/suggestions/4286666-mirror-git-svn-into-repo-
 [gitlab-api]: http://api.gitlab.org/
-[python-gitlab3]: https://github.com/alexvh/python-gitlab3
 [issues]: https://github.com/samrocketman/gitlab-mirrors/issues
+[mirror-missing]: http://feedback.gitlab.com/forums/176466-general/suggestions/4286666-mirror-git-svn-into-repo-
+[puppet]: https://github.com/logicminds/gitlab_mirrors
+[python-gitlab3]: https://github.com/alexvh/python-gitlab3

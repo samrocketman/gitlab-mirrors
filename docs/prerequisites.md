@@ -2,25 +2,25 @@
 
 ### Required software
 
-* [GitLab 6.x][1]
-* [pyapi-gitlab3 @ v0.5.4][2]
-* [GNU coreutils][3]
-* [git 1.6.5][4] or later (git 1.6.5 introduced transport helpers)
+* [GitLab 6.x/7.x][gitlab]
+* [pyapi-gitlab3 @ v0.5.4][python-gitlab3]
+* [GNU coreutils][coreutils]
+* [git 1.6.5][git] or later (git 1.6.5 introduced transport helpers)
 
 If you plan on mirroring SVN repositories as well then you'll need the
 following additional options.
 
-* [git-svn][7]
+* [git-svn][git-svn]
 
 If you plan on mirroring BZR repositories then you'll need the following
 aditional options.
 
-* [git-bzr-helper][8]
+* [git-bzr-helper][git-bzr]
 
 If you plan on mirroring Mercurial repositories then you'll need the following
 aditional options.
 
-* [git-hg-helper][9]
+* [git-hg-helper][git-hg]
 
 ### Required software install snippets
 
@@ -37,8 +37,8 @@ aditional options.
 
 If you use package management then it will likely be best for you to install git
 via package management for your OS.  You can find the source to git at the
-[git-core project][5].  For instructions on other platforms see the
-[Getting Started - Installing Git section of the git book][6].  The following is
+[git-core project][git-src].  For instructions on other platforms see the
+[Getting Started - Installing Git section of the git book][git-guide].  The following is
 for compiling git 1.8.4 on RHEL 6.4.
 
     yum install perl-ExtUtils-MakeMaker zlib zlib-devel openssh libcurl libcurl-devel expat expat-devel gettext gettext-devel
@@ -54,6 +54,18 @@ for compiling git 1.8.4 on RHEL 6.4.
 
 Your git should now be located in `/usr/local/bin/git`.  You should edit
 `/etc/profile` and place `/usr/local/bin` at the beginning of your `$PATH`.
+
+#### git-svn
+
+Notice in [`config.sh.SAMPLE`](../config.sh.SAMPLE) the option
+`git_svn_additional_options="-s"`.  This behavior assumes that your SVN project
+is laid out with a standard directory structure: `trunk/`, `branches/`, and
+`tags/`.  If your project does not conform to this layout then you should modify
+that option by removing `-s`.  That means setting
+`git_svn_additional_options=""`.   See the [`git-svn(1)`][git-svn] man page to
+learn more about what `-s` does.  The additional options will pass in parameters
+to the `git svn` command.  If a project to be mirrored has a custom layout then
+this option can be modified to account for that.
 
 #### git-bzr-helper
 
@@ -73,12 +85,12 @@ Your git should now be located in `/usr/local/bin/git`.  You should edit
 ---
 Next up is [Installation and Setup](installation.md).
 
-[1]: https://github.com/gitlabhq/gitlabhq/tree/6-2-stable
-[2]: https://github.com/alexvh/python-gitlab3
-[3]: http://www.gnu.org/software/coreutils/
-[4]: http://git-scm.com/
-[5]: http://code.google.com/p/git-core/
-[6]: http://git-scm.com/book/en/Getting-Started-Installing-Git
-[7]: https://www.kernel.org/pub/software/scm/git/docs/git-svn.html
-[8]: https://github.com/felipec/git/wiki/git-remote-bzr
-[9]: https://github.com/felipec/git/wiki/git-remote-hg
+[coreutils]: http://www.gnu.org/software/coreutils/
+[git-bzr]: https://github.com/felipec/git/wiki/git-remote-bzr
+[git-guide]: http://git-scm.com/book/en/Getting-Started-Installing-Git
+[git-hg]: https://github.com/felipec/git/wiki/git-remote-hg
+[git]: http://git-scm.com/
+[gitlab]: https://about.gitlab.com/
+[git-src]: http://code.google.com/p/git-core/
+[git-svn]: https://www.kernel.org/pub/software/scm/git/docs/git-svn.html
+[python-gitlab3]: https://github.com/alexvh/python-gitlab3

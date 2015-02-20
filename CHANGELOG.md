@@ -1,3 +1,10 @@
+## gitlab-mirrors v0.5.1
+
+* Certified compatibility with GitLab 7.6.2.
+* Documentation updates.
+* Add logging to gitlab-mirrors.
+
+---
 ## gitlab-mirrors v0.5.0
 
 * Support pushing to GitLab via HTTP instead of SSH.
