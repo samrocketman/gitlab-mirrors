@@ -1,3 +1,9 @@
+## gitlab-mirrors v0.5.1
+
+* Bugfix documentation.
+* Add logging to gitlab-mirrors.
+
+---
 ## gitlab-mirrors v0.5.0
 
 * Support pushing to GitLab via HTTP instead of SSH.
