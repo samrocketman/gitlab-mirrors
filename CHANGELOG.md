@@ -1,7 +1,7 @@
 ## gitlab-mirrors v0.5.1
 
 * Certified compatibility with GitLab 7.6.2.
-* Bugfix documentation.
+* Documentation updates.
 * Add logging to gitlab-mirrors.
 
 ---
