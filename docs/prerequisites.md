@@ -2,7 +2,7 @@
 
 ### Required software
 
-* [GitLab 6.x][1]
+* [GitLab 6.x/7.x][1]
 * [pyapi-gitlab3 @ v0.5.4][2]
 * [GNU coreutils][3]
 * [git 1.6.5][4] or later (git 1.6.5 introduced transport helpers)
