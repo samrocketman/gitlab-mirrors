@@ -95,9 +95,11 @@ Created by Sam Gleske under [MIT License](LICENSE).
 ## Contributors
 
 * Docs #1 [lmakarov](https://github.com/lmakarov)
-* Bzr support #6 [Agustín Cruz Lozano](https://github.com/agb80) (atin81@gmail.com)
+* Bzr support #6 [Agustín Cruz Lozano](https://github.com/agb80)
 * SVN update tags #13 [Nikolaus Krismer](https://github.com/nikolauskrismer)
 * Docs #26 [Glen Mailer](https://github.com/glenjamin)
+* Docs #54  [Martijn Vermaat](https://github.com/martijnvermaat)
+* Better logging #57 [Loic Dachary](https://github.com/dachary)
 
 [mirror-missing]: http://feedback.gitlab.com/forums/176466-general/suggestions/4286666-mirror-git-svn-into-repo-
 [gitlab-api]: http://api.gitlab.org/
