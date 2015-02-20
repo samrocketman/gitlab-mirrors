@@ -57,7 +57,7 @@ Your git should now be located in `/usr/local/bin/git`.  You should edit
 
 #### git-svn
 
-Notice in [`config.sh.SAMPLE`][../config.sh.SAMPLE] the option
+Notice in [`config.sh.SAMPLE`](../config.sh.SAMPLE) the option
 `git_svn_additional_options="-s"`.  This behavior assumes that your SVN project
 is laid out with a standard directory structure: `trunk/`, `branches/`, and
 `tags/`.  If your project does not conform to this layout then you should modify
