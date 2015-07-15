@@ -48,30 +48,10 @@ if not eval(ssl_verify.capitalize()):
 else:
   git=gitlab.GitLab(gitlab_url=gitlab_url,token=token_secret,ssl_verify=True)
 
-def findgroup(gname):
-  #Locate the group
-  page=1
-  while len(git.groups(page=page)) > 0:
-    for group in git.groups(page=page):
-      if group.name == gname:
-        return group
-    page += 1
-  else:
-    print >> stderr, "Project namespace (user or group) not found or user does not have permission of existing group."
-    print >> stderr, "gitlab-mirrors will not automatically create the project namespace."
-    exit(1)
-
-def findproject(gname,pname,user=False):
-  page=1
-  while len(git.projects(page=page,per_page=20)) > 0:
-    for project in git.projects(page=page,per_page=20):
-      if not user and project.namespace['name'] == gname and project.name == pname:
-        return project
-      elif user and project.namespace['path'] == gname and project.name == pname:
-        return project
-    page += 1
-  else:
-    return False
+def transfer_project(src_project, group):
+  value = group.transfer_project(src_project.id)
+  dest_project = git.find_project(name=src_project.name)
+  return dest_project
 
 def createproject(pname):
   if len(options.desc) == 0:
@@ -87,40 +67,54 @@ def createproject(pname):
     'merge_requests_enabled': options.merge,
     'wiki_enabled': options.wiki,
     'snippets_enabled': options.snippets,
-    'public': options.public
+    'public': options.public,
+    'namespace_id': git.find_group(name=gitlab_namespace).id,
   }
   #make all project options lowercase boolean strings i.e. true instead of True
   for x in project_options.keys():
     project_options[x] = str(project_options[x]).lower()
-  new_project=git.add_project(pname,description=description,**project_options)
-  if gitlab_user != gitlab_namespace:
-    new_project=findproject(gitlab_user,pname,user=True)
-    new_project=git.group(found_group.id).transfer_project(new_project.id)
-  if findproject(gitlab_namespace,pname):
-    return findproject(gitlab_namespace,pname)
+  print >> stderr, "Creating new project %s" % pname
+  git.add_project(pname,description=description,**project_options)
+  found_project = git.find_project(name=pname)
+  if needs_transfer(gitlab_user, gitlab_namespace, found_project):
+     found_project = transfer_project(found_project, found_group)
+  return found_project
+
+def needs_transfer(user, groupname, project):
+  namespace = False
+  if groupname:
+    namespace = groupname
   else:
-    return False
+    namespace = user
+  return project.namespace['name'] != namespace
 
 if options.create:
-  found_group=findgroup(gitlab_namespace)
-  found_project=findproject(gitlab_namespace,project_name)
-
-  if not found_project:
+  found_group=git.find_group(name=gitlab_namespace)
+  found_project = None
+  # search the group namespace first
+  found_project=git.find_project(name=project_name)
+  if found_project:
+    if needs_transfer(gitlab_user, gitlab_namespace, found_project):
+      found_project = transfer_project(found_project, found_group)
+      if not found_project:
+        print >> stderr, "There was a problem transferring {group}/{project}.  Did you give {user} user Admin rights in gitlab?".format(group=gitlab_namespace,project=project_name,user=gitlab_user)
+        exit(1)
+  else:
     found_project=createproject(project_name)
     if not found_project:
       print >> stderr, "There was a problem creating {group}/{project}.  Did you give {user} user Admin rights in gitlab?".format(group=gitlab_namespace,project=project_name,user=gitlab_user)
       exit(1)
-
   if options.http:
     print found_project.http_url_to_repo
   else:
     print found_project.ssh_url_to_repo
 elif options.delete:
   try:
-    deleted_project=git.project(findproject(gitlab_namespace,project_name).id).delete()
+    deleted_project=git.find_project(name=project_name).delete()
   except Exception as e:
     print >> stderr, e
     exit(1)
 else:
   print >> stderr, "No --create or --delete option added."
   exit(1)
+                        
