@@ -2,7 +2,7 @@
 
 ### Required software
 
-* [GitLab 6.x/7.x][gitlab]
+* [Tested with GitLab 6.x/7.x/8.x][gitlab]
 * [pyapi-gitlab3 @ v0.5.4][python-gitlab3]
 * [GNU coreutils][coreutils]
 * [git 1.8.0][git] or later
