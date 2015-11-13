@@ -1,3 +1,13 @@
+---
+## gitlab-mirrors v0.5.2
+
+* Certified compatibility with GitLab 8.1.4.
+* Documentation updates.
+* Fixes project transfer bug which is a regression introduced somewhere in
+  GitLab 8.x.  This prevented projects being properly created in GitLab under
+  the mirror namespace.
+
+---
 ## gitlab-mirrors v0.5.1
 
 * Certified compatibility with GitLab 7.6.2.
