@@ -78,6 +78,7 @@ Created by Sam Gleske under [MIT License](LICENSE).
 * Docs #26 [Glen Mailer](https://github.com/glenjamin)
 * Docs #54  [Martijn Vermaat](https://github.com/martijnvermaat)
 * Better logging #57 [Loic Dachary](https://github.com/dachary)
+* Fixed project transfer bug #78 [Corey Osman](https://github.com/logicminds)
 
 [gitlab-api]: http://api.gitlab.org/
 [issues]: https://github.com/samrocketman/gitlab-mirrors/issues

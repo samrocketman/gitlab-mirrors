@@ -2,10 +2,10 @@
 
 ### Required software
 
-* [GitLab 6.x/7.x][gitlab]
+* [Tested with GitLab 6.x/7.x/8.x][gitlab]
 * [pyapi-gitlab3 @ v0.5.4][python-gitlab3]
 * [GNU coreutils][coreutils]
-* [git 1.6.5][git] or later (git 1.6.5 introduced transport helpers)
+* [git 1.8.0][git] or later
 
 If you plan on mirroring SVN repositories as well then you'll need the
 following additional options.
