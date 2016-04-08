@@ -21,6 +21,7 @@ fi
 PROGNAME="${0##*/}"
 PROGVERSION="${VERSION}"
 
+for gitlab_namespace in $(ls ${repo_dir}); do
 pushd "${repo_dir}/${gitlab_namespace}" &> /dev/null
 echo -n "Namespace: " 1>&2
 #red and bold combined
@@ -38,4 +39,4 @@ ls -1 "${repo_dir}/${gitlab_namespace}" | while read mirror;do
   popd &> /dev/null
 done
 popd &> /dev/null
-
+done

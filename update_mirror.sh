@@ -51,8 +51,8 @@ PROGNAME="${0##*/}"
 PROGVERSION="${VERSION}"
 
 #Default script options
-project_name="${1}"
-
+project_name="${2}"
+gitlab_namespace="${1}"
 if [ -z "${project_name}" ];then
   echo "Must specify a project_name!" 1>&2
   exit 1

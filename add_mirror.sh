@@ -94,8 +94,8 @@ REPOSITORY TYPES:
 EOF
 }
 #Short options are one letter.  If an argument follows a short opt then put a colon (:) after it
-SHORTOPTS="hvflm:n:p:"
-LONGOPTS="help,version,force,git,svn,bzr,hg,mirror:,no-create:,no-remote,project-name:,authors-file:"
+SHORTOPTS="hvflm:n:p:g:"
+LONGOPTS="help,version,force,git,svn,bzr,hg,mirror:,no-create:,no-remote,project-name:,project-group:,authors-file:"
 ARGS=$(getopt -s bash --options "${SHORTOPTS}" --longoptions "${LONGOPTS}" --name "${PROGNAME}" -- "$@")
 eval set -- "$ARGS"
 while true; do
@@ -131,6 +131,11 @@ while true; do
       ;;
     -p|--project-name)
         project_name="${2}"
+        shift 2
+      ;;
+    -g|--project-group)
+        project_group="${2}"
+	export gitlab_namespace="${2}"
         shift 2
       ;;
     -m|--mirror)
