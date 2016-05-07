@@ -17,10 +17,12 @@ cd "${git_mirrors_dir}"
 
 STATUS=0
 
-ls -1 "${repo_dir}/${gitlab_namespace}" | while read mirror;do
+while read mirror
+do
   if ! ./update_mirror.sh "${mirror}" >> ${git_mirrors_dir}/cron.log 2>&1 ;then
     red_echo "Error: ./update_mirror.sh ${mirror} (more information in ${git_mirrors_dir}/cron.log)" 1>&2
     STATUS=1
   fi
-done
+done <<< "$(ls -1 "${repo_dir}/${gitlab_namespace}")"
+
 exit ${STATUS}
