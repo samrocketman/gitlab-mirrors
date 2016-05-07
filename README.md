@@ -1,16 +1,13 @@
 # gitlab-mirrors
 
 The [gitlab-mirrors](https://github.com/samrocketman/gitlab-mirrors) project is
-designed to fill in a feature which is currently
-[missing from GitLab][mirror-missing]: the ability to mirror remote
-repositories.  gitlab-mirrors creates read only copies of remote repositories in
-gitlab.  It provides a CLI management interface for managing the mirrored
-repositories (e.g. add, delete, update) so that an admin may regularly update
-all mirrors using `crontab`.  It operates by interacting with the
-[GitLab API][gitlab-api] using [python-gitlab3][python-gitlab3].  Also, check
-out this cool [puppet module][puppet] for installing and configuring
-gitlab-mirrors.
-
+designed to fill in a feature which is currently [missing from
+GitLab][mirror-missing]: the ability to mirror remote repositories.
+gitlab-mirrors creates read only copies of remote repositories in gitlab.  It
+provides a CLI management interface for managing the mirrored repositories (e.g.
+add, delete, update) so that an admin may regularly update all mirrors using
+`crontab`.  It operates by interacting with the [GitLab API][gitlab-api] using
+[python-gitlab3][python-gitlab3].
 
 ## Features
 
@@ -46,13 +43,18 @@ gitlab-mirrors.
 
 *Note: if you are upgrading then see `docs/upgrade` for notes on upgrading.*
 
+---
+# Other helpful implementations
+
+* [Puppet module][gm-puppet] for installing and configuring gitlab-mirrors.
+* [Docker container][gm-docker] for mirroring repositories.
 
 ---
 # Get help
 
-There are a couple ways you can try to get help.  You can
-[file an issue][issues].  You can also join the `#gitlab` IRC channel at
-freenode.net and direct your questions to user `sag47`.
+There are a couple ways you can try to get help.  You can [file an
+issue][issues].  You can also join the `#gitlab` IRC channel at freenode.net and
+direct your questions to user `sag47`.
 
 ## IRC Etiquette
 
@@ -81,7 +83,8 @@ Created by Sam Gleske under [MIT License](LICENSE).
 * Fixed project transfer bug #78 [Corey Osman](https://github.com/logicminds)
 
 [gitlab-api]: http://api.gitlab.org/
+[gm-docker]: https://github.com/Klowner/docker-gitlab-mirrors
+[gm-puppet]: https://github.com/logicminds/gitlab_mirrors
 [issues]: https://github.com/samrocketman/gitlab-mirrors/issues
 [mirror-missing]: http://feedback.gitlab.com/forums/176466-general/suggestions/4286666-mirror-git-svn-into-repo-
-[puppet]: https://github.com/logicminds/gitlab_mirrors
 [python-gitlab3]: https://github.com/alexvh/python-gitlab3
