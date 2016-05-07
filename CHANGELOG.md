@@ -1,4 +1,12 @@
 ---
+## gitlab-mirrors v0.5.3
+
+* Bugfix `git-mirrors.sh` while loop executing in a subshell and the value of
+  `STATUS` being lost.  See [PR #92][#92].
+
+[#92]: https://github.com/samrocketman/gitlab-mirrors/pull/92
+
+---
 ## gitlab-mirrors v0.5.2
 
 * Certified compatibility with GitLab 8.1.4.
