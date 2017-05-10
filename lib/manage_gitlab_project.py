@@ -3,15 +3,20 @@
 #MIT License
 #Created Tue Sep 10 23:01:08 EDT 2013
 
+from __future__ import print_function
 from sys import argv,exit,stderr
 from optparse import OptionParser
 import os
+
+import sys
+
 try:
   import gitlab3 as gitlab
 except ImportError:
   raise ImportError("python-gitlab3 module is not installed.  You probably didn't read the install instructions closely enough.  See docs/prerequisites.md.")
 
-
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 try:
   token_secret=os.environ['gitlab_user_token_secret']
@@ -20,7 +25,7 @@ try:
   gitlab_user=os.environ['gitlab_user']
   ssl_verify=os.environ['ssl_verify']
 except KeyError:
-  print >> stderr, "Environment config missing.  Do not run this script standalone."
+  eprint("Environment config missing.  Do not run this script standalone.")
   exit(1)
 parser = OptionParser()
 parser.add_option("--issues",dest="issues",action="store_true",default=False)
@@ -35,10 +40,10 @@ parser.add_option("--desc",dest="desc",metavar="DESC",default=False)
 parser.add_option("--http",dest="http",action="store_true",default=False)
 (options,args) = parser.parse_args()
 if len(args) == 0:
-  print >> stderr, "No project name specified.  Do not run this script standalone."
+  eprint("No project name specified.  Do not run this script standalone.")
   exit(1)
 elif len(args) > 1:
-  print >> stderr, "Too many arguments.  Do not run this script standalone."
+  eprint("Too many arguments.  Do not run this script standalone.")
   exit(1)
 
 project_name=args[0]
@@ -74,9 +79,9 @@ def createproject(pname):
   #make all project options lowercase boolean strings i.e. true instead of True
   for x in project_options.keys():
     project_options[x] = str(project_options[x]).lower()
-  print >> stderr, "Creating new project %s" % pname
   git.add_project(pname,description=description,**project_options)
   found_project = git.find_project(name=pname)
+  eprint("Creating new project %s" % pname)
   if needs_transfer(gitlab_user, gitlab_namespace, found_project):
      found_project = transfer_project(found_project, found_group)
   return found_project
@@ -99,24 +104,23 @@ if options.create:
     if needs_transfer(gitlab_user, gitlab_namespace, found_project):
       found_project = transfer_project(found_project, found_group)
       if not found_project:
-        print >> stderr, "There was a problem transferring {group}/{project}.  Did you give {user} user Admin rights in gitlab?".format(group=gitlab_namespace,project=project_name,user=gitlab_user)
+        eprint("There was a problem transferring {group}/{project}.  Did you give {user} user Admin rights in gitlab?".format(group=gitlab_namespace,project=project_name,user=gitlab_user))
         exit(1)
   else:
     found_project=createproject(project_name)
     if not found_project:
-      print >> stderr, "There was a problem creating {group}/{project}.  Did you give {user} user Admin rights in gitlab?".format(group=gitlab_namespace,project=project_name,user=gitlab_user)
+      eprint("There was a problem creating {group}/{project}.  Did you give {user} user Admin rights in gitlab?".format(group=gitlab_namespace,project=project_name,user=gitlab_user))
       exit(1)
   if options.http:
-    print found_project.http_url_to_repo
+    eprint(found_project.http_url_to_repo)
   else:
-    print found_project.ssh_url_to_repo
+    eprint(found_project.ssh_url_to_repo)
 elif options.delete:
   try:
     deleted_project=git.find_project(name=project_name).delete()
   except Exception as e:
-    print >> stderr, e
+    eprint(e)
     exit(1)
 else:
-  print >> stderr, "No --create or --delete option added."
+  eprint("No --create or --delete option added.")
   exit(1)
-                        
