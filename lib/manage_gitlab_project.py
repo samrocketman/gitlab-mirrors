@@ -82,7 +82,6 @@ def createproject(pname, found_group):
     # make all project options lowercase boolean strings i.e. true instead of True
     for x in project_options.keys():
         project_options[x] = str(project_options[x]).lower()
-    eprint("Creating new project %s" % pname)
     ns = '{}/{}'.format(found_group.full_path, project_name)
     found_project = git.find_project(name=project_name, path_with_namespace=ns)
     if found_project:
@@ -126,9 +125,9 @@ if options.create:
                     group=gitlab_namespace, project=project_name, user=gitlab_user))
             exit(1)
     if options.http:
-        eprint(found_project.http_url_to_repo)
+        print(found_project.http_url_to_repo)
     else:
-        eprint(found_project.ssh_url_to_repo)
+        print(found_project.ssh_url_to_repo)
 elif options.delete:
     try:
         deleted_project = git.find_project(name=project_name).delete()
