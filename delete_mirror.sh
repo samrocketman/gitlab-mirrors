@@ -17,7 +17,7 @@ if [ ! -f "${git_mirrors_dir}/config.sh" ];then
 fi
 
 #check if api version is set
-[ -z $gitlab_api_version ] && gitlab_api_version=3
+[ -z $gitlab_api_version ] && gitlab_api_version=4
 
 #export env vars for python script
 export gitlab_user_token_secret gitlab_url gitlab_namespace gitlab_user ssl_verify gitlab_api_version

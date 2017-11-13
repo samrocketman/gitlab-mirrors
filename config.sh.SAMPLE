@@ -43,7 +43,7 @@ gitlab_user="gitmirror"
 #Generate a token for your $gitlab_user and set it here.
 gitlab_user_token_secret="$(head -n1 "${user_home}/private_token" 2> /dev/null || echo "")"
 #Sets the Gitlab API version, either 3 or 4
-gitlab_api_version=3
+gitlab_api_version=4
 #Verify signed SSL certificates?
 ssl_verify=true
 #Push to GitLab over http?  Otherwise will push projects via SSH.
