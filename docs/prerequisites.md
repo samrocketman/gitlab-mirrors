@@ -2,8 +2,8 @@
 
 ### Required software
 
-* [Tested with GitLab 6.x/7.x/8.x][gitlab]
-* [pyapi-gitlab3 @ v0.5.4][python-gitlab3]
+* [Tested with GitLab 8.x/9.x/10/x][gitlab]
+* [python-gitlab @ v1.1.0][python-gitlab]
 * [GNU coreutils][coreutils]
 * [git 1.8.0][git] or later
 
@@ -24,14 +24,10 @@ aditional options.
 
 ### Required software install snippets
 
-#### python-gitlab3
+#### python-gitlab
 
-    yum install python-setuptools
-    git clone https://github.com/alexvh/python-gitlab3.git
-    cd python-gitlab3
-    git checkout v0.5.4
-    python setup.py install
-
+    yum install python-pip
+    pip install python-gitlab
 
 #### Installing git
 
@@ -93,4 +89,4 @@ Next up is [Installation and Setup](installation.md).
 [gitlab]: https://about.gitlab.com/
 [git-src]: http://code.google.com/p/git-core/
 [git-svn]: https://www.kernel.org/pub/software/scm/git/docs/git-svn.html
-[python-gitlab3]: https://github.com/alexvh/python-gitlab3
+[python-gitlab]: https://github.com/python-gitlab/python-gitlab
