@@ -7,9 +7,9 @@ from sys import argv,exit,stderr
 from optparse import OptionParser
 import os
 try:
-  import gitlab3 as gitlab
+  import gitlab
 except ImportError:
-  raise ImportError("python-gitlab3 module is not installed.  You probably didn't read the install instructions closely enough.  See docs/prerequisites.md.")
+  raise ImportError("python-gitlab module is not installed.  You probably didn't read the install instructions closely enough.  See docs/prerequisites.md.")
 
 
 
@@ -19,6 +19,7 @@ try:
   gitlab_namespace=os.environ['gitlab_namespace']
   gitlab_user=os.environ['gitlab_user']
   ssl_verify=os.environ['ssl_verify']
+  gitlab_api_version=os.environ['gitlab_api_version']
 except KeyError:
   print >> stderr, "Environment config missing.  Do not run this script standalone."
   exit(1)
@@ -44,14 +45,44 @@ elif len(args) > 1:
 project_name=args[0]
 
 if not eval(ssl_verify.capitalize()):
-  git=gitlab.GitLab(gitlab_url=gitlab_url,token=token_secret,ssl_verify=False)
+  git=gitlab.Gitlab(gitlab_url,token_secret,ssl_verify=False,api_version=gitlab_api_version)
 else:
-  git=gitlab.GitLab(gitlab_url=gitlab_url,token=token_secret,ssl_verify=True)
+  git=gitlab.Gitlab(gitlab_url,token_secret,ssl_verify=True,api_version=gitlab_api_version)
+
+def find_group(**kwargs):
+  groups = git.groups.list()
+  return _find_matches(groups, kwargs, False)
+
+def find_project(**kwargs):
+  projects = git.projects.list(as_list=True)
+  return _find_matches(projects, kwargs, False)
+
+def _find_matches(objects, kwargs, find_all):
+  """Helper function for _add_find_fn. Find objects whose properties
+  match all key, value pairs in kwargs.
+  Source: https://github.com/doctormo/python-gitlab3/blob/master/gitlab3/__init__.py
+  """
+  ret = []
+  for obj in objects:
+    match = True
+    # Match all supplied parameters
+    for param, val in kwargs.items():
+      if not getattr(obj, param) == val:
+        match = False
+        break
+      if match:
+        if find_all:
+          ret.append(obj)
+        else:
+          return obj
+  if not find_all:
+    return None
+  return ret
 
 # transfer the project from the source namespace to the specified group namespace
 def transfer_project(src_project, group):
   value = group.transfer_project(src_project.id)
-  dest_project = git.find_project(name=src_project.name)
+  dest_project = find_project(name=src_project.name)
   return dest_project
 
 def createproject(pname):
@@ -69,14 +100,16 @@ def createproject(pname):
     'wiki_enabled': options.wiki,
     'snippets_enabled': options.snippets,
     'public': options.public,
-    'namespace_id': git.find_group(name=gitlab_namespace).id,
+    'namespace_id': find_group(name=gitlab_namespace).id,
   }
   #make all project options lowercase boolean strings i.e. true instead of True
   for x in project_options.keys():
     project_options[x] = str(project_options[x]).lower()
   print >> stderr, "Creating new project %s" % pname
-  git.add_project(pname,description=description,**project_options)
-  found_project = git.find_project(name=pname)
+  project_options['name'] = pname
+  project_options['description'] = description
+  git.projects.create(project_options)
+  found_project = find_project(name=pname)
   if needs_transfer(gitlab_user, gitlab_namespace, found_project):
      found_project = transfer_project(found_project, found_group)
   return found_project
@@ -88,13 +121,19 @@ def needs_transfer(user, groupname, project):
     namespace = groupname
   else:
     namespace = user
-  return project.namespace['name'] != namespace
+  if type(project.namespace) == gitlab.v3.objects.Group:
+    return project.namespace.name != namespace
+  else:
+    return project.namespace['name'] != namespace
+  
 
 if options.create:
-  found_group=git.find_group(name=gitlab_namespace)
+  found_group = find_group(name=gitlab_namespace)
   found_project = None
-  # search the group namespace first
-  found_project=git.find_project(name=project_name)
+
+  found_project= find_project(name=project_name)
+  #exit()
+  
   if found_project:
     if needs_transfer(gitlab_user, gitlab_namespace, found_project):
       found_project = transfer_project(found_project, found_group)
@@ -112,7 +151,7 @@ if options.create:
     print found_project.ssh_url_to_repo
 elif options.delete:
   try:
-    deleted_project=git.find_project(name=project_name).delete()
+    deleted_project=find_project(name=project_name).delete()
   except Exception as e:
     print >> stderr, e
     exit(1)

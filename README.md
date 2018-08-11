@@ -7,7 +7,7 @@ gitlab-mirrors creates read only copies of remote repositories in gitlab.  It
 provides a CLI management interface for managing the mirrored repositories (e.g.
 add, delete, update) so that an admin may regularly update all mirrors using
 `crontab`.  It operates by interacting with the [GitLab API][gitlab-api] using
-[python-gitlab3][python-gitlab3].
+[python-gitlab][python-gitlab].
 
 ## Features
 
@@ -81,10 +81,11 @@ Created by Sam Gleske under [MIT License](LICENSE).
 * Docs #54  [Martijn Vermaat](https://github.com/martijnvermaat)
 * Better logging #57 [Loic Dachary](https://github.com/dachary)
 * Fixed project transfer bug #78 [Corey Osman](https://github.com/logicminds)
+* Added support for GitLab API v4 #100 [Romke van Dijk](https://github.com/zyronix)
 
 [gitlab-api]: http://api.gitlab.org/
 [gm-docker]: https://github.com/Klowner/docker-gitlab-mirrors
 [gm-puppet]: https://github.com/logicminds/gitlab_mirrors
 [issues]: https://github.com/samrocketman/gitlab-mirrors/issues
 [mirror-missing]: http://feedback.gitlab.com/forums/176466-general/suggestions/4286666-mirror-git-svn-into-repo-
-[python-gitlab3]: https://github.com/alexvh/python-gitlab3
+[python-gitlab]: https://github.com/python-gitlab/python-gitlab
