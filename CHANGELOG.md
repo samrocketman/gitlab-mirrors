@@ -1,4 +1,14 @@
 ---
+## gitlab-mirrors v0.6.0
+
+* Consolidate user options and deps inclusion. See [PR #104][#104]
+* Added support for version 4 of the Gitlab API. See [PR #100][#100]
+
+[#100]: https://github.com/samrocketman/gitlab-mirrors/pull/100
+[#104]: https://github.com/samrocketman/gitlab-mirrors/pull/104
+
+
+---
 ## gitlab-mirrors v0.5.3
 
 * Bugfix `git-mirrors.sh` while loop executing in a subshell and the value of
