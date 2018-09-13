@@ -121,7 +121,7 @@ def needs_transfer(user, groupname, project):
     namespace = groupname
   else:
     namespace = user
-  if type(project.namespace) == gitlab.v3.objects.Group:
+  if type(project.namespace) == gitlab.v4.objects.Group:
     return project.namespace.name != namespace
   else:
     return project.namespace['name'] != namespace
