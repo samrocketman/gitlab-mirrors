@@ -1,4 +1,11 @@
 ---
+## gitlab-mirrors v0.6.1
+
+* Fixed referencing v3 API.  See [PR #110][#110]
+
+[#110]: https://github.com/samrocketman/gitlab-mirrors/pull/110
+
+---
 ## gitlab-mirrors v0.6.0
 
 * Consolidate user options and deps inclusion. See [PR #104][#104]
@@ -6,7 +13,6 @@
 
 [#100]: https://github.com/samrocketman/gitlab-mirrors/pull/100
 [#104]: https://github.com/samrocketman/gitlab-mirrors/pull/104
-
 
 ---
 ## gitlab-mirrors v0.5.3
