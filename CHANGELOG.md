@@ -1,4 +1,17 @@
----
+## gitlab-mirrors v0.6.1
+
+* Fixed referencing v3 API.  See [PR #110][#110]
+
+[#110]: https://github.com/samrocketman/gitlab-mirrors/pull/110
+
+## gitlab-mirrors v0.6.0
+
+* Consolidate user options and deps inclusion. See [PR #104][#104]
+* Added support for version 4 of the Gitlab API. See [PR #100][#100]
+
+[#100]: https://github.com/samrocketman/gitlab-mirrors/pull/100
+[#104]: https://github.com/samrocketman/gitlab-mirrors/pull/104
+
 ## gitlab-mirrors v0.5.3
 
 * Bugfix `git-mirrors.sh` while loop executing in a subshell and the value of
@@ -6,7 +19,6 @@
 
 [#92]: https://github.com/samrocketman/gitlab-mirrors/pull/92
 
----
 ## gitlab-mirrors v0.5.2
 
 * Certified compatibility with GitLab 8.1.4.
@@ -15,14 +27,12 @@
   GitLab 8.x.  This prevented projects being properly created in GitLab under
   the mirror namespace.
 
----
 ## gitlab-mirrors v0.5.1
 
 * Certified compatibility with GitLab 7.6.2.
 * Documentation updates.
 * Add logging to gitlab-mirrors.
 
----
 ## gitlab-mirrors v0.5.0
 
 * Support pushing to GitLab via HTTP instead of SSH.
@@ -33,7 +43,6 @@
 * More meaningful import error message for gitlab3 python module.
 * Minor documentation updates and grammar fixes.
 
----
 ## gitlab-mirrors v0.4.9
 
 * Better documentation when viewed from the command line.  No longer stretches
@@ -47,41 +56,34 @@
   used at all.  It would falsely fail all scripts.
 * Bugfix where svn is sometimes bare causing the update to fail at rare times.
 
----
 ## gitlab-mirrors v0.4.8
 
 * Fix bad prerequisite installation docs.
 
----
 ## gitlab-mirrors v0.4.7
 
 * Update installation docs to clarify gitlab-mirrors installation process.
 
----
 ## gitlab-mirrors v0.4.6
 
 * Fix bug where all scripts break without a meaningful message if config.sh is
   not present.
 
----
 ## gitlab-mirrors v0.4.5
 
 * Updated docs for Mercurial mirror management.
 
----
 ## gitlab-mirrors v0.4.4
 
 * Added Mercurial mirroring support.  `add_mirror.sh` now has the `--hg` option
   when adding a repository.
 
----
 ## gitlab-mirrors v0.4.3
 
 * Added `no_create_set` option to `config.sh`.  This option forces the user to
   always provide a remote for pushing repositories via the `--no-create` option
   in `add_mirror.sh`.
 
----
 ## gitlab-mirrors v0.4.2
 
 * Added `--no-create` option to `add_mirror.sh` which gives the script the
@@ -92,12 +94,10 @@
   copy of the mirror and does not attempt communication with GitLab.  This is
   the delete equivalent of `--no-create`.
 
----
 ## gitlab-mirrors v0.4.1
 
 * Added upgrade docs for upgrading v0.3 to v0.4
 
----
 ## gitlab-mirrors v0.4.0
 
 * Added contributing guidelines
@@ -108,14 +108,12 @@
   instead of pyapi-gitlab (formerly python-gitlab).
 * Added `ssl_verify` option to [`config.sh`](config.sh.SAMPLE)
 
----
 ## gitlab-mirrors v0.3.1
 
 * Updating prerequisite noting minimum git version 1.5.4.  Thanks user
   grawity@freenode from `#git`.  grawity also mentioned git 1.6.5 for
   gitlab-mirrors 0.4.x because that's when transport helpers were introduced.
 
----
 ## gitlab-mirrors v0.3.0
 
 * Certified compatibility with GitLab 6.2.
@@ -123,7 +121,6 @@
   `python-gitlab`).
 * Added upgrade documentation.
 
----
 ## gitlab-mirrors v0.2.10
 
 * This is a bugfix release in the gitlab-6-0 branch series.  From now on all
@@ -134,13 +131,11 @@
 * Updating installation docs adding note about `Mirrors` group creation step in
   gitlab, thanks @lmakarov.
 
----
 ## gitlab-mirrors v0.2.9
 
 * `git-mirrors.sh` major bugfix where working directory was not properly set
   before executing mirror updates.  This caused the `cron` job to fail.
 
----
 ## gitlab-mirrors v0.2.8
 
 * Fixed bug where `manage_gitlab_project.py` would attempt to move a project
@@ -150,12 +145,10 @@
 * Added support documentation for running `gitlab-mirrors` from a
   non-administrative user.
 
----
 ## gitlab-mirrors v0.2.7
 
 * Renamed `CHANGELOG` to `CHANGELOG.md`
 
----
 ## gitlab-mirrors v0.2.6
 
 * *New Feature* command `ls-mirrors.sh`!
@@ -168,7 +161,6 @@
   * Required an upstream merge request to the `python-gitlab` library.
 * Fixed bug added `merge_requests_enabled` to `config.sh.SAMPLE`.
 
----
 ## gitlab-mirrors v0.2.5
 
 * Fixed a critical bug with pagination where API user can't view more projects
@@ -178,31 +170,26 @@
 * Updated documentation to reference my `bugfix-edition` of `python-gitlab` in
   the prerequisites.
 
----
 ## gitlab-mirrors v0.2.4
 
 * Fixing critical `git-svn` mirror bug.  SVN mirroring did not update properly
   prior to this version.
 
----
 ## gitlab-mirrors v0.2.3
 
 * Adding a final catch error message to `add_mirror.sh`.
 * `RELEASE` file for more consistent releases.
 
----
 ## gitlab-mirrors v0.2.2
 
 * Safer environment variable option checking for `config.sh` in `add_mirror.sh`
   command.
 * Added Features to `README`
 
----
 ## gitlab-mirrors v0.2.1
 
 * CHANGELOG update
 
----
 ## gitlab-mirrors v0.2
 
 * Renamed project from `git-mirrors` to `gitlab-mirrors`.
@@ -221,12 +208,10 @@
   * `manage_gitlab_project.py` has a little better error handling.
     * Added `optparse` for better argument handling.
 
----
 ## git-mirrors v0.1.1
 
 * Minor update to documentation adding project URL to docs.
 
----
 ## git-mirrors v0.1
 
 * Initial project release.  Project gives admins the ability to have mirrors of

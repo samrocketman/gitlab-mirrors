@@ -81,6 +81,7 @@ Created by Sam Gleske under [MIT License](LICENSE).
 * Docs #54  [Martijn Vermaat](https://github.com/martijnvermaat)
 * Better logging #57 [Loic Dachary](https://github.com/dachary)
 * Fixed project transfer bug #78 [Corey Osman](https://github.com/logicminds)
+* Added support for GitLab API v4 #100 [Romke van Dijk](https://github.com/zyronix)
 
 [gitlab-api]: http://api.gitlab.org/
 [gm-docker]: https://github.com/Klowner/docker-gitlab-mirrors
