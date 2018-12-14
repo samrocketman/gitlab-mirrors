@@ -86,6 +86,10 @@ def transfer_project(src_project, group):
   return dest_project
 
 def createproject(pname):
+  if options.public:
+     visibility_level="public"
+  else:
+     visibility_level="private"
   if len(options.desc) == 0:
     if options.public:
       description="Public mirror of %s." % project_name
@@ -99,7 +103,7 @@ def createproject(pname):
     'merge_requests_enabled': options.merge,
     'wiki_enabled': options.wiki,
     'snippets_enabled': options.snippets,
-    'public': options.public,
+    'visibility': visibility_level,
     'namespace_id': find_group(name=gitlab_namespace).id,
   }
   #make all project options lowercase boolean strings i.e. true instead of True
