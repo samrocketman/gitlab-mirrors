@@ -50,7 +50,7 @@ else:
   git=gitlab.Gitlab(gitlab_url,token_secret,ssl_verify=True,api_version=gitlab_api_version)
 
 def find_group(**kwargs):
-  groups = git.groups.list()
+  groups = git.groups.list(owned=True)
   return _find_matches(groups, kwargs, False)
 
 def find_project(**kwargs):
