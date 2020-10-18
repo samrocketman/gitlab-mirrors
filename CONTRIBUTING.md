@@ -14,7 +14,7 @@ filling your need.  I only make a few simple requests in order to contribute.
   with your own and ease integrating updated code if we're both concurrently
   developing.
 * When your feature is ready make a pull request to the *development* branch.
-  Pull requests to the master branch will not be accepted.  The master branch is
+  Pull requests to the main branch will not be accepted.  The main branch is
   intended to drive production systems and only stable production-ready commits
   will be made to it.
 
