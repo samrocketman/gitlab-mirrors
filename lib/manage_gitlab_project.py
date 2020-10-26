@@ -15,6 +15,7 @@ except ImportError:
 
 def printErr(message):
   stderr.write(message + "\n")
+  stderr.flush()
 
 try:
   token_secret=os.environ['gitlab_user_token_secret']
