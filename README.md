@@ -37,7 +37,7 @@ add, delete, update) so that an admin may regularly update all mirrors using
 ---
 # Three easy steps
 
-1. [Setup prerequisites](docs/prerequisites.md)
+1. [Set up prerequisites](docs/prerequisites.md)
 2. [Install gitlab-mirrors](docs/installation.md)
 3. [Manage your mirrors](docs/management.md)
 
