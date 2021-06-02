@@ -13,6 +13,7 @@ STATUS=0
 
 while read mirror
 do
+  echo "$(date +'%Y-%m-%d %H:%M:%S') CRON Startup for ${mirror}" >> ${git_mirrors_dir}/cron.log
   if ! ./update_mirror.sh "${mirror}" >> ${git_mirrors_dir}/cron.log 2>&1 ;then
     red_echo "Error: ./update_mirror.sh ${mirror} (more information in ${git_mirrors_dir}/cron.log)" 1>&2
     STATUS=1
