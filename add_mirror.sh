@@ -395,29 +395,6 @@ if ${http_remote};then
   CREATE_OPTS="--http ${CREATE_OPTS}"
 fi
 
-#Get the remote gitlab url for the specified project.
-#If the project doesn't already exist in gitlab then create it.
-if ! ${no_remote_set} && [ -z "${no_create}" ];then
-  green_echo "Resolving gitlab remote." 1>&2
-  if python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}" 1> /dev/null;then
-    gitlab_remote=$(python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}")
-  else
-    red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
-    exit 1
-  fi
-  if [ -z "${gitlab_remote}" ];then
-    red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
-    exit 1
-  fi
-else
-  if ! ${no_remote_set};then
-    green_echo -n "Using remote: " 1>&2
-    echo "${no_create}" 1>&2
-    gitlab_remote="${no_create}"
-  else
-    echo "Local only mirror." 1>&2
-  fi
-fi
 if ${git};then
   #create a mirror
   green_echo "Creating mirror from ${mirror}" 1>&2
@@ -528,4 +505,28 @@ elif ${hg};then
 else
   red_echo "Something has gone very wrong.  You should never see this message." 1>&2
   exit 1
+fi
+
+#Get the remote gitlab url for the specified project.
+#If the project doesn't already exist in gitlab then create it.
+if ! ${no_remote_set} && [ -z "${no_create}" ];then
+  green_echo "Resolving gitlab remote." 1>&2
+  if python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}" 1> /dev/null;then
+    gitlab_remote=$(python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}")
+  else
+    red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
+    exit 1
+  fi
+  if [ -z "${gitlab_remote}" ];then
+    red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
+    exit 1
+  fi
+else
+  if ! ${no_remote_set};then
+    green_echo -n "Using remote: " 1>&2
+    echo "${no_create}" 1>&2
+    gitlab_remote="${no_create}"
+  else
+    echo "Local only mirror." 1>&2
+  fi
 fi
