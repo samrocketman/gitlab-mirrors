@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-                       i
 #Created by Sam Gleske
 #MIT License
 #Created Tue Sep 10 23:01:08 EDT 2013
