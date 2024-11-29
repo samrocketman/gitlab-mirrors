@@ -26,8 +26,15 @@ aditional options.
 
 #### python-gitlab
 
-    yum install python-pip
-    pip install python-gitlab
+##### dnf/yum
+```bash
+yum install python-pip
+pip install python-gitlab
+```
+##### apt
+```bash
+apt install -y python3-gitlab
+```
 
 #### Installing git
 
