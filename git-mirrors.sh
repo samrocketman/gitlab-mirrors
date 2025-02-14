@@ -3,6 +3,9 @@
 #MIT License
 #Created Tue Sep 10 23:01:08 EDT 2013
 
+set -u
+[[ -n $DEBUG ]] && set -x
+
 #Include all user options and dependencies
 git_mirrors_dir="${0%/*}"
 source "${git_mirrors_dir}/includes.sh"
@@ -19,5 +22,9 @@ do
     STATUS=1
   fi
 done <<< "$(ls -1 "${repo_dir}/${gitlab_namespace}")"
+
+if [[ -n $DEBUG ]];then 
+  cat "${git_mirrors_dir}"/cron.log
+fi
 
 exit ${STATUS}
