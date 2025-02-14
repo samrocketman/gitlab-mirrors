@@ -7,6 +7,7 @@ import logging
 import sys
 import argparse
 import os
+from typing import Optional, Union
 
 try:
     import gitlab
@@ -22,7 +23,7 @@ VERBOSE = "DEBUG" in os.environ
 try:
     token_secret = os.environ["gitlab_user_token_secret"]
     gitlab_url = os.environ["gitlab_url"]
-    gitlab_namespace = os.environ["gitlab_namespace"]
+    gitlab_toplevel_group = os.environ["gitlab_namespace"]
     gitlab_user = os.environ["gitlab_user"]
     ssl_verify = os.environ["ssl_verify"]
     gitlab_api_version = os.environ["gitlab_api_version"]
@@ -52,43 +53,53 @@ def create_parser() -> argparse.ArgumentParser:
     return p
 
 
-def find_group(git, **kwargs) -> list[Group]:
-    groups = git.groups.list(all_available=False)
-    return _find_matches(groups, kwargs, False)
+def find_or_create_group(git, path, public):
+
+    def find_group(git, path: str) -> Union[list[Group], Group]:
+        logging.debug("Searching for group %s in %s", path, [g.full_path for g in git.groups.list(all_available=True)])
+        groups = [g for g in git.groups.list(all_available=True) if g.full_path.lower() == path.lower()]
+        return groups[0] if len(groups) == 1 else groups
+
+    def creategroup(
+        git: gitlab.Gitlab,
+        group_path: str,
+        public: bool,
+    ):
+        group_name = group_path.split("/")[-1]
+        parent_group_path = group_path.rstrip(group_name).strip("/")
+        parent_group = find_group(git, parent_group_path)
+        logging.info("Try creating group %s under parent %s", group_path, parent_group_path)
+        if not parent_group:
+            return False
+        group_options = {
+            "name": group_name,
+            "path": group_name,
+            "visibility": "public" if public else "private",
+            "parent_id": parent_group.id,
+        }
+        logging.debug("Creating group %s", group_options)
+        git.groups.create(group_options)
+        return True
+
+    found_groups = find_group(git, path)
+    if not found_groups:
+        if not creategroup(git, path, public):
+            first_group_segment = path.rsplit("/", 1)[0]
+            find_or_create_group(git, first_group_segment, public)
+        found_groups = find_or_create_group(git, path, public)
+    return found_groups
 
 
-def find_project(git, **kwargs) -> list[Project]:
-    projects = git.projects.list(as_list=True)
-    return _find_matches(projects, kwargs, False)
-
-
-def _find_matches(objects, kwargs, find_all):
-    """Helper function for _add_find_fn. Find objects whose properties
-    match all key, value pairs in kwargs.
-    Source: https://github.com/doctormo/python-gitlab3/blob/master/gitlab3/__init__.py
-    """
-    ret = []
-    for obj in objects:
-        match = True
-        # Match all supplied parameters
-        for param, val in kwargs.items():
-            if not getattr(obj, param) == val:
-                match = False
-                break
-            if match:
-                if find_all:
-                    ret.append(obj)
-                else:
-                    return obj
-    if not find_all:
-        return None
-    return ret
+def find_project(git, pn: str) -> Optional[Project]:
+    logging.debug("Searching for project %s", pn)
+    projects = [g for g in git.projects.list(iterator=False, get_all=True) if g.name == pn.lower()]
+    return projects[0] if len(projects) == 1 else projects
 
 
 # transfer the project from the source namespace to the specified group namespace
 def transfer_project(git, src_project: Project, group: Group) -> Project:
     group.transfer_project(src_project.id)
-    dest_project = find_project(git, name=src_project.name)
+    dest_project = find_project(git, src_project.name)
     return dest_project
 
 
@@ -122,22 +133,16 @@ def createproject(
     project_options["name"] = pn
     project_options["description"] = desc if desc else f"Public mirror of {pn}." if public else f"Git mirror of {pn}."
     git.projects.create(project_options)
-    project_for_transfer = find_project(git, name=pn)
-    if needs_transfer(gitlab_user, gitlab_namespace, project_for_transfer):
+    project_for_transfer = find_project(git, pn)
+    if needs_transfer(gitlab_user, found_group, project_for_transfer):
         project_for_transfer = transfer_project(git, project_for_transfer, found_group)
     return project_for_transfer
 
 
 # returns a Bool True if the transfer is required
-def needs_transfer(user, groupname: Project, project: Project):
-    namespace = False
-    if groupname:
-        namespace = groupname
-    else:
-        namespace = user
-    if isinstance(project.namespace, Group):
-        return project.namespace.name != namespace
-    return project.namespace["name"] != namespace
+def needs_transfer(user, groupname: Group, project: Project):
+    namespace = groupname.full_path if groupname else user
+    return project.namespace["full_path"] != namespace
 
 
 if __name__ == "__main__":
@@ -151,29 +156,38 @@ if __name__ == "__main__":
         api_version=gitlab_api_version,
     )
 
-    if args.create:
-        group_in_namespace = find_group(gitlab_connection, name=gitlab_namespace)
-        logging.debug("Found groups %s", group_in_namespace)
+    proj_name_args = args.projectname.strip("/")
+    project_name = proj_name_args.split("/")[-1]
 
-        found_projects = find_project(gitlab_connection, name=args.projectname)
-        logging.debug("Found projects %s", found_projects)
+    full_project_path = gitlab_toplevel_group + "/" + proj_name_args
+    full_project_path = full_project_path.strip("/")
+    subgroup_path = full_project_path.rstrip(project_name).strip("/")
+
+    found_projects = find_project(gitlab_connection, project_name)
+    logging.debug("Found projects %s", found_projects)
+
+    if args.create:
+        group_in_namespace = find_or_create_group(gitlab_connection, subgroup_path, args.public)
+        logging.debug("Found groups %s", group_in_namespace)
+        assert group_in_namespace, f"Please create groups {subgroup_path} manually"
+
         if found_projects:
-            if needs_transfer(gitlab_user, gitlab_namespace, found_projects):
+            if needs_transfer(gitlab_user, group_in_namespace, found_projects):
                 found_projects = transfer_project(
                     gitlab_connection, found_projects, group_in_namespace
                 )
                 if not found_projects:
                     logging.error(
                         "There was a problem transferring %s/%s.  Did you give %s user Admin rights in gitlab?",
-                        group=gitlab_namespace,
-                        project=args.projectname,
+                        group=group_in_namespace.name,
+                        project=project_name,
                         user=gitlab_user,
                     )
                     sys.exit(1)
         else:
             found_projects = createproject(
                 gitlab_connection,
-                args.projectname,
+                project_name,
                 group_in_namespace,
                 args.public,
                 args.desc,
@@ -186,15 +200,17 @@ if __name__ == "__main__":
             if not found_projects:
                 logging.error(
                     "There was a problem creating %s/%s.  Did you give %s user Admin rights in gitlab?",
-                    group=gitlab_namespace,
-                    project=args.projectname,
+                    group=gitlab_toplevel_group,
+                    project=project_name,
                     user=gitlab_user,
                 )
                 sys.exit(1)
         print(found_projects.http_url_to_repo if args.http else found_projects.ssh_url_to_repo)
     elif args.delete:
+        if not found_projects:
+            logging.error("Project %s not found in %s", proj_name_args, gitlab_url)
         try:
-            deleted_project = find_project(gitlab_connection, name=args.projectname).delete()
+            deleted_project = found_projects.delete()
         except Exception as e:
             logging.error(str(e))
             sys.exit(1)

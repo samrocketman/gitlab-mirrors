@@ -20,7 +20,8 @@ pushd "${repo_dir}/${gitlab_namespace}" &> /dev/null
 echo -n "Namespace: " 1>&2
 #red and bold combined
 red_echo "$(bold_echo -n "${gitlab_namespace}")" 1>&2
-ls -1 "${repo_dir}/${gitlab_namespace}" | while read mirror;do
+for mirror in $(find "${repo_dir}/${gitlab_namespace}" -name refs -type d ); do
+  mirror=$(realpath -s --relative-to="${repo_dir}/${gitlab_namespace}" "$mirror"/..)
   pushd "${mirror}" &> /dev/null
   if git config --get svn-remote.svn.url &> /dev/null;then
     repo="$(git config --get svn-remote.svn.url)"
