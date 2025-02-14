@@ -14,14 +14,14 @@ cd "${git_mirrors_dir}" || exit
 
 STATUS=0
 
-while read mirror
-do
+for mirror in $(find "${repo_dir}/${gitlab_namespace}" -name refs -type d ); do
+  mirror=$(realpath -s --relative-to="${repo_dir}/${gitlab_namespace}" $mirror/..)
   echo "$(date +'%Y-%m-%d %H:%M:%S') CRON Startup for ${mirror}" >> ${git_mirrors_dir}/cron.log
   if ! ./update_mirror.sh "${mirror}" >> ${git_mirrors_dir}/cron.log 2>&1 ;then
     red_echo "Error: ./update_mirror.sh ${mirror} (more information in ${git_mirrors_dir}/cron.log)" 1>&2
     STATUS=1
   fi
-done <<< "$(ls -1 "${repo_dir}/${gitlab_namespace}")"
+done
 
 if [[ -n $DEBUG ]];then 
   cat "${git_mirrors_dir}"/cron.log
