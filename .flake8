@@ -1,0 +1,4 @@
+[flake8]
+# indentation is done by black as it is more powerful
+ignore = E501, E203
+max-line-length = 100

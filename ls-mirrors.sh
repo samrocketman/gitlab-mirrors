@@ -6,14 +6,15 @@
 #  ./list-mirrors.sh
 
 #bash option stop on first error
-set -e
+set -eu
 
 #Include all user options and dependencies
 git_mirrors_dir="${0%/*}"
-source ${git_mirrors_dir}/includes.sh
+source "${git_mirrors_dir}"/includes.sh
 
-PROGNAME="${0##*/}"
-PROGVERSION="${VERSION}"
+if [ ! -d "${repo_dir}/${gitlab_namespace}" ];then 
+  exit 0
+fi
 
 pushd "${repo_dir}/${gitlab_namespace}" &> /dev/null
 echo -n "Namespace: " 1>&2
