@@ -5,9 +5,9 @@
 
 #Include all user options and dependencies
 git_mirrors_dir="${0%/*}"
-source ${git_mirrors_dir}/includes.sh
+source "${git_mirrors_dir}/includes.sh"
 
-cd "${git_mirrors_dir}"
+cd "${git_mirrors_dir}" || exit
 
 STATUS=0
 

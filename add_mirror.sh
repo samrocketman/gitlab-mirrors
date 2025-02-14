@@ -10,7 +10,7 @@ set -e
 
 #Include all user options and dependencies
 git_mirrors_dir="${0%/*}"
-source ${git_mirrors_dir}/includes.sh
+source "${git_mirrors_dir}"/includes.sh
 
 #check if api version is set
 [ -z $gitlab_api_version ] && gitlab_api_version=4
@@ -188,9 +188,7 @@ function preflight() {
     STATUS=1
   elif [ "${types}" -gt "1" ];then
     red_echo -n "Multiple repository types not allowed.  Found:"
-    for x in ${selected_types[@]};do
-      yellow_echo -n " $x"
-    done
+    yellow_echo -n "${selected_types[*]}"
     echo ""
     STATUS=1
   fi
