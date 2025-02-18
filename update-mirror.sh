@@ -3,7 +3,7 @@
 #MIT License
 #Created Tue Sep 10 23:01:08 EDT 2013
 #USAGE
-#  ./update_mirror.sh project_name
+#  ./update-mirror.sh project_name
 
 #bash option stop on first error
 set -eu

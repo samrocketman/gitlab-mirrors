@@ -9,7 +9,7 @@ DEBUG=${DEBUG:-0}
 #The repository directory where gitlab-mirrors will contain copies of mirrored
 #repositories before pushing them to gitlab.
 repo_dir=${GITLAB_MIRROR_DATADIR:-/data}
-#colorize output of add_mirror.sh, update_mirror.sh, and git-mirrors.sh
+#colorize output of add-mirror.sh, update-mirror.sh, and git-mirrors.sh
 #commands.
 enable_colors=true
 #These are additional options which should be passed to git-svn.  On the command

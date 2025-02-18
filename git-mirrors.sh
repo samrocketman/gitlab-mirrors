@@ -17,8 +17,8 @@ STATUS=0
 for mirror in $(find "${repo_dir}/${gitlab_namespace}" -name refs -type d ); do
   mirror=$(realpath -s --relative-to="${repo_dir}/${gitlab_namespace}" $mirror/..)
   echo "$(date +'%Y-%m-%d %H:%M:%S') CRON Startup for ${mirror}" >> ${git_mirrors_dir}/cron.log
-  if ! ./update_mirror.sh "${mirror}" >> ${git_mirrors_dir}/cron.log 2>&1 ;then
-    red_echo "Error: ./update_mirror.sh ${mirror} (more information in ${git_mirrors_dir}/cron.log)" 1>&2
+  if ! ./update-mirror.sh "${mirror}" >> ${git_mirrors_dir}/cron.log 2>&1 ;then
+    red_echo "Error: ./update-mirror.sh ${mirror} (more information in ${git_mirrors_dir}/cron.log)" 1>&2
     STATUS=1
   fi
 done

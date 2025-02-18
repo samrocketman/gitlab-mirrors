@@ -3,7 +3,7 @@
 #MIT License
 #Created Tue Sep 10 23:01:08 EDT 2013
 #USAGE
-#  ./add_mirror.sh --git --project-name someproject --mirror http://example.com/project.git
+#  ./add-mirror.sh --git --project-name someproject --mirror http://example.com/project.git
 
 #bash option stop on first error
 set -e
@@ -49,7 +49,7 @@ DESCRIPTION:
   This will add a git or SVN repository to be mirrored by GitLab.  It
   first checks to see if the project exists in gitlab.  If it does
   not exist then it creates it.  It will then clone and check in the
-  first copy into GitLab.  From there you must use the update_mirror.sh
+  first copy into GitLab.  From there you must use the update-mirror.sh
   script or git git-mirrors.sh script.
 
   -h,--help          Show help
