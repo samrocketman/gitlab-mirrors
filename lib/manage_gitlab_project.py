@@ -119,6 +119,7 @@ def createproject(
 
     project_options = {
         "issues_enabled": issues,
+        "jobs_enabled": "false",
         "wall_enabled": wall,
         "merge_requests_enabled": merge,
         "wiki_enabled": wiki,
