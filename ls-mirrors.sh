@@ -6,20 +6,22 @@
 #  ./list-mirrors.sh
 
 #bash option stop on first error
-set -e
+set -eu
 
 #Include all user options and dependencies
 git_mirrors_dir="${0%/*}"
-source ${git_mirrors_dir}/includes.sh
+source "${git_mirrors_dir}"/includes.sh
 
-PROGNAME="${0##*/}"
-PROGVERSION="${VERSION}"
+if [ ! -d "${repo_dir}/${gitlab_namespace}" ];then 
+  exit 0
+fi
 
 pushd "${repo_dir}/${gitlab_namespace}" &> /dev/null
 echo -n "Namespace: " 1>&2
 #red and bold combined
 red_echo "$(bold_echo -n "${gitlab_namespace}")" 1>&2
-ls -1 "${repo_dir}/${gitlab_namespace}" | while read mirror;do
+for mirror in $(find "${repo_dir}/${gitlab_namespace}" -name refs -type d ); do
+  mirror=$(realpath -s --relative-to="${repo_dir}/${gitlab_namespace}" "$mirror"/..)
   pushd "${mirror}" &> /dev/null
   if git config --get svn-remote.svn.url &> /dev/null;then
     repo="$(git config --get svn-remote.svn.url)"
