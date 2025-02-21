@@ -12,11 +12,7 @@ set -eu
 git_mirrors_dir="${0%/*}"
 source "${git_mirrors_dir}"/includes.sh
 
-if [ ! -d "${repo_dir}/${gitlab_namespace}" ];then 
-  exit 0
-fi
-
-pushd "${repo_dir}/${gitlab_namespace}" &> /dev/null
+pushd "${repo_dir}/${gitlab_namespace}" || exit 0
 echo -n "Namespace: " 1>&2
 #red and bold combined
 red_echo "$(bold_echo -n "${gitlab_namespace}")" 1>&2
