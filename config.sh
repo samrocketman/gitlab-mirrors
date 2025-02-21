@@ -43,7 +43,7 @@ gitlab_user_token_secret=${GITLAB_MIRROR_GITLAB_TOKEN:-"glpat-myfancytoken"}
 #Sets the Gitlab API version, either 3 or 4
 gitlab_api_version=4
 #Verify signed SSL certificates?
-ssl_verify=${GITLAB_MIRROR_IGNORE_SSL:-false}
+ssl_verify=${GITLAB_MIRROR_IGNORE_SSL:-true}
 #Push to GitLab over http?  Otherwise will push projects via SSH.
 http_remote=${GITLAB_MIRROR_HTTP_PUSH:-false}
 
