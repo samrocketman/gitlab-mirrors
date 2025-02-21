@@ -56,8 +56,8 @@ def create_parser() -> argparse.ArgumentParser:
 def find_or_create_group(git, path, public):
 
     def find_group(git, path: str) -> Union[list[Group], Group]:
-        logging.debug("Searching for group %s in %s", path, [g.full_path for g in git.groups.list(all_available=True)])
-        groups = [g for g in git.groups.list(all_available=True) if g.full_path.lower() == path.lower()]
+        logging.debug("Searching for group %s in %s", path, [g.full_path for g in git.groups.list(iterator=False, get_all=True)])
+        groups = [g for g in git.groups.list(iterator=False, get_all=True) if g.full_path.lower() == path.lower()]
         return groups[0] if len(groups) == 1 else groups
 
     def creategroup(
