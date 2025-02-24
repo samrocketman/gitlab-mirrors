@@ -397,7 +397,7 @@ fi
 #If the project doesn't already exist in gitlab then create it.
 if ! ${no_remote_set} && [ -z "${no_create}" ];then
   green_echo "Resolving gitlab remote." 1>&2
-  if python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}" 1> /dev/null;then
+  if python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}"; then
     gitlab_remote=$(python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}")
   else
     red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
