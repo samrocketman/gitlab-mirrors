@@ -316,11 +316,11 @@ function preflight() {
     red_echo "."
     STATUS=1
   fi
-  #test public environment variable (must be bool)
-  if [ ! "${public}" = "true" ] && [ ! "${public}" = "false" ];then
-    red_echo -n "public="
-    yellow_echo -n "${public}"
-    red_echo -n " is not a valid option for public!  Must be "
+  #test visibility environment variable (must be bool)
+  if [ ! "${visibility}" = "public" ] && [ ! "${visibility}" = "internal" ] && [ ! "${visibility}" = "private" ];then
+    red_echo -n "visibility="
+    yellow_echo -n "${visibility}"
+    red_echo -n " is not a valid option for visibility!  Must be "
     yellow_echo -n "true"
     red_echo -n " or "
     yellow_echo -n "false"
@@ -386,8 +386,8 @@ fi
 if ${snippets_enabled};then
   CREATE_OPTS="--snippets ${CREATE_OPTS}"
 fi
-if ${public};then
-  CREATE_OPTS="--public ${CREATE_OPTS}"
+if [ -n "${visibility}" ];then
+  CREATE_OPTS="--visibility ${visibility} ${CREATE_OPTS}"
 fi
 if ${http_remote};then
   CREATE_OPTS="--http ${CREATE_OPTS}"

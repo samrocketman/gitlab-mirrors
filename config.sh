@@ -58,4 +58,4 @@ wall_enabled=${GITLAB_MIRROR_USE_WALL:-false}
 wiki_enabled=${GITLAB_MIRROR_USE_WIKI:-false}
 snippets_enabled=${GITLAB_MIRROR_USE_SNIPPETS:-false}
 merge_requests_enabled=${GITLAB_MIRROR_USE_MERGEREQUESTS:-false}
-public=${GITLAB_MIRROR_SET_PUBLIC:-false}
+visibility=${GITLAB_MIRROR_VISIBILITY:-private}

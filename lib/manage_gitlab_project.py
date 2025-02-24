@@ -44,7 +44,7 @@ def create_parser() -> argparse.ArgumentParser:
     p.add_argument("--merge", dest="merge", action="store_true", default=False)
     p.add_argument("--wiki", dest="wiki", action="store_true", default=False)
     p.add_argument("--snippets", dest="snippets", action="store_true", default=False)
-    p.add_argument("--public", dest="public", action="store_true", default=False)
+    p.add_argument("--visibility", dest="visibility", choices=["public", "internal", "private"], default="private")
     p.add_argument("--create", dest="create", action="store_true", default=False)
     p.add_argument("--delete", dest="delete", action="store_true", default=False)
     p.add_argument("--desc", dest="desc", default="")
@@ -53,7 +53,7 @@ def create_parser() -> argparse.ArgumentParser:
     return p
 
 
-def find_or_create_group(git, path, public):
+def find_or_create_group(git, path: str, visibility: str):
 
     def find_group(git, path: str) -> Union[list[Group], Group]:
         logging.debug("Searching for group %s in %s", path, [g.full_path for g in git.groups.list(iterator=False, get_all=True)])
@@ -63,7 +63,6 @@ def find_or_create_group(git, path, public):
     def creategroup(
         git: gitlab.Gitlab,
         group_path: str,
-        public: bool,
     ):
         group_name = group_path.split("/")[-1]
         parent_group_path = group_path.rstrip(group_name).strip("/")
@@ -74,7 +73,7 @@ def find_or_create_group(git, path, public):
         group_options = {
             "name": group_name,
             "path": group_name,
-            "visibility": "public" if public else "private",
+            "visibility": visibility,
             "parent_id": parent_group.id,
         }
         logging.debug("Creating group %s", group_options)
@@ -83,10 +82,10 @@ def find_or_create_group(git, path, public):
 
     found_groups = find_group(git, path)
     if not found_groups:
-        if not creategroup(git, path, public):
+        if not creategroup(git, path):
             first_group_segment = path.rsplit("/", 1)[0]
-            find_or_create_group(git, first_group_segment, public)
-        found_groups = find_or_create_group(git, path, public)
+            find_or_create_group(git, first_group_segment, visibility)
+        found_groups = find_or_create_group(git, path, visibility)
     return found_groups
 
 
@@ -107,7 +106,7 @@ def createproject(
     git: gitlab.Gitlab,
     pn: str,
     found_group: Group,
-    public: bool,
+    visibility: str,
     desc: str,
     issues: bool,
     wall: bool,
@@ -115,8 +114,6 @@ def createproject(
     wiki: bool,
     snippets: bool,
 ):
-    visibility_level = "public" if public else "private"
-
     project_options = {
         "issues_enabled": issues,
         "jobs_enabled": "false",
@@ -124,15 +121,15 @@ def createproject(
         "merge_requests_enabled": merge,
         "wiki_enabled": wiki,
         "snippets_enabled": snippets,
-        "visibility": visibility_level,
+        "visibility": visibility,
         "namespace_id": found_group.id,
     }
     # make all project options lowercase boolean strings i.e. true instead of True
     for x in project_options.keys():
         project_options[x] = str(project_options[x]).lower()
-    logging.info("Creating new project %s", pn)
     project_options["name"] = pn
-    project_options["description"] = desc if desc else f"Public mirror of {pn}." if public else f"Git mirror of {pn}."
+    project_options["description"] = desc if desc else f"Public mirror of {pn}." if visibility == "public" else f"Git mirror of {pn}."
+    logging.info("Creating new project %s with options %s", pn, project_options)
     git.projects.create(project_options)
     project_for_transfer = find_project(git, pn)
     if needs_transfer(gitlab_user, found_group, project_for_transfer):
@@ -168,7 +165,7 @@ if __name__ == "__main__":
     logging.debug("Found projects %s", found_projects)
 
     if args.create:
-        group_in_namespace = find_or_create_group(gitlab_connection, subgroup_path, args.public)
+        group_in_namespace = find_or_create_group(gitlab_connection, subgroup_path, args.visibility)
         logging.debug("Found groups %s", group_in_namespace)
         assert group_in_namespace, f"Please create groups {subgroup_path} manually"
 
@@ -190,7 +187,7 @@ if __name__ == "__main__":
                 gitlab_connection,
                 project_name,
                 group_in_namespace,
-                args.public,
+                args.visibility,
                 args.desc,
                 args.issues,
                 args.wall,
