@@ -91,7 +91,7 @@ def find_or_create_group(git, path: str, visibility: str):
 
 def find_project(git, pn: str) -> Optional[Project]:
     logging.debug("Searching for project %s", pn)
-    projects = [g for g in git.projects.list(iterator=False, get_all=True) if g.name == pn.lower()]
+    projects = [g for g in git.projects.list(iterator=False, get_all=True) if g.name.lower() == pn.lower()]
     return projects[0] if len(projects) == 1 else projects
 
 
