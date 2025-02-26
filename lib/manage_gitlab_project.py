@@ -89,17 +89,17 @@ def find_or_create_group(git, path: str, visibility: str):
     return found_groups
 
 
-def find_project(git, pn: str) -> Optional[Project]:
+def find_project(git, pn: str) -> list[Project]:
     logging.debug("Searching for project %s", pn)
-    projects = [g for g in git.projects.list(iterator=False, get_all=True) if g.name.lower() == pn.lower()]
-    return projects[0] if len(projects) == 1 else projects
+    return [g for g in git.projects.list(iterator=False, get_all=True) if g.name.lower() == pn.lower()]
 
 
 # transfer the project from the source namespace to the specified group namespace
 def transfer_project(git, src_project: Project, group: Group) -> Project:
     group.transfer_project(src_project.id)
     dest_project = find_project(git, src_project.name)
-    return dest_project
+    assert len(dest_project) == 1
+    return dest_project[0]
 
 
 def createproject(
@@ -132,6 +132,8 @@ def createproject(
     logging.info("Creating new project %s with options %s", pn, project_options)
     git.projects.create(project_options)
     project_for_transfer = find_project(git, pn)
+    assert len(project_for_transfer) == 1
+    project_for_transfer = project_for_transfer[0]
     if needs_transfer(gitlab_user, found_group, project_for_transfer):
         project_for_transfer = transfer_project(git, project_for_transfer, found_group)
     return project_for_transfer
@@ -169,12 +171,13 @@ if __name__ == "__main__":
         logging.debug("Found groups %s", group_in_namespace)
         assert group_in_namespace, f"Please create groups {subgroup_path} manually"
 
-        if found_projects:
-            if needs_transfer(gitlab_user, group_in_namespace, found_projects):
-                found_projects = transfer_project(
-                    gitlab_connection, found_projects, group_in_namespace
+        if len(found_projects) == 1:
+            final_project = found_projects[0]
+            if needs_transfer(gitlab_user, group_in_namespace, final_project):
+                final_project = transfer_project(
+                    gitlab_connection, final_project, group_in_namespace
                 )
-                if not found_projects:
+                if not final_project:
                     logging.error(
                         "There was a problem transferring %s/%s.  Did you give %s user Admin rights in gitlab?",
                         group=group_in_namespace.name,
@@ -182,8 +185,8 @@ if __name__ == "__main__":
                         user=gitlab_user,
                     )
                     sys.exit(1)
-        else:
-            found_projects = createproject(
+        elif len(found_projects) == 0:
+            final_project = createproject(
                 gitlab_connection,
                 project_name,
                 group_in_namespace,
@@ -195,7 +198,7 @@ if __name__ == "__main__":
                 args.wiki,
                 args.snippets,
             )
-            if not found_projects:
+            if not final_project:
                 logging.error(
                     "There was a problem creating %s/%s.  Did you give %s user Admin rights in gitlab?",
                     group=gitlab_toplevel_group,
@@ -203,7 +206,13 @@ if __name__ == "__main__":
                     user=gitlab_user,
                 )
                 sys.exit(1)
-        print(found_projects.http_url_to_repo if args.http else found_projects.ssh_url_to_repo)
+        else:
+            print(
+                f"Can not create consistent state because the project '{proj_name_args}' was found in multiple places {found_projects}"
+                , file=sys.stderr
+            )
+            sys.exit(1)
+        print(final_project.http_url_to_repo if args.http else final_project.ssh_url_to_repo)
     elif args.delete:
         if not found_projects:
             logging.error("Project %s not found in %s", proj_name_args, gitlab_url)
