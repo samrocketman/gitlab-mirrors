@@ -4,14 +4,14 @@
 #Created Thu Sep 12 16:04:35 EDT 2013
 
 #bash option stop on first error
-set -e
+set -eu
 
 #Include all user options and dependencies
 git_mirrors_dir="${0%/*}"
-source ${git_mirrors_dir}/includes.sh
+source "${git_mirrors_dir}"/includes.sh
 
 #check if api version is set
-[ -z $gitlab_api_version ] && gitlab_api_version=4
+[ -z "$gitlab_api_version" ] && gitlab_api_version=4
 
 #export env vars for python script
 export gitlab_user_token_secret gitlab_url gitlab_namespace gitlab_user ssl_verify gitlab_api_version

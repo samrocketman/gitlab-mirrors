@@ -1,165 +1,226 @@
-#!/usr/bin/env python
-#Created by Sam Gleske
-#MIT License
-#Created Tue Sep 10 23:01:08 EDT 2013
+#!/usr/bin/env python3
+# Created by Sam Gleske
+# MIT License
+# Created Tue Sep 10 23:01:08 EDT 2013
 
-from sys import argv,exit,stderr
-from optparse import OptionParser
+import logging
+import sys
+import argparse
 import os
+from typing import Optional, Union
 
 try:
-  import gitlab
-except ImportError:
-  raise ImportError("python-gitlab module is not installed.  You probably didn't read the install instructions closely enough.  See docs/prerequisites.md.")
+    import gitlab
+    import gitlab.v4
+    from gitlab.v4.objects import Group, Project
+except ImportError as import_exc:
+    raise ImportError(
+        "python-gitlab module is not installed.  You probably didn't read the install instructions closely enough.  See docs/prerequisites.md."
+    ) from import_exc
 
-def printErr(message):
-  stderr.write(message + "\n")
-  stderr.flush()
+VERBOSE = "DEBUG" in os.environ
 
 try:
-  token_secret=os.environ['gitlab_user_token_secret']
-  gitlab_url=os.environ['gitlab_url']
-  gitlab_namespace=os.environ['gitlab_namespace']
-  gitlab_user=os.environ['gitlab_user']
-  ssl_verify=os.environ['ssl_verify']
-  gitlab_api_version=os.environ['gitlab_api_version']
+    token_secret = os.environ["gitlab_user_token_secret"]
+    gitlab_url = os.environ["gitlab_url"]
+    gitlab_toplevel_group = os.environ["gitlab_namespace"]
+    gitlab_user = os.environ["gitlab_user"]
+    ssl_verify = os.environ["ssl_verify"]
+    gitlab_api_version = os.environ["gitlab_api_version"]
 except KeyError:
-  printErr("Environment config missing.  Do not run this script standalone.")
-  exit(1)
-parser = OptionParser()
-parser.add_option("--issues",dest="issues",action="store_true",default=False)
-parser.add_option("--wall",dest="wall",action="store_true",default=False)
-parser.add_option("--merge",dest="merge",action="store_true",default=False)
-parser.add_option("--wiki",dest="wiki",action="store_true",default=False)
-parser.add_option("--snippets",dest="snippets",action="store_true",default=False)
-parser.add_option("--public",dest="public",action="store_true",default=False)
-parser.add_option("--create",dest="create",action="store_true",default=False)
-parser.add_option("--delete",dest="delete",action="store_true",default=False)
-parser.add_option("--desc",dest="desc",metavar="DESC",default=False)
-parser.add_option("--http",dest="http",action="store_true",default=False)
-(options,args) = parser.parse_args()
-if len(args) == 0:
-  printErr("No project name specified.  Do not run this script standalone.")
-  exit(1)
-elif len(args) > 1:
-  printErr("Too many arguments.  Do not run this script standalone.")
-  exit(1)
+    print("Environment config missing.  Do not run this script standalone.", file=sys.stderr)
+    sys.exit(1)
 
-project_name=args[0]
 
-if not eval(ssl_verify.capitalize()):
-  git=gitlab.Gitlab(gitlab_url,token_secret,ssl_verify=False,api_version=gitlab_api_version)
-else:
-  git=gitlab.Gitlab(gitlab_url,token_secret,ssl_verify=True,api_version=gitlab_api_version)
+def str2bool(v):
+    return v.lower() in ("yes", "true", "t", "1")
 
-def find_group(**kwargs):
-  groups = git.groups.list(all_available=False)
-  return _find_matches(groups, kwargs, False)
 
-def find_project(**kwargs):
-  projects = git.projects.list(as_list=True)
-  return _find_matches(projects, kwargs, False)
+def create_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(description="A nontrivial modular command")
+    p.add_argument("projectname", help="specific project name")
+    p.add_argument("--issues", dest="issues", action="store_true", default=False)
+    p.add_argument("--wall", dest="wall", action="store_true", default=False)
+    p.add_argument("--merge", dest="merge", action="store_true", default=False)
+    p.add_argument("--wiki", dest="wiki", action="store_true", default=False)
+    p.add_argument("--snippets", dest="snippets", action="store_true", default=False)
+    p.add_argument("--visibility", dest="visibility", choices=["public", "internal", "private"], default="private")
+    p.add_argument("--create", dest="create", action="store_true", default=False)
+    p.add_argument("--delete", dest="delete", action="store_true", default=False)
+    p.add_argument("--desc", dest="desc", default="")
+    p.add_argument("--http", dest="http", action="store_true", default=False)
 
-def _find_matches(objects, kwargs, find_all):
-  """Helper function for _add_find_fn. Find objects whose properties
-  match all key, value pairs in kwargs.
-  Source: https://github.com/doctormo/python-gitlab3/blob/master/gitlab3/__init__.py
-  """
-  ret = []
-  for obj in objects:
-    match = True
-    # Match all supplied parameters
-    for param, val in kwargs.items():
-      if not getattr(obj, param) == val:
-        match = False
-        break
-      if match:
-        if find_all:
-          ret.append(obj)
-        else:
-          return obj
-  if not find_all:
-    return None
-  return ret
+    return p
+
+
+def find_or_create_group(git, path: str, visibility: str):
+
+    def find_group(git, path: str) -> Union[list[Group], Group]:
+        logging.debug("Searching for group %s in %s", path, [g.full_path for g in git.groups.list(iterator=False, get_all=True)])
+        groups = [g for g in git.groups.list(iterator=False, get_all=True) if g.full_path.lower() == path.lower()]
+        return groups[0] if len(groups) == 1 else groups
+
+    def creategroup(
+        git: gitlab.Gitlab,
+        group_path: str,
+    ):
+        group_name = group_path.split("/")[-1]
+        parent_group_path = group_path.rstrip(group_name).strip("/")
+        parent_group = find_group(git, parent_group_path)
+        logging.info("Try creating group %s under parent %s", group_path, parent_group_path)
+        if not parent_group:
+            return False
+        group_options = {
+            "name": group_name,
+            "path": group_name,
+            "visibility": visibility,
+            "parent_id": parent_group.id,
+        }
+        logging.debug("Creating group %s", group_options)
+        git.groups.create(group_options)
+        return True
+
+    found_groups = find_group(git, path)
+    if not found_groups:
+        if not creategroup(git, path):
+            first_group_segment = path.rsplit("/", 1)[0]
+            find_or_create_group(git, first_group_segment, visibility)
+        found_groups = find_or_create_group(git, path, visibility)
+    return found_groups
+
+
+def find_project(git, pn: str) -> list[Project]:
+    logging.debug("Searching for project %s", pn)
+    return [g for g in git.projects.list(iterator=False, get_all=True) if g.name.lower() == pn.lower()]
+
 
 # transfer the project from the source namespace to the specified group namespace
-def transfer_project(src_project, group):
-  value = group.transfer_project(src_project.id)
-  dest_project = find_project(name=src_project.name)
-  return dest_project
+def transfer_project(git, src_project: Project, group: Group) -> Project:
+    group.transfer_project(src_project.id)
+    dest_project = find_project(git, src_project.name)
+    assert len(dest_project) == 1
+    return dest_project[0]
 
-def createproject(pname):
-  if options.public:
-     visibility_level="public"
-  else:
-     visibility_level="private"
-  if len(options.desc) == 0:
-    if options.public:
-      description="Public mirror of %s." % project_name
-    else:
-      description="Git mirror of %s." % project_name
-  else:
-    description=options.desc
-  project_options={
-    'issues_enabled': options.issues,
-    'wall_enabled': options.wall,
-    'merge_requests_enabled': options.merge,
-    'wiki_enabled': options.wiki,
-    'snippets_enabled': options.snippets,
-    'visibility': visibility_level,
-    'namespace_id': find_group(name=gitlab_namespace).id,
-  }
-  #make all project options lowercase boolean strings i.e. true instead of True
-  for x in project_options.keys():
-    project_options[x] = str(project_options[x]).lower()
-  printErr("Creating new project %s" % pname)
-  project_options['name'] = pname
-  project_options['description'] = description
-  git.projects.create(project_options)
-  found_project = find_project(name=pname)
-  if needs_transfer(gitlab_user, gitlab_namespace, found_project):
-     found_project = transfer_project(found_project, found_group)
-  return found_project
+
+def createproject(
+    git: gitlab.Gitlab,
+    pn: str,
+    found_group: Group,
+    visibility: str,
+    desc: str,
+    issues: bool,
+    wall: bool,
+    merge: bool,
+    wiki: bool,
+    snippets: bool,
+):
+    project_options = {
+        "issues_enabled": issues,
+        "jobs_enabled": "false",
+        "wall_enabled": wall,
+        "merge_requests_enabled": merge,
+        "wiki_enabled": wiki,
+        "snippets_enabled": snippets,
+        "visibility": visibility,
+        "namespace_id": found_group.id,
+    }
+    # make all project options lowercase boolean strings i.e. true instead of True
+    for x in project_options.keys():
+        project_options[x] = str(project_options[x]).lower()
+    project_options["name"] = pn
+    project_options["description"] = desc if desc else f"Public mirror of {pn}." if visibility == "public" else f"Git mirror of {pn}."
+    logging.info("Creating new project %s with options %s", pn, project_options)
+    git.projects.create(project_options)
+    project_for_transfer = find_project(git, pn)
+    assert len(project_for_transfer) == 1
+    project_for_transfer = project_for_transfer[0]
+    if needs_transfer(gitlab_user, found_group, project_for_transfer):
+        project_for_transfer = transfer_project(git, project_for_transfer, found_group)
+    return project_for_transfer
+
 
 # returns a Bool True if the transfer is required
-def needs_transfer(user, groupname, project):
-  namespace = False
-  if groupname:
-    namespace = groupname
-  else:
-    namespace = user
-  if type(project.namespace) == gitlab.v4.objects.Group:
-    return project.namespace.name != namespace
-  else:
-    return project.namespace['name'] != namespace
+def needs_transfer(user, groupname: Group, project: Project):
+    namespace = groupname.full_path if groupname else user
+    return project.namespace["full_path"] != namespace
 
-if options.create:
-  found_group = find_group(name=gitlab_namespace)
-  found_project = None
 
-  found_project= find_project(name=project_name)
-  #exit()
-  if found_project:
-    if needs_transfer(gitlab_user, gitlab_namespace, found_project):
-      found_project = transfer_project(found_project, found_group)
-      if not found_project:
-        printErr("There was a problem transferring {group}/{project}.  Did you give {user} user Admin rights in gitlab?".format(group=gitlab_namespace,project=project_name,user=gitlab_user))
-        exit(1)
-  else:
-    found_project=createproject(project_name)
-    if not found_project:
-      printErr("There was a problem creating {group}/{project}.  Did you give {user} user Admin rights in gitlab?".format(group=gitlab_namespace,project=project_name,user=gitlab_user))
-      exit(1)
-  if options.http:
-    print(found_project.http_url_to_repo)
-  else:
-    print(found_project.ssh_url_to_repo)
-elif options.delete:
-  try:
-    deleted_project=find_project(name=project_name).delete()
-  except Exception as e:
-    printErr(e)
-    exit(1)
-else:
-  printErr("No --create or --delete option added.")
-  exit(1)
+if __name__ == "__main__":
+    parser = create_parser()
+    logging.getLogger().setLevel(logging.DEBUG if VERBOSE else logging.INFO)
+    args = parser.parse_args()
+    gitlab_connection = gitlab.Gitlab(
+        gitlab_url,
+        token_secret,
+        ssl_verify=str2bool(ssl_verify),
+        api_version=gitlab_api_version,
+    )
+
+    proj_name_args = args.projectname.strip("/")
+    project_name = proj_name_args.split("/")[-1]
+
+    full_project_path = gitlab_toplevel_group + "/" + proj_name_args
+    full_project_path = full_project_path.strip("/")
+    subgroup_path = full_project_path.rstrip(project_name).strip("/")
+
+    found_projects = find_project(gitlab_connection, project_name)
+    logging.debug("Found projects %s", found_projects)
+
+    if args.create:
+        group_in_namespace = find_or_create_group(gitlab_connection, subgroup_path, args.visibility)
+        logging.debug("Found groups %s", group_in_namespace)
+        assert group_in_namespace, f"Please create groups {subgroup_path} manually"
+
+        if len(found_projects) == 1:
+            final_project = found_projects[0]
+            if needs_transfer(gitlab_user, group_in_namespace, final_project):
+                final_project = transfer_project(
+                    gitlab_connection, final_project, group_in_namespace
+                )
+                if not final_project:
+                    logging.error(
+                        "There was a problem transferring %s/%s.  Did you give %s user Admin rights in gitlab?",
+                        group=group_in_namespace.name,
+                        project=project_name,
+                        user=gitlab_user,
+                    )
+                    sys.exit(1)
+        elif len(found_projects) == 0:
+            final_project = createproject(
+                gitlab_connection,
+                project_name,
+                group_in_namespace,
+                args.visibility,
+                args.desc,
+                args.issues,
+                args.wall,
+                args.merge,
+                args.wiki,
+                args.snippets,
+            )
+            if not final_project:
+                logging.error(
+                    "There was a problem creating %s/%s.  Did you give %s user Admin rights in gitlab?",
+                    group=gitlab_toplevel_group,
+                    project=project_name,
+                    user=gitlab_user,
+                )
+                sys.exit(1)
+        else:
+            print(
+                f"Can not create consistent state because the project '{proj_name_args}' was found in multiple places {found_projects}"
+                , file=sys.stderr
+            )
+            sys.exit(1)
+        print(final_project.http_url_to_repo if args.http else final_project.ssh_url_to_repo)
+    elif args.delete:
+        if not found_projects:
+            logging.error("Project %s not found in %s", proj_name_args, gitlab_url)
+        try:
+            deleted_project = found_projects.delete()
+        except Exception as e:
+            logging.error(str(e))
+            sys.exit(1)
+    else:
+        logging.error("No --create or --delete option added.")
+        sys.exit(1)

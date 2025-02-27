@@ -122,7 +122,7 @@ user instead of a dedicated administrator.
    non-Administrator GitLab user from moving a project to a group even if the
    group is owned by the user.  This means that if you wish to mirror projects
    in namespaces other than your own username then you will have to first
-   manually create the mirror in GitLab and then run the `add_mirror.sh` command
+   manually create the mirror in GitLab and then run the `add-mirror.sh` command
    (see Managing repositories).  This bug has not been tested in GitLab 7.x/8.x.
 2. Your user will include mirror pushes in your user statistics.
 

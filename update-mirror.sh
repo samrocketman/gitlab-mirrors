@@ -3,10 +3,10 @@
 #MIT License
 #Created Tue Sep 10 23:01:08 EDT 2013
 #USAGE
-#  ./update_mirror.sh project_name
+#  ./update-mirror.sh project_name
 
 #bash option stop on first error
-set -e
+set -eu
 
 #Include all user options and dependencies
 git_mirrors_dir="${0%/*}"
@@ -40,9 +40,6 @@ if [ ! "${prune_mirrors}" = "true" ] && [ ! "${prune_mirrors}" = "false" ];then
 fi
 
 cd "${git_mirrors_dir}"
-
-PROGNAME="${0##*/}"
-PROGVERSION="${VERSION}"
 
 #Default script options
 project_name="${1}"
@@ -80,16 +77,17 @@ if git config --get svn-remote.svn.url &> /dev/null;then
   fi
 else
   #just a git mirror so mirror it accordingly
+  git_args=()
   if ${force_update};then
-    force_opt="--force"
+    git_args+=("--force")
   fi
   if ${prune_mirrors};then
-    prune_opt="--prune"
+    git_args=("--prune")
   fi
-  git fetch ${force_opt} ${prune_opt} origin
+  git fetch "${git_args[@]}" origin
 
   if ! ${no_remote_set};then
     #push to the remote
-    git push ${force_opt} ${prune_opt} gitlab
+    git push "${git_args[@]}" gitlab
   fi
 fi
