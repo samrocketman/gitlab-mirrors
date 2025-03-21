@@ -10,7 +10,7 @@ set -e
 
 #Include all user options and dependencies
 git_mirrors_dir="${0%/*}"
-source ${git_mirrors_dir}/includes.sh
+source "${git_mirrors_dir}"/includes.sh
 
 #check if api version is set
 [ -z $gitlab_api_version ] && gitlab_api_version=4
@@ -188,9 +188,7 @@ function preflight() {
     STATUS=1
   elif [ "${types}" -gt "1" ];then
     red_echo -n "Multiple repository types not allowed.  Found:"
-    for x in ${selected_types[@]};do
-      yellow_echo -n " $x"
-    done
+    yellow_echo -n "${selected_types[*]}"
     echo ""
     STATUS=1
   fi
@@ -318,11 +316,11 @@ function preflight() {
     red_echo "."
     STATUS=1
   fi
-  #test public environment variable (must be bool)
-  if [ ! "${public}" = "true" ] && [ ! "${public}" = "false" ];then
-    red_echo -n "public="
-    yellow_echo -n "${public}"
-    red_echo -n " is not a valid option for public!  Must be "
+  #test visibility environment variable (must be bool)
+  if [ ! "${visibility}" = "public" ] && [ ! "${visibility}" = "internal" ] && [ ! "${visibility}" = "private" ];then
+    red_echo -n "visibility="
+    yellow_echo -n "${visibility}"
+    red_echo -n " is not a valid option for visibility!  Must be "
     yellow_echo -n "true"
     red_echo -n " or "
     yellow_echo -n "false"
@@ -388,8 +386,8 @@ fi
 if ${snippets_enabled};then
   CREATE_OPTS="--snippets ${CREATE_OPTS}"
 fi
-if ${public};then
-  CREATE_OPTS="--public ${CREATE_OPTS}"
+if [ -n "${visibility}" ];then
+  CREATE_OPTS="--visibility ${visibility} ${CREATE_OPTS}"
 fi
 if ${http_remote};then
   CREATE_OPTS="--http ${CREATE_OPTS}"
@@ -399,7 +397,7 @@ fi
 #If the project doesn't already exist in gitlab then create it.
 if ! ${no_remote_set} && [ -z "${no_create}" ];then
   green_echo "Resolving gitlab remote." 1>&2
-  if python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}" 1> /dev/null;then
+  if python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}"; then
     gitlab_remote=$(python lib/manage_gitlab_project.py --create --desc "Mirror of ${mirror}" ${CREATE_OPTS} "${project_name}")
   else
     red_echo "There was an unknown issue with manage_gitlab_project.py" 1>&2
