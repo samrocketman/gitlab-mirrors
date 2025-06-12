@@ -1,3 +1,4 @@
+config.sh
 *.pyc
 *.swp
 cron.log
